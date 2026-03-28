@@ -531,7 +531,7 @@ async function loadFromSheet(sheetId){
 
     ALL_TX=parseCSV(txCsv).slice(1).filter(r=>r[0]).map(r=>({
       date:r[1],month:r[2],year:r[3],store:r[4],
-      type:r[5],category:r[6],amount:parseFloat(r[7])||0,note:r[8]
+      type:r[5],category:r[6],amount:parseNum(r[7]),note:r[8]
     }));
 
     if(!ALL_STORES.length) throw new Error('Sheet trống — chưa có dữ liệu cửa hàng');
@@ -971,8 +971,28 @@ function showPage(id){
 function showLoading(t){document.getElementById('loading').classList.add('show');document.getElementById('loading-text').textContent=t||'Đang tải...';}
 function hideLoading(){document.getElementById('loading').classList.remove('show');}
 function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type+' show';setTimeout(()=>t.classList.remove('show'),3500);}
-function fm(n){if(!n&&n!==0)return'0';const a=Math.abs(n);const s=n<0?'-':'';if(a>=1e9)return s+(a/1e9).toFixed(1)+' tỷ';if(a>=1e6)return s+Math.round(a/1e6)+' tr';return s+Math.round(a/1e3)+' nghìn';}
-function fv(n){return Math.round(Math.abs(n)).toLocaleString('vi-VN')+' ₫';}
+function parseNum(s){
+  if(!s) return 0;
+  // Remove quotes, spaces, commas (Google Sheets CSV format)
+  const clean = String(s).replace(/[",\s]/g,'').replace(/[₫đ]/g,'');
+  return parseFloat(clean)||0;
+}
+function fm(n){
+  if(!n&&n!==0)return'0';
+  const a=Math.abs(n);
+  const s=n<0?'-':'';
+  if(a>=1e9)return s+(a/1e9).toFixed(1)+' tỷ';
+  if(a>=1e6)return s+(a/1e6).toFixed(1)+' tr';
+  if(a>=1e3)return s+Math.round(a/1e3)+' nghìn';
+  return s+Math.round(a)+' ₫';
+}
+function fv(n){
+  const a=Math.abs(Math.round(n));
+  const sign=n<0?'(':'';
+  const end=n<0?') ₫':' ₫';
+  if(a>=1e6) return sign+(a/1e6).toFixed(1)+' tr'+end.replace(' ₫','');
+  return sign+a.toLocaleString('vi-VN')+end;
+}
 </script>
 </body>
 </html>
