@@ -6,543 +6,1235 @@
 <title>Phúc Tea Finance Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#F5A623;--gold-l:#FDF3E3;--gold-m:#F7C56E;--brown:#3D2B1F;--brown-m:#6B4226;--brown-l:#9C6B47;--cream:#FAF7F2;--white:#fff;--red:#E53E3E;--red-l:#FFF5F5;--green:#2D8248;--green-l:#F0FFF4;--gray:#718096;--gray-l:#F7F8FA;--border:#E8E0D4;--sh:0 2px 12px rgba(61,43,31,.08);--shm:0 4px 24px rgba(61,43,31,.12);--r:12px;--rs:8px}
+:root{
+  --gold:#F5A623;--gold-l:#FDF3E3;--gold-m:#F7C56E;
+  --brown:#3D2B1F;--brown-m:#6B4226;--brown-l:#9C6B47;
+  --cream:#FAF7F2;--white:#fff;
+  --red:#E53E3E;--red-l:#FFF5F5;
+  --green:#2D8248;--green-l:#F0FFF4;
+  --blue:#2B6CB0;--blue-l:#EBF8FF;
+  --gray:#718096;--gray-l:#F7F8FA;
+  --border:#E8E0D4;
+  --sh:0 2px 12px rgba(61,43,31,.08);
+  --shm:0 4px 24px rgba(61,43,31,.12);
+  --r:12px;--rs:8px;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Be Vietnam Pro',sans-serif;background:var(--cream);color:var(--brown);min-height:100vh}
-.ov{position:fixed;inset:0;background:rgba(61,43,31,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
-.ov.hide{display:none}
-.ov-card{background:var(--white);border-radius:16px;padding:32px;max-width:520px;width:100%;box-shadow:var(--shm)}
-.ov-logo{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold);text-align:center;margin-bottom:4px}
-.ov-sub{text-align:center;font-size:13px;color:var(--gray);margin-bottom:22px}
-.ov-row{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
-.ov-num{width:26px;height:26px;border-radius:50%;background:var(--brown);color:var(--gold);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
-.ov-body{flex:1}
-.ov-label{font-size:13px;font-weight:600;color:var(--brown);margin-bottom:5px}
-.ov-desc{font-size:11px;color:var(--gray);line-height:1.5;margin-bottom:6px}
-.ov-input{width:100%;font-family:'Be Vietnam Pro',sans-serif;font-size:13px;padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--rs);color:var(--brown)}
-.ov-input:focus{outline:none;border-color:var(--gold)}
-.ov-btn{width:100%;background:var(--gold);color:var(--brown);border:none;border-radius:var(--rs);padding:13px;font-family:'Be Vietnam Pro',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px}
-.ov-err{background:var(--red-l);color:var(--red);font-size:12px;padding:8px 11px;border-radius:var(--rs);margin-top:8px;display:none}
-.ov-skip{text-align:center;margin-top:10px;font-size:12px;color:var(--gray)}
-.ov-skip a{color:var(--brown-m);cursor:pointer;text-decoration:underline}
-.ld{display:none;position:fixed;inset:0;background:rgba(250,247,242,.88);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:14px}
-.ld.on{display:flex}
-.spin{width:44px;height:44px;border:4px solid var(--border);border-top:4px solid var(--gold);border-radius:50%;animation:sp .8s linear infinite}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--cream);color:var(--brown)}
+
+/* SETUP */
+.overlay{position:fixed;inset:0;background:rgba(61,43,31,.75);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.overlay.off{display:none}
+.modal{background:var(--white);border-radius:16px;padding:28px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto}
+.mlogo{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold);text-align:center;margin-bottom:3px}
+.msub{text-align:center;font-size:13px;color:var(--gray);margin-bottom:22px}
+.mlabel{font-size:11px;font-weight:600;color:var(--brown);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.03em}
+.mdesc{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:7px}
+.minput{width:100%;font-family:inherit;font-size:13px;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--rs);color:var(--brown);margin-bottom:4px}
+.minput:focus{outline:none;border-color:var(--gold)}
+.mbtn{width:100%;background:var(--gold);color:var(--brown);border:none;border-radius:var(--rs);padding:12px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px}
+.merr{background:var(--red-l);color:var(--red);font-size:12px;padding:8px 11px;border-radius:var(--rs);margin-top:8px;display:none}
+.mskip{text-align:center;margin-top:10px;font-size:12px;color:var(--gray)}
+.mskip a{color:var(--brown-m);cursor:pointer;text-decoration:underline}
+
+/* LOADING */
+.load{display:none;position:fixed;inset:0;background:rgba(250,247,242,.87);z-index:600;align-items:center;justify-content:center;flex-direction:column;gap:14px}
+.load.on{display:flex}
+.spin{width:42px;height:42px;border:4px solid var(--border);border-top:4px solid var(--gold);border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.tst{position:fixed;bottom:20px;right:20px;padding:13px 18px;border-radius:var(--r);font-size:13px;font-weight:600;z-index:999;transform:translateY(70px);opacity:0;transition:all .3s;box-shadow:var(--shm);max-width:320px}
-.tst.on{transform:translateY(0);opacity:1}
-.tst.ok{background:var(--green);color:#fff}
-.tst.er{background:var(--red);color:#fff}
-.tst.wn{background:var(--gold);color:var(--brown)}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;padding:12px 17px;border-radius:var(--r);font-size:13px;font-weight:600;z-index:1100;transform:translateY(80px);opacity:0;transition:all .3s;max-width:300px}
+.toast.on{transform:translateY(0);opacity:1}
+.tok{background:var(--green);color:#fff}
+.terr{background:var(--red);color:#fff}
+.twarn{background:var(--gold);color:var(--brown)}
+
+/* NAV */
 .nav{background:var(--brown);padding:0 20px;display:flex;align-items:center;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
-.nav-brand{display:flex;align-items:center;gap:9px;padding:13px 0;margin-right:20px;cursor:pointer}
-.nav-logo{width:32px;height:32px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;color:var(--brown);font-weight:700}
-.nav-title{font-size:13px;font-weight:600;color:#fff}.nav-title span{color:var(--gold)}
-.nav-tabs{display:flex}
-.nav-tab{padding:16px 15px;font-size:13px;font-weight:500;color:rgba(255,255,255,.55);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap}
-.nav-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
-.nav-r{display:flex;align-items:center;gap:9px;margin-left:auto}
-.nav-badge{background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px}
-.set-btn{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:rgba(255,255,255,.7);padding:5px 11px;border-radius:6px;font-size:12px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif}
-.set-btn:hover{border-color:var(--gold);color:var(--gold)}
-.pg{display:none;padding:24px 24px 80px;max-width:1400px;margin:0 auto}
-.pg.on{display:block}
-.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:22px;gap:14px;flex-wrap:wrap}
-.pt{font-family:'Playfair Display',serif;font-size:24px;color:var(--brown)}
+.nbrand{display:flex;align-items:center;gap:9px;padding:12px 0;margin-right:16px;cursor:pointer}
+.nlogo{width:32px;height:32px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;color:var(--brown);font-weight:700}
+.ntitle{font-size:13px;font-weight:600;color:#fff}
+.ntitle span{color:var(--gold)}
+.ntabs{display:flex}
+.ntab{padding:15px 13px;font-size:13px;font-weight:500;color:rgba(255,255,255,.6);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-3px;transition:all .2s;white-space:nowrap}
+.ntab:hover{color:var(--gold-m)}
+.ntab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.nright{display:flex;align-items:center;gap:9px;margin-left:auto}
+.nbadge{background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:2px 7px;border-radius:10px}
+.ncfg{background:transparent;border:1.5px solid rgba(255,255,255,.3);color:rgba(255,255,255,.7);padding:5px 9px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
+.ncfg:hover{border-color:var(--gold);color:var(--gold)}
+
+/* PAGE */
+.page{display:none;padding:22px 22px 80px;max-width:1400px;margin:0 auto}
+.page.on{display:block}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:14px;flex-wrap:wrap}
+.pt{font-family:'Playfair Display',serif;font-size:23px;color:var(--brown)}
 .ps{font-size:13px;color:var(--gray);margin-top:3px}
-.fb{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
-.fs{font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:500;padding:7px 26px 7px 11px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--brown);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236B4226' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
-.fs:focus{outline:none;border-color:var(--gold)}
-.btn{font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:600;padding:8px 15px;border-radius:var(--rs);cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
-.btn-p{background:var(--gold);color:var(--brown)}.btn-p:hover{background:var(--gold-m);transform:translateY(-1px)}
-.btn-o{background:var(--white);color:var(--brown-m);border:1.5px solid var(--border)}.btn-o:hover{border-color:var(--gold);color:var(--gold)}
-.btn-g{background:transparent;color:var(--brown-m);border:1.5px solid transparent}.btn-g:hover{background:var(--gold-l);color:var(--gold)}
-.kpi-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:22px}
-.kpi{background:var(--white);border-radius:var(--r);padding:18px;border:1.5px solid var(--border);transition:all .2s}
-.kpi:hover{box-shadow:var(--sh);transform:translateY(-2px)}
-.kpi-lb{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:.04em;text-transform:uppercase;margin-bottom:9px}
-.kpi-v{font-size:18px;font-weight:700;color:var(--brown);line-height:1;margin-bottom:7px;word-break:break-all}
-.kpi-c{font-size:12px;font-weight:500;color:var(--gray)}.kpi-c.up{color:var(--green)}.kpi-c.dn{color:var(--red)}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.fb{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fsel{font-family:inherit;font-size:13px;font-weight:500;padding:7px 26px 7px 10px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--brown);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%236B4226' stroke-width='1.5' stroke-linecap='round' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center}
+.fsel:focus{outline:none;border-color:var(--gold)}
+
+/* BUTTONS */
+.btn{font-family:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:var(--rs);cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.bp{background:var(--gold);color:var(--brown)}.bp:hover{background:var(--gold-m)}
+.bo{background:var(--white);color:var(--brown-m);border:1.5px solid var(--border)}.bo:hover{border-color:var(--gold);color:var(--gold)}
+.bg{background:transparent;color:var(--brown-m);border:1.5px solid transparent}.bg:hover{background:var(--gold-l);color:var(--gold)}
+.brd{background:var(--red-l);color:var(--red);border:1.5px solid var(--red)}.brd:hover{background:var(--red);color:#fff}
+
+/* KPI */
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:13px;margin-bottom:20px}
+.kpi{background:var(--white);border-radius:var(--r);padding:17px;border:1.5px solid var(--border)}
+.kl{font-size:11px;font-weight:600;color:var(--gray);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+.kv{font-size:19px;font-weight:700;color:var(--brown);line-height:1;margin-bottom:5px;word-break:break-all}
+.kc{font-size:12px;color:var(--gray)}
+.kc.up{color:var(--green)}.kc.dn{color:var(--red)}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 @media(max-width:900px){.g2{grid-template-columns:1fr}}
-.card{background:var(--white);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;margin-bottom:18px}
-.ch{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.ct{font-size:14px;font-weight:600;color:var(--brown)}.cb{padding:18px}
-.tb{width:100%;border-collapse:collapse;font-size:13px}
-.tb th{padding:9px 13px;text-align:left;font-size:11px;font-weight:600;color:var(--gray);letter-spacing:.05em;text-transform:uppercase;background:var(--gray-l);border-bottom:1px solid var(--border)}
-.tb td{padding:11px 13px;border-bottom:1px solid var(--border);color:var(--brown)}
-.tb tr:last-child td{border-bottom:none}.tb tr:hover td{background:var(--gold-l)}
+
+/* CARD */
+.card{background:var(--white);border-radius:var(--r);border:1.5px solid var(--border);overflow:hidden;margin-bottom:16px}
+.ch{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:14px;font-weight:600;color:var(--brown)}
+.cb{padding:17px}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{padding:9px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--gray);letter-spacing:.04em;text-transform:uppercase;background:var(--gray-l);border-bottom:1px solid var(--border)}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--brown)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:var(--gold-l)}
+
+/* BADGE */
 .bdg{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.bdg-g{background:var(--green-l);color:var(--green)}.bdg-r{background:var(--red-l);color:var(--red)}.bdg-y{background:var(--gold-l);color:var(--brown-m)}
-.alt{display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:var(--rs);margin-bottom:10px;font-size:13px}
-.alt-r{background:var(--red-l);border-left:3px solid var(--red);color:var(--red)}.alt-y{background:var(--gold-l);border-left:3px solid var(--gold);color:var(--brown-m)}
-.ai{background:linear-gradient(135deg,var(--brown) 0%,var(--brown-m) 100%);border-radius:var(--r);padding:18px;color:#fff;margin-bottom:18px}
-.ai-tag{background:var(--gold);color:var(--brown);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.05em}
-.ai-t{font-size:13px;font-weight:600;color:var(--gold-m)}
-.ai-ins{font-size:13px;line-height:1.7;color:rgba(255,255,255,.85);margin:9px 0;padding-left:11px;border-left:2px solid var(--gold)}
-.fg{margin-bottom:14px}
+.bg2{background:var(--green-l);color:var(--green)}
+.br2{background:var(--red-l);color:var(--red)}
+.by2{background:var(--gold-l);color:var(--brown-m)}
+
+/* ALERTS */
+.alert{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-radius:var(--rs);margin-bottom:9px;font-size:13px}
+.ar{background:var(--red-l);border-left:3px solid var(--red);color:var(--red)}
+.ay{background:var(--gold-l);border-left:3px solid var(--gold);color:var(--brown-m)}
+
+/* AI */
+.ai{background:linear-gradient(135deg,var(--brown) 0%,var(--brown-m) 100%);border-radius:var(--r);padding:17px;color:#fff;margin-bottom:16px}
+.aitag{background:var(--gold);color:var(--brown);font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;letter-spacing:.06em}
+.ait{font-size:13px;font-weight:600;color:var(--gold-m)}
+.aii{font-size:13px;line-height:1.7;color:rgba(255,255,255,.85);margin:8px 0;padding-left:10px;border-left:2px solid var(--gold)}
+
+/* FORM */
+.fg{margin-bottom:13px}
 .fl{display:block;font-size:11px;font-weight:600;color:var(--brown-m);margin-bottom:5px;letter-spacing:.03em;text-transform:uppercase}
-.fc{width:100%;font-family:'Be Vietnam Pro',sans-serif;font-size:14px;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--brown);transition:border-color .2s}
+.fc{width:100%;font-family:inherit;font-size:13px;padding:9px 11px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--brown)}
 .fc:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(245,166,35,.1)}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:11px}
 @media(max-width:600px){.fr{grid-template-columns:1fr}}
-.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:7px}
-.cb-btn{font-family:'Be Vietnam Pro',sans-serif;font-size:12px;padding:8px 7px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--brown-m);cursor:pointer;text-align:center;transition:all .15s;line-height:1.3}
-.cb-btn:hover,.cb-btn.on{border-color:var(--gold);background:var(--gold-l);color:var(--brown);font-weight:600}
-.pl-h{display:flex;justify-content:space-between;align-items:center;padding:9px 15px;font-size:12px;font-weight:700;letter-spacing:.04em;border-radius:var(--rs) var(--rs) 0 0}
-.pl-h.main{background:var(--brown);color:#fff}.pl-h.sub{background:var(--brown-l);color:#fff}
-.pl-rs{background:var(--white);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--rs) var(--rs);margin-bottom:7px}
-.pl-r{display:flex;justify-content:space-between;align-items:center;padding:8px 15px;border-bottom:1px solid var(--border);font-size:13px}
-.pl-r:last-child{border-bottom:none}.pl-r.sub{background:var(--gray-l);font-weight:600}
-.pl-lb{color:var(--brown-m)}.pl-v{font-weight:600}
-.pl-pct{font-size:11px;color:var(--gray);min-width:44px;text-align:right;margin-right:10px}
-.pl-gross{border:1.5px solid var(--gold);border-radius:var(--rs);margin:8px 0;padding:13px 15px;display:flex;justify-content:space-between;font-weight:700;font-size:14px;background:var(--gold-l)}
-.pl-net{background:var(--brown);border-radius:var(--rs);margin:8px 0;padding:14px 15px;display:flex;justify-content:space-between;color:#fff;font-weight:700}
-@media(max-width:768px){.pg{padding:14px 14px 80px}.nav-tabs{display:none}.kpi-g{grid-template-columns:1fr 1fr}}
-.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--brown);border-top:3px solid var(--gold);padding:7px 0 13px;z-index:200}
-@media(max-width:768px){.mob-nav{display:flex;justify-content:space-around}}
-.mob-b{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:500;color:rgba(255,255,255,.45);cursor:pointer}
-.mob-b.on{color:var(--gold)}.mob-ic{font-size:19px}
-.empty{text-align:center;padding:44px 20px;color:var(--gray)}
+textarea.fc{resize:vertical;min-height:120px;line-height:1.6}
+
+/* CAT */
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:6px}
+.cb3{font-family:inherit;font-size:12px;padding:8px 7px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--white);color:var(--brown-m);cursor:pointer;text-align:center;transition:all .15s;line-height:1.3}
+.cb3:hover,.cb3.on{border-color:var(--gold);background:var(--gold-l);color:var(--brown);font-weight:600}
+
+/* P&L */
+.plh{display:flex;justify-content:space-between;align-items:center;padding:9px 13px;font-size:12px;font-weight:700;letter-spacing:.04em;border-radius:var(--rs) var(--rs) 0 0}
+.plhm{background:var(--brown);color:#fff}
+.plhs{background:var(--brown-l);color:#fff}
+.plb{background:var(--white);border:1.5px solid var(--border);border-top:none;border-radius:0 0 var(--rs) var(--rs);margin-bottom:6px}
+.plr{display:flex;justify-content:space-between;align-items:center;padding:8px 13px;border-bottom:1px solid var(--border);font-size:13px}
+.plr:last-child{border-bottom:none}
+.plr.st{background:var(--gray-l);font-weight:600}
+.pll{color:var(--brown-m)}
+.plv{font-weight:600}
+.plp{font-size:11px;color:var(--gray);min-width:42px;text-align:right}
+.plg{border:1.5px solid var(--gold);border-radius:var(--rs);margin:7px 0;padding:12px 13px;display:flex;justify-content:space-between;font-weight:700;font-size:14px;background:var(--gold-l)}
+.pln{background:var(--brown);border-radius:var(--rs);margin:7px 0;padding:13px;display:flex;justify-content:space-between;color:#fff;font-weight:700}
+
+/* EMAIL PREVIEW */
+.eprev-wrap{border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+.eprev-toolbar{background:var(--gray-l);padding:8px 12px;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--border)}
+.eprev-content{padding:0}
+
+/* STORE LIST */
+.store-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)}
+.store-row:last-child{border-bottom:none}
+.store-row:hover{background:var(--gold-l)}
+.store-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.sdot-g{background:var(--green)}
+.sdot-r{background:var(--red)}
+
+/* MOBILE */
+@media(max-width:768px){
+  .page{padding:13px 13px 80px}
+  .ntabs{display:none}
+  .kgrid{grid-template-columns:1fr 1fr}
+}
+.mob{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--brown);border-top:3px solid var(--gold);padding:7px 0 12px;z-index:200}
+@media(max-width:768px){.mob{display:flex;justify-content:space-around}}
+.mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;font-weight:500;color:rgba(255,255,255,.5);cursor:pointer}
+.mb.on{color:var(--gold)}
+.mi{font-size:18px}
+.empty2{text-align:center;padding:40px 20px;color:var(--gray)}
+
+/* CHECKLIST */
+.chk-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.chk-row:last-child{border-bottom:none}
+input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--gold)}
 </style>
 </head>
 <body>
-<div class="ov" id="ov">
-  <div class="ov-card">
-    <div class="ov-logo">🍵 PHÚC TEA</div>
-    <div class="ov-sub">Finance Hub · Cài đặt kết nối</div>
-    <div class="ov-row"><div class="ov-num">1</div><div class="ov-body">
-      <div class="ov-label">Google Sheet ID</div>
-      <div class="ov-desc">Lấy từ URL: docs.google.com/spreadsheets/d/<strong style="color:var(--red)">ID_Ở_ĐÂY</strong>/edit</div>
-      <input class="ov-input" id="inp-sid" placeholder="Dán Sheet ID...">
-    </div></div>
-    <div class="ov-row"><div class="ov-num">2</div><div class="ov-body">
-      <div class="ov-label">URL Apps Script API</div>
-      <div class="ov-desc">Sau khi Deploy Apps Script → copy URL exec vào đây</div>
-      <input class="ov-input" id="inp-api" placeholder="https://script.google.com/macros/s/.../exec">
-    </div></div>
-    <div id="ov-err" class="ov-err"></div>
-    <button class="ov-btn" onclick="doSetup()">✓ Kết nối & bắt đầu</button>
-    <div class="ov-skip"><a onclick="useDemo()">Dùng dữ liệu demo (không cần cài đặt)</a></div>
+
+<!-- SETUP MODAL -->
+<div class="overlay" id="setup-modal">
+  <div class="modal">
+    <div class="mlogo">🍵 PHÚC TEA</div>
+    <div class="msub">Finance Hub · Cài đặt kết nối</div>
+    <div style="margin-bottom:14px">
+      <label class="mlabel">1. Google Sheet ID</label>
+      <div class="mdesc">Lấy từ URL Sheet: <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:11px">spreadsheets/d/<b style="color:#e53e3e">ID</b>/edit</code></div>
+      <input class="minput" id="cfg-sid" placeholder="Dán Sheet ID vào đây">
+    </div>
+    <div>
+      <label class="mlabel">2. Apps Script URL (để nhập liệu & gửi email)</label>
+      <div class="mdesc">Deploy Apps Script → Web app → Tất cả mọi người → copy URL exec</div>
+      <input class="minput" id="cfg-api" placeholder="https://script.google.com/macros/s/.../exec">
+    </div>
+    <div id="cfg-err" class="merr"></div>
+    <button class="mbtn" onclick="doSetup()">✓ Kết nối & bắt đầu</button>
+    <div class="mskip"><a onclick="doDemo()">Dùng dữ liệu demo (không cần cài đặt)</a></div>
   </div>
-</div>
-<div class="ld" id="ld"><div class="spin"></div><div style="font-size:13px;color:var(--brown-m);font-weight:500" id="ld-t">Đang tải...</div></div>
-<div class="tst" id="tst"></div>
-<nav class="nav">
-  <div class="nav-brand" onclick="nav('dash')"><div class="nav-logo">P</div><div class="nav-title"><span>Phúc Tea</span> Finance</div></div>
-  <div class="nav-tabs">
-    <div class="nav-tab on" onclick="nav('dash')">📊 Dashboard</div>
-    <div class="nav-tab" onclick="nav('pl')">📋 P&L</div>
-    <div class="nav-tab" onclick="nav('inp')">✏️ Nhập liệu</div>
-    <div class="nav-tab" onclick="nav('email')">📧 Email</div>
-  </div>
-  <div class="nav-r">
-    <span class="nav-badge" id="nbadge" style="display:none">0</span>
-    <button class="set-btn" onclick="openSetup()">⚙️ Cài đặt</button>
-  </div>
-</nav>
-<div class="mob-nav">
-  <div class="mob-b on" onclick="nav('dash')"><span class="mob-ic">📊</span>Dashboard</div>
-  <div class="mob-b" onclick="nav('pl')"><span class="mob-ic">📋</span>P&L</div>
-  <div class="mob-b" onclick="nav('inp')"><span class="mob-ic">✏️</span>Nhập</div>
-  <div class="mob-b" onclick="nav('email')"><span class="mob-ic">📧</span>Email</div>
 </div>
 
-<div class="pg on" id="pg-dash">
+<!-- LOADING -->
+<div class="load" id="loader"><div class="spin"></div><div style="font-size:13px;color:var(--brown-m);font-weight:500" id="ltxt">Đang tải...</div></div>
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nbrand" onclick="go('dash')">
+    <div class="nlogo">P</div>
+    <div class="ntitle"><span>Phúc Tea</span> Finance</div>
+  </div>
+  <div class="ntabs">
+    <div class="ntab on"  onclick="go('dash')">📊 Dashboard</div>
+    <div class="ntab"     onclick="go('stores')">🏪 Cửa hàng</div>
+    <div class="ntab"     onclick="go('pl')">📋 P&L</div>
+    <div class="ntab"     onclick="go('input')">✏️ Nhập liệu</div>
+    <div class="ntab"     onclick="go('email')">📧 Email</div>
+  </div>
+  <div class="nright">
+    <span class="nbadge" id="abadge" style="display:none">0</span>
+    <button class="ncfg" onclick="openSetup()">⚙️ Cài đặt</button>
+  </div>
+</nav>
+<div class="mob">
+  <div class="mb on" onclick="go('dash')"><span class="mi">📊</span>Dashboard</div>
+  <div class="mb"    onclick="go('stores')"><span class="mi">🏪</span>Chuỗi</div>
+  <div class="mb"    onclick="go('pl')"><span class="mi">📋</span>P&L</div>
+  <div class="mb"    onclick="go('input')"><span class="mi">✏️</span>Nhập</div>
+  <div class="mb"    onclick="go('email')"><span class="mi">📧</span>Email</div>
+</div>
+
+<!-- ========== DASHBOARD ========== -->
+<div class="page on" id="p-dash">
   <div class="ph">
-    <div><div class="pt">Tổng quan chuỗi</div><div class="ps" id="d-sub">Đang tải...</div></div>
+    <div><div class="pt">Tổng quan chuỗi</div><div class="ps" id="dsub">Đang tải...</div></div>
     <div class="fb">
-      <select class="fs" id="f-m" onchange="renderAll()">
-        <option value="">Cả năm</option><option value="1">Tháng 1</option><option value="2" selected>Tháng 2</option>
-        <option value="3">Tháng 3</option><option value="4">Tháng 4</option><option value="5">Tháng 5</option>
-        <option value="6">Tháng 6</option><option value="7">Tháng 7</option><option value="8">Tháng 8</option>
-        <option value="9">Tháng 9</option><option value="10">Tháng 10</option><option value="11">Tháng 11</option><option value="12">Tháng 12</option>
+      <select class="fsel" id="dm" onchange="rDash()">
+        <option value="">Cả năm</option>
+        <option value="1">T1</option><option value="2" selected>T2</option>
+        <option value="3">T3</option><option value="4">T4</option><option value="5">T5</option>
+        <option value="6">T6</option><option value="7">T7</option><option value="8">T8</option>
+        <option value="9">T9</option><option value="10">T10</option>
+        <option value="11">T11</option><option value="12">T12</option>
       </select>
-      <select class="fs" id="f-y" onchange="renderAll()"><option value="2026">2026</option><option value="2025">2025</option></select>
-      <button class="btn btn-o" onclick="reload()">🔄 Làm mới</button>
-      <button class="btn btn-p" onclick="nav('email')">📧 Gửi báo cáo</button>
+      <select class="fsel" id="dy" onchange="rDash()">
+        <option value="2026">2026</option><option value="2025">2025</option>
+      </select>
+      <select class="fsel" id="dfilter" onchange="rDash()">
+        <option value="">Tất cả cửa hàng</option>
+        <option value="lai">Đang lãi</option>
+        <option value="lo">Đang lỗ</option>
+        <option value="canh-bao">Cảnh báo NVL</option>
+      </select>
+      <button class="btn bo" onclick="reload()">🔄 Làm mới</button>
+      <button class="btn bp" onclick="go('email')">📧 Báo cáo</button>
     </div>
   </div>
-  <div id="d-alerts"></div>
-  <div class="kpi-g" id="d-kpis"></div>
+  <div id="dalerts"></div>
+  <div class="kgrid" id="dkpis"></div>
   <div class="card">
     <div class="ch"><div class="ct">Hiệu quả từng cửa hàng</div></div>
     <div style="overflow-x:auto">
-      <table class="tb">
-        <thead><tr><th>Cửa hàng</th><th>Khu vực</th><th>Doanh thu</th><th>CP Vốn</th><th>CP VH</th><th>Lợi nhuận</th><th>Tỷ suất</th><th>Trạng thái</th><th></th></tr></thead>
-        <tbody id="d-rows"></tbody>
+      <table class="tbl">
+        <thead><tr>
+          <th>Cửa hàng</th><th>Khu vực</th><th>Doanh thu</th>
+          <th>CP Vốn</th><th>CP VH</th><th>Lợi nhuận</th><th>Tỷ suất</th><th>Tình trạng</th><th></th>
+        </tr></thead>
+        <tbody id="dtb"></tbody>
       </table>
     </div>
   </div>
-  <div class="ai" id="d-ai"><div style="display:flex;align-items:center;gap:9px;margin-bottom:13px"><span class="ai-tag">AI PHÂN TÍCH</span><span class="ai-t">Nhận định tháng này</span></div><div id="d-ai-body"></div></div>
+  <div class="ai" id="dai">
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px">
+      <span class="aitag">AI PHÂN TÍCH</span><span class="ait">Nhận định & đề xuất</span>
+    </div>
+    <div id="daib"></div>
+  </div>
 </div>
 
-<div class="pg" id="pg-pl">
+<!-- ========== STORES ========== -->
+<div class="page" id="p-stores">
+  <div class="ph">
+    <div><div class="pt">Quản lý cửa hàng</div><div class="ps" id="ssub">Danh sách nhượng quyền</div></div>
+    <div class="fb">
+      <button class="btn bp" onclick="openAddStore()">+ Thêm cửa hàng</button>
+      <button class="btn bo" onclick="saveStoresToSheet()">💾 Lưu lên Sheets</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch">
+      <div class="ct">Danh sách cửa hàng</div>
+      <div style="font-size:12px;color:var(--gray)" id="store-count">0 cửa hàng</div>
+    </div>
+    <div id="store-list"></div>
+  </div>
+</div>
+
+<!-- STORE FORM MODAL -->
+<div class="overlay off" id="store-modal">
+  <div class="modal">
+    <div class="mlogo" id="sform-title">➕ Thêm cửa hàng</div>
+    <div style="height:16px"></div>
+    <div class="fr">
+      <div class="fg"><label class="mlabel">ID cửa hàng</label><input class="minput" id="sf-id" placeholder="VD: CENTER004"></div>
+      <div class="fg"><label class="mlabel">Khu vực</label><input class="minput" id="sf-area" placeholder="VD: Cần Thơ"></div>
+    </div>
+    <div class="fg"><label class="mlabel">Tên cửa hàng</label><input class="minput" id="sf-name" placeholder="VD: CENTER004 – Cần Thơ"></div>
+    <div class="fg"><label class="mlabel">Địa chỉ</label><input class="minput" id="sf-addr" placeholder="Địa chỉ đầy đủ"></div>
+    <div class="fr">
+      <div class="fg"><label class="mlabel">Email chủ</label><input class="minput" id="sf-email" placeholder="email@example.com" type="email"></div>
+      <div class="fg"><label class="mlabel">Ngày mở</label><input class="minput" id="sf-date" type="date"></div>
+    </div>
+    <div class="fg">
+      <label class="mlabel">Trạng thái</label>
+      <select class="minput" id="sf-status">
+        <option value="active">Đang hoạt động</option>
+        <option value="inactive">Tạm dừng</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+      <button class="mbtn" style="background:var(--gray-l);color:var(--brown);margin-top:0" onclick="closeStoreModal()">Hủy</button>
+      <button class="mbtn" style="margin-top:0" onclick="saveStore()">Lưu cửa hàng</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== P&L ========== -->
+<div class="page" id="p-pl">
   <div class="ph">
     <div><div class="pt">P&L Chi tiết</div><div class="ps">Lãi – lỗ theo chuẩn Phúc Tea</div></div>
     <div class="fb">
-      <select class="fs" id="pl-s" onchange="renderPL()"><option value="">-- Chọn cửa hàng --</option></select>
-      <select class="fs" id="pl-m" onchange="renderPL()">
-        <option value="">Cả năm</option><option value="1">T1</option><option value="2" selected>T2</option>
+      <select class="fsel" id="pls" onchange="rPL()"><option value="">-- Cửa hàng --</option></select>
+      <select class="fsel" id="plm" onchange="rPL()">
+        <option value="">Cả năm</option>
+        <option value="1">T1</option><option value="2" selected>T2</option>
         <option value="3">T3</option><option value="4">T4</option><option value="5">T5</option>
         <option value="6">T6</option><option value="7">T7</option><option value="8">T8</option>
-        <option value="9">T9</option><option value="10">T10</option><option value="11">T11</option><option value="12">T12</option>
+        <option value="9">T9</option><option value="10">T10</option>
+        <option value="11">T11</option><option value="12">T12</option>
       </select>
-      <select class="fs" id="pl-y" onchange="renderPL()"><option value="2026">2026</option><option value="2025">2025</option></select>
-      <button class="btn btn-o" onclick="toEmail()">📧 Gửi báo cáo</button>
+      <select class="fsel" id="ply" onchange="rPL()">
+        <option value="2026">2026</option><option value="2025">2025</option>
+      </select>
+      <button class="btn bo" onclick="toEmail()">📧 Gửi báo cáo</button>
     </div>
   </div>
   <div class="g2">
-    <div id="pl-wrap"><div class="empty">📋 Chọn cửa hàng để xem P&L</div></div>
+    <div id="plw"><div class="empty2">📋<br><br>Chọn cửa hàng để xem P&L</div></div>
     <div>
-      <div class="card" id="pl-sum-card" style="display:none"><div class="ch"><div class="ct">Tóm tắt</div></div><div class="cb" id="pl-sum"></div></div>
-      <div class="ai" id="pl-ai" style="display:none"><div style="display:flex;align-items:center;gap:9px;margin-bottom:13px"><span class="ai-tag">AI ĐÁNH GIÁ</span><span class="ai-t" id="pl-ai-t"></span></div><div id="pl-ai-body"></div></div>
+      <div class="card" id="plsc" style="display:none">
+        <div class="ch"><div class="ct">Tóm tắt</div></div>
+        <div class="cb" id="plsum"></div>
+      </div>
+      <div class="ai" id="plai" style="display:none">
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:11px">
+          <span class="aitag">AI ĐÁNH GIÁ</span><span class="ait" id="plait"></span>
+        </div>
+        <div id="plaib"></div>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="pg" id="pg-inp">
-  <div class="ph"><div><div class="pt">Nhập liệu thu – chi</div><div class="ps" id="inp-status">Lưu thẳng vào Google Sheets</div></div></div>
+<!-- ========== NHẬP LIỆU ========== -->
+<div class="page" id="p-input">
+  <div class="ph">
+    <div><div class="pt">Nhập liệu thu – chi</div><div class="ps" id="api-st">Chưa cài API</div></div>
+  </div>
   <div style="max-width:560px;margin:0 auto">
     <div class="card">
       <div class="ch" style="background:var(--brown)"><div class="ct" style="color:#fff">Thông tin giao dịch</div></div>
       <div class="cb">
         <div class="fr">
-          <div class="fg"><label class="fl">Cửa hàng</label><select class="fc" id="tx-store"></select></div>
-          <div class="fg"><label class="fl">Ngày</label><input type="date" class="fc" id="tx-date"></div>
+          <div class="fg">
+            <label class="fl">Cửa hàng</label>
+            <select class="fc" id="ts"></select>
+          </div>
+          <div class="fg">
+            <label class="fl">Ngày</label>
+            <input type="date" class="fc" id="td">
+          </div>
         </div>
         <div class="fg">
-          <label class="fl">Loại giao dịch</label>
+          <label class="fl">Loại</label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-            <div id="t-thu" onclick="setTxType('thu')" style="padding:11px;border:1.5px solid var(--gold);background:var(--gold-l);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;text-align:center">💰 Thu tiền</div>
-            <div id="t-chi" onclick="setTxType('chi')" style="padding:11px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:500;text-align:center">💸 Chi tiền</div>
+            <div id="tt-thu" onclick="stype('thu')" style="padding:10px;border:1.5px solid var(--gold);background:var(--gold-l);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;text-align:center">💰 Thu tiền</div>
+            <div id="tt-chi" onclick="stype('chi')" style="padding:10px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;text-align:center">💸 Chi tiền</div>
           </div>
-          <input type="hidden" id="tx-type" value="thu">
+          <input type="hidden" id="ttype" value="thu">
         </div>
-        <div class="fg"><label class="fl">Danh mục</label><div class="cg" id="cg"></div><input type="hidden" id="tx-cat"></div>
-        <div class="fg"><label class="fl">Số tiền (VNĐ)</label><input type="number" class="fc" id="tx-amt" placeholder="Nhập số tiền..." style="font-size:18px;font-weight:700"></div>
-        <div class="fg"><label class="fl">Ghi chú</label><input type="text" class="fc" id="tx-note" placeholder="Vd: Mua trân châu đen 3kg"></div>
-        <button class="btn btn-p" style="width:100%;padding:13px;font-size:15px" onclick="saveTx()">✓ Lưu giao dịch</button>
-        <div id="api-warn" style="display:none;margin-top:9px;background:var(--gold-l);border:1.5px solid var(--gold);border-radius:var(--rs);padding:10px 12px;font-size:12px;color:var(--brown-m)">
-          ⚠️ Chưa có API URL — giao dịch lưu tạm thời, chưa vào Sheets. <a onclick="openSetup()" style="color:var(--brown);font-weight:600;cursor:pointer;text-decoration:underline">Cài đặt ngay</a>
+        <div class="fg">
+          <label class="fl">Danh mục</label>
+          <div class="cg" id="catgrid"></div>
+          <input type="hidden" id="tcat">
         </div>
+        <div class="fg">
+          <label class="fl">Số tiền (VNĐ)</label>
+          <input type="number" class="fc" id="tamt" placeholder="Nhập số tiền..." style="font-size:18px;font-weight:700">
+        </div>
+        <div class="fg">
+          <label class="fl">Ghi chú</label>
+          <input type="text" class="fc" id="tnote" placeholder="Vd: Mua trân châu 3kg">
+        </div>
+        <button class="btn bp" style="width:100%;padding:12px;font-size:15px" onclick="saveTx()">✓ Lưu giao dịch</button>
       </div>
     </div>
     <div class="card">
-      <div class="ch"><div class="ct">Giao dịch vừa nhập</div></div>
-      <table class="tb">
+      <div class="ch"><div class="ct">Đã nhập hôm nay</div></div>
+      <table class="tbl">
         <thead><tr><th>Danh mục</th><th>Loại</th><th>Số tiền</th></tr></thead>
-        <tbody id="rec-rows"><tr><td colspan="3" style="text-align:center;padding:18px;color:var(--gray)">Chưa có</td></tr></tbody>
+        <tbody id="rtb"><tr><td colspan="3" style="text-align:center;padding:16px;color:var(--gray)">Chưa có</td></tr></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<div class="pg" id="pg-email">
-  <div class="ph"><div><div class="pt">Gửi báo cáo Email</div><div class="ps">Tự động tính P&L · Gửi qua Gmail</div></div></div>
+<!-- ========== EMAIL ========== -->
+<div class="page" id="p-email">
+  <div class="ph">
+    <div><div class="pt">Gửi báo cáo Email</div><div class="ps">Số liệu đầy đủ · Phân tích · Đề xuất · Gửi nhiều cùng lúc</div></div>
+    <div class="fb">
+      <button class="btn bp" onclick="genAllDrafts()">📋 Tạo draft tất cả</button>
+      <button class="btn bp" style="background:var(--green)" onclick="sendSelected()">📧 Gửi đã chọn</button>
+    </div>
+  </div>
   <div class="g2">
-    <div class="card">
-      <div class="ch"><div class="ct">Cấu hình email</div></div>
-      <div class="cb">
-        <div class="fg"><label class="fl">Cửa hàng</label><select class="fc" id="em-s"></select></div>
-        <div class="fr">
-          <div class="fg"><label class="fl">Tháng</label>
-            <select class="fc" id="em-m"><option value="1">T1</option><option value="2" selected>T2</option><option value="3">T3</option><option value="4">T4</option><option value="5">T5</option><option value="6">T6</option><option value="7">T7</option><option value="8">T8</option><option value="9">T9</option><option value="10">T10</option><option value="11">T11</option><option value="12">T12</option></select>
+    <!-- LEFT: Config -->
+    <div>
+      <div class="card">
+        <div class="ch"><div class="ct">Cấu hình email</div></div>
+        <div class="cb">
+          <div class="fr">
+            <div class="fg">
+              <label class="fl">Tháng</label>
+              <select class="fc" id="em">
+                <option value="1">T1</option><option value="2" selected>T2</option>
+                <option value="3">T3</option><option value="4">T4</option><option value="5">T5</option>
+                <option value="6">T6</option><option value="7">T7</option><option value="8">T8</option>
+                <option value="9">T9</option><option value="10">T10</option>
+                <option value="11">T11</option><option value="12">T12</option>
+              </select>
+            </div>
+            <div class="fg">
+              <label class="fl">Năm</label>
+              <select class="fc" id="ey"><option value="2026">2026</option><option value="2025">2025</option></select>
+            </div>
           </div>
-          <div class="fg"><label class="fl">Năm</label><select class="fc" id="em-y"><option>2026</option><option>2025</option></select></div>
+
+          <div class="fg">
+            <label class="fl">Cửa hàng</label>
+            <select class="fc" id="es" onchange="onStoreSelect()"><option value="">-- Chọn cửa hàng --</option></select>
+          </div>
+
+          <div class="fg">
+            <label class="fl">Email người nhận <span style="font-weight:400;text-transform:none;letter-spacing:0">(có thể sửa)</span></label>
+            <div style="display:flex;gap:8px">
+              <input type="email" class="fc" id="eto" placeholder="email@example.com" style="flex:1">
+              <button class="btn bo" onclick="saveStoreEmail()" title="Lưu email này cho cửa hàng">💾</button>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+            <button class="btn bo" onclick="previewEmail()">👁 Xem trước</button>
+            <button class="btn bp" onclick="sendOne()">📧 Gửi 1 email</button>
+          </div>
         </div>
-        <div class="fg"><label class="fl">Email người nhận</label><input type="email" class="fc" id="em-to" placeholder="email@example.com"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-          <button class="btn btn-o" onclick="previewEmail()">👁 Xem trước</button>
-          <button class="btn btn-p" onclick="sendEmail()">📧 Gửi ngay</button>
+      </div>
+
+      <!-- BULK SEND -->
+      <div class="card">
+        <div class="ch"><div class="ct">Gửi nhiều cùng lúc</div><button class="btn bg" style="font-size:12px" onclick="checkAll()">Chọn tất cả</button></div>
+        <div id="bulk-list" style="padding:4px 0"></div>
+        <div style="padding:12px 17px;border-top:1px solid var(--border)">
+          <button class="btn bp" style="width:100%" onclick="sendSelected()">📧 Gửi tất cả đã chọn</button>
         </div>
       </div>
     </div>
+
+    <!-- RIGHT: Preview + Edit -->
     <div>
-      <div style="font-size:13px;color:var(--gray);margin-bottom:7px;font-weight:500">Xem trước email</div>
-      <div id="em-prev" style="background:#f5f5f5;border-radius:var(--r);padding:14px;min-height:180px;display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:var(--gray)"><div style="font-size:28px;margin-bottom:7px">📧</div>Bấm "Xem trước"</div></div>
+      <div class="card">
+        <div class="ch">
+          <div class="ct">Xem trước & Chỉnh sửa email</div>
+          <div style="display:flex;gap:7px">
+            <button class="btn bg" style="font-size:12px" onclick="showPreviewTab('visual')">👁 Xem</button>
+            <button class="btn bg" style="font-size:12px" onclick="showPreviewTab('edit')">✏️ Sửa</button>
+          </div>
+        </div>
+        <!-- Visual preview -->
+        <div id="tab-visual" style="padding:0">
+          <div id="eprev" style="background:#f0f0f0;padding:14px;min-height:200px;display:flex;align-items:center;justify-content:center">
+            <div style="text-align:center;color:var(--gray)"><div style="font-size:30px;margin-bottom:8px">📧</div>Bấm "Xem trước" để xem email</div>
+          </div>
+        </div>
+        <!-- Edit tab -->
+        <div id="tab-edit" style="display:none;padding:14px">
+          <div class="fg">
+            <label class="fl">Tiêu đề email</label>
+            <input type="text" class="fc" id="e-subject" placeholder="Tiêu đề email...">
+          </div>
+          <div class="fg">
+            <label class="fl">Lời chào mở đầu</label>
+            <input type="text" class="fc" id="e-greeting" placeholder="Kính gửi...">
+          </div>
+          <div class="fg">
+            <label class="fl">Nội dung thêm (tùy chọn)</label>
+            <textarea class="fc" id="e-extra" placeholder="Thêm ghi chú hoặc thông báo đặc biệt..."></textarea>
+          </div>
+          <div class="fg">
+            <label class="fl">Chữ ký</label>
+            <input type="text" class="fc" id="e-sig" value="Thanh Liêm — Operation Manager | 0901 234 567">
+          </div>
+          <button class="btn bp" style="width:100%" onclick="applyEdit()">✓ Áp dụng & Xem trước</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-let CFG={sid:'',api:'',demo:false},STORES=[],TXS=[],REC=[];
-const CATS={thu:['GrabFood','ShopeeFood','Mang về','Tại chỗ','Giao hàng','Thu khác'],chi:['NVL hệ thống','NVL địa phương','Vận chuyển','Lương NV pha chế','Lương quản lý','Mặt bằng','Tiền điện','Tiền nước','Internet','Gas','Royalty Fee','Chiết khấu food app','Marketing','Sửa chữa','Thuế','Hao phí','Nước đá','Chi phí khác']};
-const COGS=['NVL hệ thống','NVL địa phương','Vận chuyển'];
+// ===== STATE =====
+let C={sheetId:'',apiUrl:'',demo:false};
+let TX=[],ST=[],REC=[];
+let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operation Manager | 0901 234 567'};
+let editingStoreId=null;
 
-// FORMAT: Số đầy đủ với dấu chấm ngăn cách phần nghìn
-function ff(n){
+const COGS=['NVL hệ thống','NVL địa phương','Vận chuyển'];
+const CATS={
+  thu:['GrabFood','ShopeeFood','Mang về','Tại chỗ','Giao hàng','Doanh thu vật phẩm','Thu khác'],
+  chi:['NVL hệ thống','NVL địa phương','Vận chuyển','Lương NV pha chế','Lương quản lý',
+       'Mặt bằng','Tiền điện','Tiền nước','Internet','Gas','Royalty Fee',
+       'Chiết khấu food app','Marketing','Sửa chữa','Thuế','Hao phí','Nước đá','Chi phí khác']
+};
+
+// ===== FORMAT =====
+function fvnd(n){
   if(!n&&n!==0)return'0 ₫';
-  const abs=Math.abs(Math.round(n));
-  const s=abs.toLocaleString('vi-VN')+'  ₫';
-  return n<0?'('+s+')':s;
+  const a=Math.abs(Math.round(n));
+  return(n<0?'-':'')+a.toLocaleString('vi-VN')+' ₫';
 }
-// FORMAT: Rút gọn cho summary cards
-function fs(n){
-  if(!n&&n!==0)return'0';
-  const a=Math.abs(n),s=n<0?'-':'';
-  if(a>=1e9)return s+(a/1e9).toFixed(2).replace(/\.?0+$/,'')+' tỷ';
-  if(a>=1e6)return s+(a/1e6).toFixed(1).replace(/\.0$/,'')+' tr';
-  return s+Math.round(a/1e3)+'K';
-}
-function parseAmt(s){
-  if(!s&&s!==0)return 0;
+function parseNum(s){
+  if(!s)return 0;
   return parseFloat(String(s).replace(/[",\s₫đ]/g,''))||0;
 }
+function clean(s){return s?String(s).replace(/^"|"$/g,'').trim():'';}
 
-function parseCSV(txt){
-  return txt.split('\n').map(line=>{
-    const c=[];let cur='',q=false;
-    for(let i=0;i<line.length;i++){
-      if(line[i]==='"'){q=!q;}
-      else if(line[i]===','&&!q){c.push(cur.trim());cur='';}
-      else cur+=line[i];
-    }
-    c.push(cur.trim());
-    return c;
-  }).filter(r=>r.length>1);
-}
-
+// ===== DEMO DATA =====
 function loadDemo(){
-  STORES=[{id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',email:'center001@gmail.com'},{id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',email:'center002@gmail.com'},{id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',email:'center003@gmail.com'}];
-  const mk=(st,mo,yr,rv,cg,op)=>{const r=[];rv.forEach(([c,a])=>r.push({date:`${yr}-0${mo}-01`,month:String(mo),year:String(yr),store:st,type:'thu',category:c,amount:a,note:''}));cg.forEach(([c,a])=>r.push({date:`${yr}-0${mo}-01`,month:String(mo),year:String(yr),store:st,type:'chi',category:c,amount:a,note:''}));op.forEach(([c,a])=>r.push({date:`${yr}-0${mo}-01`,month:String(mo),year:String(yr),store:st,type:'chi',category:c,amount:a,note:''}));return r;};
-  TXS=[
-    ...mk('CENTER001',2,2026,[['GrabFood',80360000],['ShopeeFood',54530000],['Mang về',88970000],['Tại chỗ',63140000]],[['NVL hệ thống',63140000],['NVL địa phương',20090000],['Vận chuyển',5760000]],[['Lương NV pha chế',40180000],['Lương quản lý',14350000],['Mặt bằng',22960000],['Tiền điện',8610000],['Royalty Fee',14350000],['Chiết khấu food app',5740000],['Marketing',5740000]]),
-    ...mk('CENTER002',2,2026,[['GrabFood',62000000],['ShopeeFood',45000000],['Mang về',80000000],['Tại chỗ',54000000]],[['NVL hệ thống',52000000],['NVL địa phương',18000000],['Vận chuyển',4000000]],[['Lương NV pha chế',38000000],['Lương quản lý',12000000],['Mặt bằng',20000000],['Tiền điện',7500000],['Royalty Fee',12050000]]),
-    ...mk('CENTER003',2,2026,[['GrabFood',45000000],['Mang về',50000000],['Tại chỗ',39000000]],[['NVL hệ thống',58000000],['NVL địa phương',15000000],['Vận chuyển',3000000]],[['Lương NV pha chế',42000000],['Lương quản lý',10000000],['Mặt bằng',25000000],['Tiền điện',9000000],['Royalty Fee',6700000],['Marketing',6700000]]),
-    ...mk('CENTER001',1,2026,[['GrabFood',74000000],['ShopeeFood',50000000],['Mang về',82000000],['Tại chỗ',59000000]],[['NVL hệ thống',59000000],['NVL địa phương',18000000],['Vận chuyển',5000000]],[['Lương NV pha chế',38000000],['Lương quản lý',14000000],['Mặt bằng',22000000],['Tiền điện',8000000],['Royalty Fee',13250000],['Chiết khấu food app',5000000],['Marketing',5000000]])
+  ST=[
+    {id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',addr:'30/4, Ninh Kiều',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active'},
+    {id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',addr:'Hùng Vương, Ninh Kiều',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active'},
+    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',addr:'Phạm Thái Bường',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active'},
+  ];
+  const mk=(sid,m,y,rev,cogs,opex)=>{
+    const rows=[];
+    rev.forEach(([c,a])=>rows.push({month:String(m),year:String(y),store:sid,type:'thu',category:c,amount:a}));
+    cogs.forEach(([c,a])=>rows.push({month:String(m),year:String(y),store:sid,type:'chi',category:c,amount:a}));
+    opex.forEach(([c,a])=>rows.push({month:String(m),year:String(y),store:sid,type:'chi',category:c,amount:a}));
+    return rows;
+  };
+  TX=[
+    ...mk('CENTER001',2,2026,
+      [['GrabFood',80360000],['ShopeeFood',54530000],['Mang về',88970000],['Tại chỗ',63140000]],
+      [['NVL hệ thống',63140000],['NVL địa phương',20090000],['Vận chuyển',5760000]],
+      [['Lương NV pha chế',40180000],['Lương quản lý',14350000],['Mặt bằng',22960000],['Tiền điện',8610000],['Royalty Fee',14350000],['Chiết khấu food app',5740000],['Marketing',5740000]]),
+    ...mk('CENTER002',2,2026,
+      [['GrabFood',62000000],['ShopeeFood',45000000],['Mang về',80000000],['Tại chỗ',54000000]],
+      [['NVL hệ thống',52000000],['NVL địa phương',18000000],['Vận chuyển',4000000]],
+      [['Lương NV pha chế',38000000],['Lương quản lý',12000000],['Mặt bằng',20000000],['Tiền điện',7500000],['Royalty Fee',12050000]]),
+    ...mk('CENTER003',2,2026,
+      [['GrabFood',45000000],['Mang về',50000000],['Tại chỗ',39000000]],
+      [['NVL hệ thống',58000000],['NVL địa phương',15000000],['Vận chuyển',3000000]],
+      [['Lương NV pha chế',42000000],['Lương quản lý',10000000],['Mặt bằng',25000000],['Tiền điện',9000000],['Royalty Fee',6700000],['Marketing',6700000]]),
+    ...mk('CENTER001',1,2026,
+      [['GrabFood',74000000],['ShopeeFood',50000000],['Mang về',82000000],['Tại chỗ',59000000]],
+      [['NVL hệ thống',59000000],['NVL địa phương',18000000],['Vận chuyển',5000000]],
+      [['Lương NV pha chế',38000000],['Lương quản lý',14000000],['Mặt bằng',22000000],['Tiền điện',8000000],['Royalty Fee',13250000]]),
   ];
 }
 
-async function loadSheet(sid){
-  const base=`https://docs.google.com/spreadsheets/d/${sid}/gviz/tq?tqx=out:csv&sheet=`;
-  const enc=encodeURIComponent;
-  const [sR,tR]=await Promise.all([fetch(base+enc('Cửa hàng')),fetch(base+enc('Giao dịch'))]);
-  if(!sR.ok||!tR.ok)throw new Error('Không đọc được Sheet. Kiểm tra đã chia sẻ "Bất kỳ ai có link" chưa.');
-  const [sC,tC]=await Promise.all([sR.text(),tR.text()]);
-  const sRows=parseCSV(sC).slice(1).filter(r=>r[0]&&r[0]!=='ID');
-  STORES=sRows.map(r=>({id:r[0],name:r[1],area:r[3]||'',email:r[4]||''}));
-  const tRows=parseCSV(tC).slice(1).filter(r=>r[0]&&r[0]!=='ID');
-  TXS=tRows.map(r=>({date:r[1],month:(r[2]||'').replace(/^0/,''),year:r[3],store:r[4],type:r[5],category:r[6],amount:parseAmt(r[7]),note:r[8]||''}));
-  if(!STORES.length)throw new Error('Sheet "Cửa hàng" trống');
+// ===== LOAD SHEETS =====
+function parseCSV(txt){
+  return txt.split('\n').map(line=>{
+    const cells=[];let cur='',q=false;
+    for(const c of line){if(c==='"'){q=!q;}else if(c===','&&!q){cells.push(cur);cur='';}else cur+=c;}
+    cells.push(cur);return cells;
+  });
 }
 
-window.onload=function(){
-  let s=localStorage.getItem('ptcfg2');
-  if(s){try{CFG=JSON.parse(s);}catch(e){}}
-  if(CFG.sid)document.getElementById('inp-sid').value=CFG.sid;
-  if(CFG.api)document.getElementById('inp-api').value=CFG.api;
-  document.getElementById('tx-date').value=new Date().toISOString().split('T')[0];
+async function loadSheets(id){
+  const base=`https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:csv`;
+  const enc=s=>encodeURIComponent(s);
+  const [sr,tr]=await Promise.all([
+    fetch(base+'&sheet='+enc('Cửa hàng')),
+    fetch(base+'&sheet='+enc('Giao dịch'))
+  ]);
+  if(!sr.ok||!tr.ok)throw new Error('Không đọc được Sheet. Kiểm tra Sheet ID và quyền public.');
+  const [sc,tc]=[await sr.text(),await tr.text()];
+
+  ST=parseCSV(sc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
+    id:clean(r[0]),name:clean(r[1]),addr:clean(r[2]),area:clean(r[3]),
+    email:clean(r[4]),openDate:clean(r[5]),status:clean(r[6])||'active'
+  }));
+
+  TX=parseCSV(tc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
+    date:clean(r[1]),month:clean(r[2]),year:clean(r[3]),store:clean(r[4]),
+    type:clean(r[5]),category:clean(r[6]),amount:parseNum(r[7]),note:clean(r[8])||''
+  }));
+
+  if(!ST.length)throw new Error('Sheet "Cửa hàng" trống. Chạy taoSheet() trước.');
+}
+
+// ===== SETUP =====
+window.onload=()=>{
+  const s=localStorage.getItem('ptcfg');
+  if(s){
+    try{C=JSON.parse(s);}catch(e){}
+    document.getElementById('cfg-sid').value=C.sheetId||'';
+    document.getElementById('cfg-api').value=C.apiUrl||'';
+    if(C.demo){doDemo();}
+    else if(C.sheetId){document.getElementById('setup-modal').classList.add('off');reload();}
+  }
+  document.getElementById('td').value=new Date().toISOString().split('T')[0];
   buildCats('thu');
-  if(CFG.demo){loadDemo();renderAll();document.getElementById('ov').classList.add('hide');}
-  else if(CFG.sid){document.getElementById('ov').classList.add('hide');reload();}
+  document.getElementById('e-sig').value=emailEdits.sig;
 };
 
-function openSetup(){document.getElementById('ov').classList.remove('hide');}
-
-async function doSetup(){
-  const sid=document.getElementById('inp-sid').value.trim();
-  const api=document.getElementById('inp-api').value.trim();
-  const err=document.getElementById('ov-err');
-  if(!sid){err.style.display='block';err.textContent='Vui lòng nhập Sheet ID';return;}
-  err.style.display='none';
-  showLD('Đang kết nối...');
-  try{
-    CFG={sid,api,demo:false};
-    await loadSheet(sid);
-    localStorage.setItem('ptcfg2',JSON.stringify(CFG));
-    document.getElementById('ov').classList.add('hide');
-    renderAll();
-    toast('✓ Kết nối thành công!','ok');
-    if(!api)setTimeout(()=>toast('⚠️ Chưa có API URL — nhập liệu sẽ không lưu vào Sheets','wn'),2000);
-  }catch(e){err.style.display='block';err.textContent='Lỗi: '+e.message;}
-  finally{hideLD();}
+function openSetup(){
+  document.getElementById('cfg-sid').value=C.sheetId||'';
+  document.getElementById('cfg-api').value=C.apiUrl||'';
+  document.getElementById('setup-modal').classList.remove('off');
 }
 
-function useDemo(){
-  CFG={sid:'',api:'',demo:true};
-  localStorage.setItem('ptcfg2',JSON.stringify(CFG));
-  document.getElementById('ov').classList.add('hide');
-  loadDemo();renderAll();
-  toast('Đang dùng dữ liệu demo','ok');
+async function doSetup(){
+  const sid=document.getElementById('cfg-sid').value.trim();
+  const au=document.getElementById('cfg-api').value.trim();
+  const err=document.getElementById('cfg-err');
+  if(!sid){err.style.display='block';err.textContent='Vui lòng nhập Sheet ID';return;}
+  err.style.display='none';
+  load('Đang kết nối...');
+  try{
+    C={sheetId:sid,apiUrl:au,demo:false};
+    await loadSheets(sid);
+    save();document.getElementById('setup-modal').classList.add('off');
+    renderAll();toast('✓ Kết nối thành công!','tok');
+  }catch(e){err.style.display='block';err.textContent='Lỗi: '+e.message;}
+  finally{unload();}
+}
+
+function doDemo(){
+  C={sheetId:'',apiUrl:'',demo:true};save();
+  document.getElementById('setup-modal').classList.add('off');
+  loadDemo();renderAll();toast('Dùng dữ liệu demo','twarn');
 }
 
 async function reload(){
-  if(CFG.demo){loadDemo();renderAll();return;}
-  if(!CFG.sid){openSetup();return;}
-  showLD('Đang tải dữ liệu...');
-  try{await loadSheet(CFG.sid);renderAll();toast('✓ Dữ liệu cập nhật','ok');}
-  catch(e){toast('Lỗi: '+e.message,'er');}
-  finally{hideLD();}
+  if(C.demo){loadDemo();renderAll();return;}
+  if(!C.sheetId){openSetup();return;}
+  load('Đang tải từ Sheets...');
+  try{await loadSheets(C.sheetId);renderAll();toast('✓ Cập nhật xong','tok');}
+  catch(e){toast('Lỗi: '+e.message,'terr');}
+  finally{unload();}
 }
 
+function save(){localStorage.setItem('ptcfg',JSON.stringify(C));}
+
+// ===== AGGREGATE =====
 function agg(month,year){
   const map={};
-  STORES.forEach(s=>{map[s.id]={...s,rev:0,cogs:0,opex:0,revBC:{},cogsBC:{},opexBC:{}};});
-  TXS.forEach(tx=>{
-    if(month&&String(tx.month)!==String(month))return;
-    if(year&&String(tx.year)!==String(year))return;
+  ST.forEach(s=>map[s.id]={...s,rev:0,cogs:0,opex:0,rcat:{},cocat:{},ocat:{}});
+  TX.forEach(tx=>{
+    if(month&&tx.month!==month)return;
+    if(year&&tx.year!==year)return;
     if(!map[tx.store])return;
     const s=map[tx.store];
-    if(tx.type==='thu'){s.rev+=tx.amount;s.revBC[tx.category]=(s.revBC[tx.category]||0)+tx.amount;}
-    else if(COGS.includes(tx.category)){s.cogs+=tx.amount;s.cogsBC[tx.category]=(s.cogsBC[tx.category]||0)+tx.amount;}
-    else{s.opex+=tx.amount;s.opexBC[tx.category]=(s.opexBC[tx.category]||0)+tx.amount;}
+    if(tx.type==='thu'){s.rev+=tx.amount;s.rcat[tx.category]=(s.rcat[tx.category]||0)+tx.amount;}
+    else if(COGS.includes(tx.category)){s.cogs+=tx.amount;s.cocat[tx.category]=(s.cocat[tx.category]||0)+tx.amount;}
+    else{s.opex+=tx.amount;s.ocat[tx.category]=(s.ocat[tx.category]||0)+tx.amount;}
   });
   return Object.values(map).map(s=>{
     s.gross=s.rev-s.cogs;s.net=s.gross-s.opex;
     s.margin=s.rev>0?Math.round(s.net/s.rev*1000)/10:0;
-    s.cogsPct=s.rev>0?Math.round(s.cogs/s.rev*1000)/10:0;
+    s.cogsp=s.rev>0?Math.round(s.cogs/s.rev*1000)/10:0;
     return s;
   });
 }
 
-function renderAll(){fillSels();renderDash();renderPL();}
+// ===== RENDER ALL =====
+function renderAll(){
+  fillSels();rDash();rPL();rStores();rBulk();updateApiSt();
+}
+
 function fillSels(){
-  ['pl-s','tx-store','em-s'].forEach(id=>{
-    const el=document.getElementById(id),v=el.value;
-    el.innerHTML=(id==='pl-s'?'<option value="">-- Chọn cửa hàng --</option>':'')+STORES.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
-    if(v)el.value=v;
+  const opts=ST.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
+  ['pls','ts','es'].forEach(id=>{
+    const el=document.getElementById(id);
+    const cur=el.value;
+    el.innerHTML=(id==='pls'||id==='es'?'<option value="">-- Cửa hàng --</option>':'')+opts;
+    if(cur)el.value=cur;
   });
 }
 
-function renderDash(){
-  const mo=document.getElementById('f-m').value,yr=document.getElementById('f-y').value;
-  const stores=agg(mo,yr);
-  const totRev=stores.reduce((a,b)=>a+b.rev,0),totNet=stores.reduce((a,b)=>a+b.net,0);
-  const totM=totRev>0?Math.round(totNet/totRev*1000)/10:0,lossN=stores.filter(s=>s.net<0).length;
-  document.getElementById('d-sub').textContent=(mo?'Tháng '+mo+'/':'')+yr+' · '+stores.length+' cửa hàng';
-  const alts=[];
-  stores.forEach(s=>{
-    if(s.net<0)alts.push({t:'r',m:`<strong>${s.id}</strong> đang lỗ ${ff(Math.abs(s.net))}`});
-    else if(s.cogsPct>35)alts.push({t:'y',m:`<strong>${s.id}</strong> — NVL cao: ${s.cogsPct}%`});
+function updateApiSt(){
+  const el=document.getElementById('api-st');
+  if(!el)return;
+  el.textContent=C.apiUrl?'✓ Kết nối API — lưu thẳng vào Sheets':'⚠️ Chưa có API URL — nhập liệu chỉ lưu local';
+  el.style.color=C.apiUrl?'var(--green)':'var(--brown-m)';
+}
+
+// ===== DASHBOARD =====
+function rDash(){
+  const m=document.getElementById('dm').value;
+  const y=document.getElementById('dy').value;
+  const filter=document.getElementById('dfilter').value;
+  let ss=agg(m,y);
+
+  // Filter
+  if(filter==='lai')ss=ss.filter(s=>s.net>0&&s.cogsp<=35);
+  else if(filter==='lo')ss=ss.filter(s=>s.net<0);
+  else if(filter==='canh-bao')ss=ss.filter(s=>s.cogsp>35);
+
+  const allSs=agg(m,y);
+  const trev=allSs.reduce((a,b)=>a+b.rev,0);
+  const tnet=allSs.reduce((a,b)=>a+b.net,0);
+  const tmg=trev>0?Math.round(tnet/trev*1000)/10:0;
+  const lc=allSs.filter(s=>s.net<0).length;
+
+  document.getElementById('dsub').textContent=(m?'Tháng '+m+'/':'')+y+' · '+ST.length+' cửa hàng'+(filter?' · Đang lọc':'');
+
+  const alerts=[];
+  allSs.forEach(s=>{
+    if(s.net<0)alerts.push({t:'r',msg:`<strong>${s.id}</strong> đang lỗ <strong>${fvnd(Math.abs(s.net))}</strong> tháng này — cần can thiệp ngay`});
+    else if(s.cogsp>35)alerts.push({t:'y',msg:`<strong>${s.id}</strong> — NVL chiếm <strong>${s.cogsp}%</strong> doanh thu (ngưỡng an toàn 32%). Kiểm tra hao phí`});
   });
-  document.getElementById('d-alerts').innerHTML=alts.map(a=>`<div class="alt alt-${a.t==='r'?'r':'y'}"><span style="font-size:16px;flex-shrink:0">${a.t==='r'?'🔴':'⚠️'}</span><div>${a.m}</div></div>`).join('');
-  const nb=document.getElementById('nbadge');nb.style.display=alts.length?'inline':'none';nb.textContent=alts.length;
-  // KPI — hiển thị số đầy đủ
-  document.getElementById('d-kpis').innerHTML=`
-    <div class="kpi"><div class="kpi-lb">Tổng doanh thu</div><div class="kpi-v">${ff(totRev)}</div><div class="kpi-c">${stores.length} cửa hàng</div></div>
-    <div class="kpi"><div class="kpi-lb">Lợi nhuận ròng</div><div class="kpi-v" style="color:${totNet>=0?'var(--green)':'var(--red)'}">${totNet>=0?'+':''}${ff(totNet)}</div><div class="kpi-c ${totNet>=0?'up':'dn'}">${totNet>=0?'Đang lãi':'Đang lỗ'}</div></div>
-    <div class="kpi"><div class="kpi-lb">Tỷ suất LN chuỗi</div><div class="kpi-v">${totM}%</div><div class="kpi-c">Mục tiêu: 20%</div></div>
-    <div class="kpi"><div class="kpi-lb">Cửa hàng lỗ</div><div class="kpi-v" style="color:${lossN>0?'var(--red)':'var(--green)'}">${lossN}/${stores.length}</div><div class="kpi-c ${lossN>0?'dn':'up'}">${lossN>0?'Cần can thiệp':'Tất cả có lãi'}</div></div>`;
-  document.getElementById('d-rows').innerHTML=stores.length?stores.map(s=>{
-    const b=s.net<0?'<span class="bdg bdg-r">⚠ Lỗ</span>':s.margin>=20?'<span class="bdg bdg-g">✓ Tốt</span>':'<span class="bdg bdg-y">→ TB</span>';
-    return `<tr><td><strong>${s.id}</strong></td><td>${s.area}</td><td>${ff(s.rev)}</td><td>${ff(s.cogs)} (${s.cogsPct}%)</td><td>${ff(s.opex)}</td><td style="color:${s.net>=0?'var(--green)':'var(--red)'};font-weight:600">${s.net>=0?'+':''}${ff(s.net)}</td><td><strong style="color:${s.margin>=20?'var(--green)':s.margin>=0?'var(--brown-l)':'var(--red)'}">${s.margin}%</strong></td><td>${b}</td><td><button class="btn btn-g" style="font-size:12px;padding:3px 9px" onclick="goPL('${s.id}')">Chi tiết →</button></td></tr>`;
-  }).join(''):'<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--gray)">Không có dữ liệu</td></tr>';
-  const best=stores.reduce((a,b)=>a.margin>b.margin?a:b,stores[0]||{});
-  const losses=stores.filter(s=>s.net<0);
+  document.getElementById('dalerts').innerHTML=alerts.map(a=>`<div class="alert a${a.t}"><span style="font-size:15px;flex-shrink:0">${a.t==='r'?'🔴':'⚠️'}</span><div>${a.msg}</div></div>`).join('');
+  const b=document.getElementById('abadge');
+  b.style.display=alerts.length?'inline':'none';b.textContent=alerts.length;
+
+  document.getElementById('dkpis').innerHTML=`
+    <div class="kpi"><div class="kl">Tổng doanh thu</div><div class="kv">${fvnd(trev)}</div><div class="kc">${ST.length} cửa hàng</div></div>
+    <div class="kpi"><div class="kl">Lợi nhuận ròng</div><div class="kv" style="color:${tnet>=0?'var(--green)':'var(--red)'}">${tnet>=0?'+':''}${fvnd(tnet)}</div><div class="kc ${tnet>=0?'up':'dn'}">${tnet>=0?'Đang lãi':'Đang lỗ'}</div></div>
+    <div class="kpi"><div class="kl">Tỷ suất LN chuỗi</div><div class="kv">${tmg}%</div><div class="kc">Mục tiêu: 20%</div></div>
+    <div class="kpi"><div class="kl">Cửa hàng lỗ</div><div class="kv" style="color:${lc>0?'var(--red)':'var(--green)'}">${lc}/${ST.length}</div><div class="kc ${lc>0?'dn':'up'}">${lc>0?'Cần can thiệp':'Tất cả có lãi'}</div></div>`;
+
+  document.getElementById('dtb').innerHTML=ss.length?ss.map(s=>{
+    const b=s.net<0?'<span class="bdg br2">⚠ Lỗ</span>':s.margin>=20?'<span class="bdg bg2">✓ Tốt</span>':'<span class="bdg by2">→ TB</span>';
+    return `<tr style="${s.net<0?'background:var(--red-l)':''}">
+      <td><strong>${s.id}</strong></td><td>${s.area||''}</td>
+      <td>${fvnd(s.rev)}</td><td>${fvnd(s.cogs)} (${s.cogsp}%)</td><td>${fvnd(s.opex)}</td>
+      <td style="font-weight:600;color:${s.net>=0?'var(--green)':'var(--red)'}">${s.net>=0?'+':''}${fvnd(s.net)}</td>
+      <td><strong style="color:${s.margin>=20?'var(--green)':s.margin>=0?'var(--brown-l)':'var(--red)'}">${s.margin}%</strong></td>
+      <td>${b}</td>
+      <td><button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="gopl('${s.id}')">Chi tiết →</button></td>
+    </tr>`;
+  }).join(''):'<tr><td colspan="9" style="text-align:center;padding:26px;color:var(--gray)">Không có dữ liệu cho bộ lọc này</td></tr>';
+
+  // AI
+  const ss2=agg(m,y);
+  const best=ss2.length?ss2.reduce((a,b)=>a.margin>b.margin?a:b):null;
+  const worst=ss2.length?ss2.reduce((a,b)=>a.net<b.net?a:b):null;
+  const losses=ss2.filter(s=>s.net<0);
+  const highNVL=ss2.filter(s=>s.cogsp>35);
   let ai='';
-  if(!totRev)ai='<div class="ai-ins">Chưa có dữ liệu. Nhập giao dịch hoặc kiểm tra kết nối Sheets.</div>';
+  if(!trev){ai='<div class="aii">Chưa có dữ liệu. Nhập giao dịch hoặc kiểm tra kết nối Sheets.</div>';}
   else{
-    if(totM>=20)ai+=`<div class="ai-ins"><strong style="color:var(--gold)">Chuỗi đạt mục tiêu:</strong> Tỷ suất ${totM}% ≥ 20%.</div>`;
-    else ai+=`<div class="ai-ins"><strong style="color:var(--gold)">Cần cải thiện:</strong> Tỷ suất ${totM}% chưa đạt 20%. Tổng lợi nhuận: ${ff(totNet)}.</div>`;
-    losses.forEach(s=>{ai+=`<div class="ai-ins"><strong style="color:var(--red)">🔴 ${s.id} lỗ ${ff(Math.abs(s.net))}:</strong> NVL ${s.cogsPct}%.</div>`;});
+    if(tmg>=20){ai+=`<div class="aii"><strong style="color:var(--gold)">✅ Chuỗi đạt mục tiêu 20%:</strong> Tỷ suất hiện tại ${tmg}%. ${best?.id||''} dẫn đầu với ${best?.margin}%. Duy trì mô hình vận hành này và nhân rộng cho các chi nhánh còn lại.</div>`;}
+    else{ai+=`<div class="aii"><strong style="color:var(--gold)">📊 Tỷ suất ${tmg}% — chưa đạt mục tiêu 20%:</strong> Tổng lợi nhuận ${fvnd(tnet)}. Để cải thiện: (1) tăng doanh thu giờ cao điểm, (2) tối ưu ca nhân sự thấp điểm, (3) renegotiate chi phí mặt bằng nếu có thể.</div>`;}
+    losses.forEach(s=>{
+      const nvlColor=s.cogsp>40?'var(--red)':'var(--gold)';
+      ai+=`<div class="aii"><strong style="color:var(--red)">🔴 ${s.id} lỗ ${fvnd(Math.abs(s.net))}:</strong> NVL chiếm ${s.cogsp}% doanh thu. <strong>Đề xuất khẩn:</strong> (1) Kiểm tra hao phí nguyên liệu từng ca, (2) Đối chiếu định mức pha chế thực tế vs tiêu chuẩn, (3) Xem xét điều chỉnh giá bán tại khu vực nếu cần.</div>`;
+    });
+    highNVL.filter(s=>s.net>=0).forEach(s=>{
+      ai+=`<div class="aii"><strong style="color:var(--gold)">⚠️ ${s.id} — NVL ${s.cogsp}% (cao):</strong> Dù có lãi nhưng NVL đang ăn nhiều vào lợi nhuận. Kiểm tra hao phí và đào tạo lại quy trình pha chế để tiết kiệm 3-5%.</div>`;
+    });
+    if(best&&best.margin>=25){ai+=`<div class="aii"><strong style="color:var(--gold)">🏆 Học hỏi từ ${best.id} (${best.margin}%):</strong> Đây là mô hình hiệu quả nhất chuỗi. Admin nên quan sát và tài liệu hóa quy trình vận hành để nhân rộng.</div>`;}
   }
-  document.getElementById('d-ai-body').innerHTML=ai;
+  document.getElementById('daib').innerHTML=ai;
 }
 
-function goPL(id){document.getElementById('pl-s').value=id;nav('pl');renderPL();}
-function toEmail(){const id=document.getElementById('pl-s').value;if(id)document.getElementById('em-s').value=id;nav('email');}
+// ===== STORES =====
+function rStores(){
+  document.getElementById('ssub').textContent=ST.length+' cửa hàng trong hệ thống';
+  document.getElementById('store-count').textContent=ST.length+' cửa hàng';
+  const list=document.getElementById('store-list');
+  if(!ST.length){list.innerHTML='<div class="empty2">Chưa có cửa hàng nào. Bấm "+ Thêm cửa hàng"</div>';return;}
+  list.innerHTML=ST.map(s=>`
+    <div class="store-row">
+      <div class="store-dot ${s.status==='active'?'sdot-g':'sdot-r'}"></div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:14px">${s.name||s.id}</div>
+        <div style="font-size:12px;color:var(--gray)">${s.area||''} · ${s.email||'Chưa có email'} · Mở: ${s.openDate||'—'}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="gopl('${s.id}')">📋 P&L</button>
+        <button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="editStore('${s.id}')">✏️</button>
+        <button class="btn brd" style="font-size:12px;padding:3px 9px" onclick="delStore('${s.id}')">🗑️</button>
+      </div>
+    </div>`).join('');
+}
 
-function renderPL(){
-  const sid=document.getElementById('pl-s').value,mo=document.getElementById('pl-m').value,yr=document.getElementById('pl-y').value;
-  if(!sid){document.getElementById('pl-wrap').innerHTML='<div class="empty">📋 Chọn cửa hàng để xem P&L</div>';document.getElementById('pl-sum-card').style.display='none';document.getElementById('pl-ai').style.display='none';return;}
-  const stores=agg(mo,yr),s=stores.find(x=>x.id===sid);
-  if(!s||!s.rev){document.getElementById('pl-wrap').innerHTML='<div class="empty">📋 Không có dữ liệu kỳ này</div>';return;}
+function openAddStore(){
+  editingStoreId=null;
+  document.getElementById('sform-title').textContent='➕ Thêm cửa hàng';
+  ['sf-id','sf-name','sf-area','sf-addr','sf-email'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sf-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('sf-status').value='active';
+  document.getElementById('sf-id').disabled=false;
+  document.getElementById('store-modal').classList.remove('off');
+}
+
+function editStore(id){
+  const s=ST.find(x=>x.id===id);
+  if(!s)return;
+  editingStoreId=id;
+  document.getElementById('sform-title').textContent='✏️ Sửa cửa hàng';
+  document.getElementById('sf-id').value=s.id;document.getElementById('sf-id').disabled=true;
+  document.getElementById('sf-name').value=s.name||'';
+  document.getElementById('sf-area').value=s.area||'';
+  document.getElementById('sf-addr').value=s.addr||'';
+  document.getElementById('sf-email').value=s.email||'';
+  document.getElementById('sf-date').value=s.openDate||'';
+  document.getElementById('sf-status').value=s.status||'active';
+  document.getElementById('store-modal').classList.remove('off');
+}
+
+function closeStoreModal(){document.getElementById('store-modal').classList.add('off');}
+
+function saveStore(){
+  const id=(document.getElementById('sf-id').value||'').trim().toUpperCase();
+  const name=document.getElementById('sf-name').value.trim();
+  const area=document.getElementById('sf-area').value.trim();
+  const addr=document.getElementById('sf-addr').value.trim();
+  const email=document.getElementById('sf-email').value.trim();
+  const openDate=document.getElementById('sf-date').value;
+  const status=document.getElementById('sf-status').value;
+
+  if(!id){toast('Vui lòng nhập ID cửa hàng','terr');return;}
+  if(!name){toast('Vui lòng nhập tên cửa hàng','terr');return;}
+
+  if(editingStoreId){
+    const idx=ST.findIndex(s=>s.id===editingStoreId);
+    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,openDate,status};
+  }else{
+    if(ST.find(s=>s.id===id)){toast('ID đã tồn tại!','terr');return;}
+    ST.push({id,name,area,addr,email,openDate,status});
+  }
+
+  closeStoreModal();
+  fillSels();rStores();rDash();rBulk();
+  toast(editingStoreId?'✓ Đã cập nhật cửa hàng':'✓ Đã thêm cửa hàng','tok');
+}
+
+function delStore(id){
+  if(!confirm(`Xoá cửa hàng ${id}?\nHành động này không thể hoàn tác.`))return;
+  ST=ST.filter(s=>s.id!==id);
+  fillSels();rStores();rDash();rBulk();
+  toast('Đã xoá cửa hàng '+id,'twarn');
+}
+
+async function saveStoresToSheet(){
+  if(!C.apiUrl){toast('Cần API URL để lưu lên Sheets','terr');openSetup();return;}
+  load('Đang lưu danh sách cửa hàng...');
+  try{
+    await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({action:'saveStores',stores:ST})});
+    toast('✓ Đã lưu danh sách cửa hàng lên Sheets','tok');
+  }catch(e){toast('Lỗi: '+e.message,'terr');}
+  finally{unload();}
+}
+
+// ===== P&L =====
+function gopl(id){document.getElementById('pls').value=id;go('pl');rPL();}
+function toEmail(){const id=document.getElementById('pls').value;if(id)document.getElementById('es').value=id;go('email');}
+
+function rPL(){
+  const sid=document.getElementById('pls').value;
+  const m=document.getElementById('plm').value;
+  const y=document.getElementById('ply').value;
+  if(!sid){
+    document.getElementById('plw').innerHTML='<div class="empty2">📋<br><br>Chọn cửa hàng để xem P&L</div>';
+    document.getElementById('plsc').style.display='none';
+    document.getElementById('plai').style.display='none';return;
+  }
+  const ss=agg(m,y);
+  const s=ss.find(x=>x.id===sid);
+  if(!s||!s.rev){document.getElementById('plw').innerHTML='<div class="empty2">📭<br><br>Không có dữ liệu kỳ này</div>';return;}
   const pct=v=>s.rev>0?Math.round(v/s.rev*100)+'%':'—';
   let h='';
-  h+=`<div><div class="pl-h main">A — DOANH THU <span>${ff(s.rev)}</span></div><div class="pl-rs">`;
-  Object.entries(s.revBC).forEach(([k,v])=>{if(v)h+=`<div class="pl-r"><span class="pl-lb">${k}</span><div style="display:flex;align-items:center"><span class="pl-pct">${pct(v)}</span><span class="pl-v">${ff(v)}</span></div></div>`;});
-  h+=`<div class="pl-r sub"><span>Tổng doanh thu</span><div style="display:flex;align-items:center"><span class="pl-pct">100%</span><span class="pl-v">${ff(s.rev)}</span></div></div></div></div>`;
-  h+=`<div><div class="pl-h sub">B — CHI PHÍ VỐN BÁN HÀNG <span>${ff(s.cogs)}</span></div><div class="pl-rs">`;
-  Object.entries(s.cogsBC).forEach(([k,v])=>{if(v)h+=`<div class="pl-r"><span class="pl-lb">${k}</span><div style="display:flex;align-items:center"><span class="pl-pct">${pct(v)}</span><span class="pl-v">${ff(v)}</span></div></div>`;});
-  h+=`<div class="pl-r sub"><span>Tổng CPVBH</span><div style="display:flex;align-items:center"><span class="pl-pct">${pct(s.cogs)}</span><span class="pl-v" style="color:var(--red)">${ff(s.cogs)}</span></div></div></div></div>`;
-  h+=`<div class="pl-gross"><span>(1) LỢI NHUẬN GỘP</span><span style="color:${s.gross>=0?'var(--green)':'var(--red)'}">${s.gross>=0?'+':''}${ff(s.gross)} (${pct(s.gross)})</span></div>`;
-  h+=`<div><div class="pl-h sub">2 — CHI PHÍ VẬN HÀNH <span>${ff(s.opex)}</span></div><div class="pl-rs">`;
-  Object.entries(s.opexBC).forEach(([k,v])=>{if(v)h+=`<div class="pl-r"><span class="pl-lb">${k}</span><div style="display:flex;align-items:center"><span class="pl-pct">${pct(v)}</span><span class="pl-v">${ff(v)}</span></div></div>`;});
-  h+=`<div class="pl-r sub"><span>Tổng CPVH</span><div style="display:flex;align-items:center"><span class="pl-pct">${pct(s.opex)}</span><span class="pl-v" style="color:var(--red)">${ff(s.opex)}</span></div></div></div></div>`;
-  h+=`<div class="pl-net"><span>LỢI NHUẬN RÒNG</span><span style="color:var(--gold);font-size:17px">${s.net>=0?'+':''}${ff(s.net)} <small style="font-size:11px;font-weight:400">(${s.margin}%)</small></span></div>`;
-  document.getElementById('pl-wrap').innerHTML=h;
-  document.getElementById('pl-sum-card').style.display='block';
-  document.getElementById('pl-sum').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px"><div style="background:var(--gray-l);border-radius:var(--rs);padding:11px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">Doanh thu</div><div style="font-size:14px;font-weight:700;color:var(--green)">${ff(s.rev)}</div></div><div style="background:${s.net>=0?'var(--green-l)':'var(--red-l)'};border-radius:var(--rs);padding:11px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">Lợi nhuận</div><div style="font-size:14px;font-weight:700;color:${s.net>=0?'var(--green)':'var(--red)'}">${s.net>=0?'+':''}${ff(s.net)}</div></div><div style="background:var(--gold-l);border-radius:var(--rs);padding:11px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">Tỷ suất LN</div><div style="font-size:14px;font-weight:700">${s.margin}%</div></div><div style="background:var(--gray-l);border-radius:var(--rs);padding:11px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">LN gộp</div><div style="font-size:14px;font-weight:700">${s.rev>0?Math.round(s.gross/s.rev*100):0}%</div></div></div>`;
-  document.getElementById('pl-ai').style.display='block';
-  document.getElementById('pl-ai-t').textContent=sid+(mo?' – T'+mo:'')+'/'+yr;
-  let aib='';
-  if(s.margin>=25)aib=`<div class="ai-ins"><strong style="color:var(--gold)">Xuất sắc!</strong> ${s.margin}% — top chuỗi.</div>`;
-  else if(s.margin>=15)aib=`<div class="ai-ins"><strong style="color:var(--gold)">Ổn định:</strong> ${s.margin}%. Tăng doanh thu online để cải thiện.</div>`;
-  else if(s.margin>=0)aib=`<div class="ai-ins"><strong style="color:var(--gold)">Cần chú ý:</strong> ${s.margin}% thấp. Kiểm soát NVL (${s.cogsPct}%).</div>`;
-  else aib=`<div class="ai-ins"><strong style="color:var(--red)">Cảnh báo lỗ!</strong> Lỗ ${ff(Math.abs(s.net))}. Cần can thiệp ngay.</div>`;
-  document.getElementById('pl-ai-body').innerHTML=aib;
+  h+=`<div><div class="plh plhm">A — DOANH THU <span>${fvnd(s.rev)}</span></div><div class="plb">`;
+  Object.entries(s.rcat).forEach(([k,v])=>{if(v)h+=`<div class="plr"><span class="pll">${k}</span><div style="display:flex;gap:12px"><span class="plp">${pct(v)}</span><span class="plv">${fvnd(v)}</span></div></div>`;});
+  h+=`<div class="plr st"><span>Tổng doanh thu</span><div style="display:flex;gap:12px"><span class="plp">100%</span><span class="plv">${fvnd(s.rev)}</span></div></div></div></div>`;
+  h+=`<div><div class="plh plhs">B — CHI PHÍ VỐN BÁN HÀNG <span>${fvnd(s.cogs)}</span></div><div class="plb">`;
+  Object.entries(s.cocat).forEach(([k,v])=>{if(v)h+=`<div class="plr"><span class="pll">${k}</span><div style="display:flex;gap:12px"><span class="plp">${pct(v)}</span><span class="plv">${fvnd(v)}</span></div></div>`;});
+  h+=`<div class="plr st"><span>Tổng CPVBH</span><div style="display:flex;gap:12px"><span class="plp">${pct(s.cogs)}</span><span class="plv" style="color:var(--red)">${fvnd(s.cogs)}</span></div></div></div></div>`;
+  h+=`<div class="plg"><span>(1) LỢI NHUẬN GỘP</span><span style="color:${s.gross>=0?'var(--green)':'var(--red)'}">${s.gross>=0?'+':''}${fvnd(s.gross)} (${pct(s.gross)})</span></div>`;
+  h+=`<div><div class="plh plhs">2 — CHI PHÍ VẬN HÀNH <span>${fvnd(s.opex)}</span></div><div class="plb">`;
+  Object.entries(s.ocat).forEach(([k,v])=>{if(v)h+=`<div class="plr"><span class="pll">${k}</span><div style="display:flex;gap:12px"><span class="plp">${pct(v)}</span><span class="plv">${fvnd(v)}</span></div></div>`;});
+  h+=`<div class="plr st"><span>Tổng CPVH</span><div style="display:flex;gap:12px"><span class="plp">${pct(s.opex)}</span><span class="plv" style="color:var(--red)">${fvnd(s.opex)}</span></div></div></div></div>`;
+  h+=`<div class="pln"><span>LỢI NHUẬN RÒNG</span><span style="color:var(--gold);font-size:17px">${s.net>=0?'+':''}${fvnd(s.net)} <small style="font-size:12px;font-weight:400">(${s.margin}%)</small></span></div>`;
+  document.getElementById('plw').innerHTML=h;
+
+  document.getElementById('plsc').style.display='block';
+  document.getElementById('plsum').innerHTML=`
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
+      <div style="background:var(--gray-l);border-radius:var(--rs);padding:12px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">Doanh thu</div><div style="font-size:14px;font-weight:700;color:var(--green)">${fvnd(s.rev)}</div></div>
+      <div style="background:${s.net>=0?'var(--green-l)':'var(--red-l)'};border-radius:var(--rs);padding:12px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">Lợi nhuận</div><div style="font-size:14px;font-weight:700;color:${s.net>=0?'var(--green)':'var(--red)'}">${s.net>=0?'+':''}${fvnd(s.net)}</div></div>
+      <div style="background:var(--gold-l);border-radius:var(--rs);padding:12px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">Tỷ suất LN</div><div style="font-size:16px;font-weight:700">${s.margin}%</div></div>
+      <div style="background:var(--gray-l);border-radius:var(--rs);padding:12px"><div style="font-size:11px;color:var(--gray);margin-bottom:3px">CP Nguyên liệu</div><div style="font-size:16px;font-weight:700;color:${s.cogsp>35?'var(--red)':'var(--brown)'}">${s.cogsp}%</div></div>
+    </div>`;
+
+  document.getElementById('plai').style.display='block';
+  document.getElementById('plait').textContent=sid+(m?' – T'+m:'')+'/'+y;
+  let ai='';
+  if(s.margin>=25){ai=`<div class="aii"><strong style="color:var(--gold)">✅ Xuất sắc (${s.margin}%):</strong> Cửa hàng hoạt động rất hiệu quả. NVL ${s.cogsp}% ở mức tốt. Đề xuất: (1) Đẩy mạnh doanh thu online giờ 14h-17h qua flash sale, (2) Tăng thêm cửa hàng hoặc expand menu.</div>`;}
+  else if(s.margin>=15){ai=`<div class="aii"><strong style="color:var(--gold)">📈 Ổn định (${s.margin}%):</strong> Hoạt động tốt nhưng còn dư địa cải thiện. Đề xuất: (1) Tối ưu ca nhân sự giờ thấp điểm tiết kiệm 2-3 tr/tháng, (2) Tăng đơn hàng GrabFood bằng voucher 10%.</div>`;}
+  else if(s.margin>=0){ai=`<div class="aii"><strong style="color:var(--gold)">⚠️ Cần chú ý (${s.margin}%):</strong> Tỷ suất thấp hơn mục tiêu 20%. Đề xuất khẩn: (1) Đánh giá lại định mức NVL (hiện ${s.cogsp}%), (2) Cắt chi phí vận hành không thiết yếu, (3) Tăng giá bán 3-5% nếu thị trường cho phép.</div>`;}
+  else{ai=`<div class="aii"><strong style="color:var(--red)">🚨 Lỗ ${fvnd(Math.abs(s.net))} — cần can thiệp ngay!</strong> NVL chiếm ${s.cogsp}% là nguyên nhân chính. Hành động ngay: (1) Audit hao phí từng ca trong 2 tuần tới, (2) Tạm dừng chương trình khuyến mãi làm giảm biên, (3) Họp khẩn với chủ shop để xây kế hoạch phục hồi.</div>`;}
+  document.getElementById('plaib').innerHTML=ai;
 }
 
-function setTxType(t){
-  document.getElementById('tx-type').value=t;
-  const thu=document.getElementById('t-thu'),chi=document.getElementById('t-chi');
-  if(t==='thu'){thu.style.cssText='padding:11px;border:1.5px solid var(--gold);background:var(--gold-l);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;text-align:center';chi.style.cssText='padding:11px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:500;text-align:center';}
-  else{chi.style.cssText='padding:11px;border:1.5px solid var(--red);background:var(--red-l);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;text-align:center';thu.style.cssText='padding:11px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:500;text-align:center';}
+// ===== INPUT =====
+function stype(t){
+  document.getElementById('ttype').value=t;
+  const thu=document.getElementById('tt-thu');
+  const chi=document.getElementById('tt-chi');
+  if(t==='thu'){
+    thu.style.cssText='padding:10px;border:1.5px solid var(--gold);background:var(--gold-l);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;text-align:center';
+    chi.style.cssText='padding:10px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;text-align:center';
+  }else{
+    chi.style.cssText='padding:10px;border:1.5px solid var(--red);background:var(--red-l);border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:600;text-align:center';
+    thu.style.cssText='padding:10px;border:1.5px solid var(--border);border-radius:var(--rs);cursor:pointer;font-size:13px;text-align:center';
+  }
   buildCats(t);
 }
-function buildCats(t){document.getElementById('tx-cat').value='';document.getElementById('cg').innerHTML=CATS[t].map(c=>`<div class="cb-btn" onclick="selCat(this,'${c}')">${c}</div>`).join('');}
-function selCat(el,c){document.querySelectorAll('.cb-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');document.getElementById('tx-cat').value=c;}
 
-async function saveTx(){
-  const store=document.getElementById('tx-store').value,date=document.getElementById('tx-date').value;
-  const type=document.getElementById('tx-type').value,cat=document.getElementById('tx-cat').value;
-  const amt=Number(document.getElementById('tx-amt').value),note=document.getElementById('tx-note').value;
-  if(!store){toast('Chưa chọn cửa hàng!','er');return;}
-  if(!cat){toast('Vui lòng chọn danh mục!','er');return;}
-  if(!amt||amt<=0){toast('Vui lòng nhập số tiền!','er');return;}
-  const d=date.split('-');
-  const tx={date,month:String(parseInt(d[1])),year:d[0],store,type,category:cat,amount:amt,note};
-  TXS.push(tx);REC.unshift(tx);renderRecent();renderDash();
-  document.getElementById('tx-amt').value='';document.getElementById('tx-note').value='';
-  document.querySelectorAll('.cb-btn').forEach(b=>b.classList.remove('on'));document.getElementById('tx-cat').value='';
-  if(!CFG.api){toast('✓ Lưu tạm (chưa có API URL)','wn');document.getElementById('api-warn').style.display='block';return;}
-  showLD('Đang lưu vào Google Sheets...');
-  try{
-    const res=await fetch(CFG.api,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'addTransaction',...tx})});
-    // mode:no-cors → luôn trả về opaque, không đọc được response nhưng request ĐÃ được gửi
-    toast('✓ Đã gửi lên Google Sheets!','ok');
-  }catch(e){toast('Lỗi gửi Sheets: '+e.message,'er');}
-  finally{hideLD();}
+function buildCats(t){
+  document.getElementById('tcat').value='';
+  document.getElementById('catgrid').innerHTML=CATS[t].map(c=>`<div class="cb3" onclick="scat(this,'${c}')">${c}</div>`).join('');
 }
 
-function renderRecent(){
-  const tb=document.getElementById('rec-rows');
-  if(!REC.length){tb.innerHTML='<tr><td colspan="3" style="text-align:center;padding:18px;color:var(--gray)">Chưa có</td></tr>';return;}
-  tb.innerHTML=REC.slice(0,8).map(t=>`<tr><td>${t.category}</td><td><span class="bdg ${t.type==='thu'?'bdg-g':'bdg-r'}">${t.type==='thu'?'Thu':'Chi'}</span></td><td style="font-weight:600;color:${t.type==='thu'?'var(--green)':'var(--red)'}">${t.type==='thu'?'+':'-'}${ff(t.amount)}</td></tr>`).join('');
+function scat(el,c){
+  document.querySelectorAll('.cb3').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');document.getElementById('tcat').value=c;
+}
+
+async function saveTx(){
+  const store=document.getElementById('ts').value;
+  const date=document.getElementById('td').value;
+  const type=document.getElementById('ttype').value;
+  const cat=document.getElementById('tcat').value;
+  const amt=Number(document.getElementById('tamt').value);
+  const note=document.getElementById('tnote').value;
+  if(!store){toast('Chọn cửa hàng!','terr');return;}
+  if(!cat){toast('Chọn danh mục!','terr');return;}
+  if(!amt||amt<=0){toast('Nhập số tiền!','terr');return;}
+  const d=date.split('-');
+  const tx={date,month:d[1],year:d[0],store,type,category:cat,amount:amt,note};
+  TX.push(tx);REC.unshift(tx);rRec();
+  document.getElementById('tamt').value='';
+  document.getElementById('tnote').value='';
+  document.querySelectorAll('.cb3').forEach(b=>b.classList.remove('on'));
+  document.getElementById('tcat').value='';
+  if(C.apiUrl){
+    try{
+      await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({action:'addTransaction',...tx})});
+      toast('✓ Đã lưu vào Sheets!','tok');
+    }catch(e){toast('Lưu local OK, Sheets: '+e.message,'twarn');}
+  }else{toast('✓ Lưu local (chưa có API)','twarn');}
+}
+
+function rRec(){
+  const tb=document.getElementById('rtb');
+  if(!REC.length){tb.innerHTML='<tr><td colspan="3" style="text-align:center;padding:16px;color:var(--gray)">Chưa có</td></tr>';return;}
+  tb.innerHTML=REC.slice(0,8).map(t=>`<tr>
+    <td>${t.category}</td>
+    <td><span class="bdg ${t.type==='thu'?'bg2':'br2'}">${t.type==='thu'?'Thu':'Chi'}</span></td>
+    <td style="font-weight:600;color:${t.type==='thu'?'var(--green)':'var(--red)'}">${t.type==='thu'?'+':'-'}${fvnd(t.amount)}</td>
+  </tr>`).join('');
+}
+
+// ===== EMAIL =====
+function onStoreSelect(){
+  const sid=document.getElementById('es').value;
+  const s=ST.find(x=>x.id===sid);
+  if(s&&s.email)document.getElementById('eto').value=s.email;
+}
+
+function saveStoreEmail(){
+  const sid=document.getElementById('es').value;
+  const email=document.getElementById('eto').value.trim();
+  if(!sid){toast('Chọn cửa hàng trước','terr');return;}
+  if(!email){toast('Nhập email trước','terr');return;}
+  const idx=ST.findIndex(s=>s.id===sid);
+  if(idx>=0){ST[idx].email=email;toast('✓ Đã lưu email cho '+sid,'tok');rStores();}
+}
+
+function showPreviewTab(tab){
+  document.getElementById('tab-visual').style.display=tab==='visual'?'block':'none';
+  document.getElementById('tab-edit').style.display=tab==='edit'?'block':'none';
+}
+
+function applyEdit(){
+  emailEdits={
+    subject:document.getElementById('e-subject').value,
+    greeting:document.getElementById('e-greeting').value,
+    extra:document.getElementById('e-extra').value,
+    sig:document.getElementById('e-sig').value,
+  };
+  showPreviewTab('visual');
+  previewEmail();
+}
+
+function buildEmailHTML(store,s,m,y){
+  const storeInfo=ST.find(x=>x.id===store)||{name:store};
+  const col=s.net>=0?'#2D8248':'#E53E3E';
+  const status=s.net>=0?'✅ CÓ LÃI':'⚠️ ĐANG LỖ';
+  const statusBg=s.net>=0?'#F0FFF4':'#FFF5F5';
+
+  // AI analysis for email
+  let analysis='';
+  if(s.margin>=25){
+    analysis=`<b>Xuất sắc!</b> Tỷ suất ${s.margin}% — top chuỗi tháng này. Chi phí nguyên liệu kiểm soát tốt ở ${s.cogsp}%.<br><br>
+      <b>Đề xuất tiếp theo:</b> (1) Đẩy mạnh doanh thu GrabFood giờ 14h-17h bằng flash sale giảm 10%, (2) Xem xét mở rộng menu mùa hè, (3) Duy trì định mức NVL hiện tại.`;
+  }else if(s.margin>=15){
+    analysis=`Hoạt động ổn định với tỷ suất ${s.margin}%. NVL ${s.cogsp}% — còn dư địa cải thiện.<br><br>
+      <b>Đề xuất:</b> (1) Tối ưu ca nhân sự giờ thấp điểm (14h-17h), (2) Tăng đơn hàng online qua voucher, (3) Kiểm tra hao phí nguyên liệu cuối ngày.`;
+  }else if(s.margin>=0){
+    analysis=`Tỷ suất ${s.margin}% — <b>thấp hơn mục tiêu 20%</b>. NVL chiếm ${s.cogsp}% doanh thu.<br><br>
+      <b>Cần thực hiện ngay:</b> (1) Audit định mức NVL từng ca trong 2 tuần, (2) Cắt chi phí không thiết yếu, (3) Đánh giá lại cơ cấu nhân sự ca thấp điểm.`;
+  }else{
+    analysis=`<b style="color:#E53E3E">⚠️ Cửa hàng đang lỗ ${fvnd(Math.abs(s.net))}!</b> NVL chiếm ${s.cogsp}% là vấn đề chính.<br><br>
+      <b>Hành động khẩn:</b> (1) Audit hao phí từng ca ngay tuần này, (2) Tạm dừng CTKM làm giảm biên lợi nhuận, (3) Liên hệ Phúc Tea để được hỗ trợ kế hoạch phục hồi.`;
+  }
+
+  const greeting=emailEdits.greeting||`Kính gửi anh/chị <b>${storeInfo.name||store}</b>,`;
+  const sig=emailEdits.sig||'Thanh Liêm — Operation Manager | 0901 234 567';
+  const extra=emailEdits.extra?`<p style="color:#718096;font-size:14px;margin-top:12px">${emailEdits.extra}</p>`:'';
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:20px;background:#F5F5F5;font-family:'Be Vietnam Pro',Arial,sans-serif">
+<div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.1)">
+  <div style="background:#3D2B1F;padding:28px;text-align:center;border-bottom:4px solid #F5A623">
+    <div style="font-size:28px;font-weight:700;color:#F5A623;letter-spacing:2px">PHÚC TEA</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:5px">Báo cáo tài chính tháng ${m}/${y}</div>
+  </div>
+
+  <div style="padding:24px 28px">
+    <p style="font-size:15px;color:#3D2B1F;margin-bottom:6px">${greeting}</p>
+    <p style="font-size:14px;color:#718096;margin-bottom:20px">Phúc Tea gửi báo cáo tài chính tháng ${m}/${y} của cửa hàng. Dưới đây là toàn bộ số liệu hoạt động kinh doanh:</p>
+
+    <!-- STATUS -->
+    <div style="background:${statusBg};border-radius:8px;padding:12px 16px;text-align:center;margin-bottom:18px;font-weight:700;font-size:15px;color:${col}">
+      ${status} — Tháng ${m}/${y}
+    </div>
+
+    <!-- KPI GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px">
+      <div style="background:#FDF3E3;border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:15px;font-weight:700;color:#3D2B1F">${fvnd(s.rev)}</div>
+        <div style="font-size:11px;color:#718096;margin-top:3px">Doanh thu</div>
+      </div>
+      <div style="background:${s.net>=0?'#F0FFF4':'#FFF5F5'};border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:15px;font-weight:700;color:${col}">${s.net>=0?'+':''}${fvnd(s.net)}</div>
+        <div style="font-size:11px;color:#718096;margin-top:3px">Lợi nhuận ròng</div>
+      </div>
+      <div style="background:#FDF3E3;border-radius:8px;padding:14px;text-align:center">
+        <div style="font-size:16px;font-weight:700;color:${col}">${s.margin}%</div>
+        <div style="font-size:11px;color:#718096;margin-top:3px">Tỷ suất LN</div>
+      </div>
+    </div>
+
+    <!-- P&L TABLE -->
+    <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:18px">
+      <tr style="background:#3D2B1F;color:white">
+        <th style="padding:10px 13px;text-align:left">Hạng mục</th>
+        <th style="padding:10px 13px;text-align:right">Số tiền</th>
+        <th style="padding:10px 13px;text-align:right">% DT</th>
+      </tr>
+      <tr style="background:#F0FFF4">
+        <td style="padding:9px 13px;font-weight:600;color:#2D8248">Tổng doanh thu</td>
+        <td style="padding:9px 13px;text-align:right;font-weight:600">${fvnd(s.rev)}</td>
+        <td style="padding:9px 13px;text-align:right">100%</td>
+      </tr>
+      <tr style="background:#FAF7F2">
+        <td style="padding:9px 13px;color:#718096">Chi phí vốn bán hàng (NVL, vận chuyển)</td>
+        <td style="padding:9px 13px;text-align:right">(${fvnd(s.cogs)})</td>
+        <td style="padding:9px 13px;text-align:right;color:${s.cogsp>35?'#E53E3E':'#718096'}">${s.cogsp}%</td>
+      </tr>
+      <tr style="background:#FDF3E3">
+        <td style="padding:9px 13px;font-weight:600">Lợi nhuận gộp</td>
+        <td style="padding:9px 13px;text-align:right;font-weight:600">${fvnd(s.gross)}</td>
+        <td style="padding:9px 13px;text-align:right">${s.rev>0?Math.round(s.gross/s.rev*100):0}%</td>
+      </tr>
+      <tr style="background:#FAF7F2">
+        <td style="padding:9px 13px;color:#718096">Chi phí vận hành (lương, mặt bằng, điện...)</td>
+        <td style="padding:9px 13px;text-align:right">(${fvnd(s.opex)})</td>
+        <td style="padding:9px 13px;text-align:right">${s.rev>0?Math.round(s.opex/s.rev*100):0}%</td>
+      </tr>
+      <tr style="background:#3D2B1F;color:white">
+        <td style="padding:10px 13px;font-weight:700">LỢI NHUẬN RÒNG</td>
+        <td style="padding:10px 13px;text-align:right;font-weight:700;color:#F5A623">${s.net>=0?'+':''}${fvnd(s.net)}</td>
+        <td style="padding:10px 13px;text-align:right;color:#F5A623">${s.margin}%</td>
+      </tr>
+    </table>
+
+    <!-- AI ANALYSIS -->
+    <div style="background:#3D2B1F;border-radius:8px;padding:16px;margin-bottom:18px">
+      <div style="font-size:11px;font-weight:700;color:#F5A623;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px">💡 NHẬN ĐỊNH & ĐỀ XUẤT TỪ PHÚC TEA</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.88);line-height:1.7">${analysis}</div>
+    </div>
+
+    ${extra}
+
+    <p style="font-size:13px;color:#718096;line-height:1.7;margin-top:16px">
+      Mọi thắc mắc hoặc cần hỗ trợ, vui lòng liên hệ:<br>
+      <strong style="color:#3D2B1F">${sig}</strong>
+    </p>
+  </div>
+
+  <div style="background:#F7F8FA;padding:16px 28px;text-align:center;font-size:11px;color:#718096;border-top:1px solid #E8E0D4">
+    © ${y} Phúc Tea · Hệ thống nhượng quyền
+  </div>
+</div>
+</body></html>`;
+}
+
+function getEmailData(){
+  const sid=document.getElementById('es').value;
+  const m=document.getElementById('em').value;
+  const y=document.getElementById('ey').value;
+  const ss=agg(m,y);
+  const s=ss.find(x=>x.id===sid)||{rev:0,net:0,margin:0,gross:0,cogs:0,opex:0,cogsp:0};
+  return{sid,m,y,s,store:ST.find(x=>x.id===sid)||{name:sid}};
 }
 
 function previewEmail(){
-  const sid=document.getElementById('em-s').value,mo=document.getElementById('em-m').value,yr=document.getElementById('em-y').value;
-  const store=STORES.find(s=>s.id===sid)||{name:sid};
-  const stores=agg(mo,yr),s=stores.find(x=>x.id===sid)||{rev:0,net:0,margin:0};
-  const clr=s.net>=0?'#2D8248':'#E53E3E';
-  document.getElementById('em-prev').innerHTML=`<div style="background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 3px 20px rgba(0,0,0,.1);width:100%;max-width:460px;margin:0 auto"><div style="background:#3D2B1F;padding:22px;text-align:center;border-bottom:4px solid #F5A623"><div style="font-size:20px;font-weight:700;color:#F5A623;letter-spacing:2px">PHÚC TEA</div><div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:3px">Báo cáo tháng ${mo}/${yr}</div></div><div style="padding:18px 22px"><div style="font-size:14px;font-weight:600;color:#3D2B1F;margin-bottom:5px">Kính gửi ${store.name||sid},</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:14px 0"><div style="background:#FDF3E3;border-radius:7px;padding:11px;text-align:center"><div style="font-size:12px;font-weight:700;color:#3D2B1F">${ff(s.rev)}</div><div style="font-size:10px;color:#718096;margin-top:2px">Doanh thu</div></div><div style="background:#FDF3E3;border-radius:7px;padding:11px;text-align:center"><div style="font-size:12px;font-weight:700;color:${clr}">${s.net>=0?'+':''}${ff(s.net)}</div><div style="font-size:10px;color:#718096;margin-top:2px">Lợi nhuận</div></div><div style="background:#FDF3E3;border-radius:7px;padding:11px;text-align:center"><div style="font-size:12px;font-weight:700;color:${clr}">${s.margin}%</div><div style="font-size:10px;color:#718096;margin-top:2px">Tỷ suất</div></div></div><div style="background:#3D2B1F;border-radius:7px;padding:12px"><div style="font-size:10px;font-weight:700;color:#F5A623;letter-spacing:.05em;margin-bottom:5px">💡 NHẬN ĐỊNH</div><div style="font-size:12px;color:rgba(255,255,255,.85)">${s.margin>=20?'Hoạt động xuất sắc!':s.margin>=0?'Ổn định. Tối ưu thêm để cải thiện.':'Đang lỗ — cần can thiệp ngay.'}</div></div></div><div style="background:#F7F8FA;padding:12px 22px;text-align:center;font-size:11px;color:#718096;border-top:1px solid #E8E0D4">© ${yr} Phúc Tea</div></div>`;
+  const {sid,m,y,s}=getEmailData();
+  if(!sid){toast('Chọn cửa hàng trước','terr');return;}
+  showPreviewTab('visual');
+  const html=buildEmailHTML(sid,s,m,y);
+  document.getElementById('eprev').innerHTML=`<iframe srcdoc="${html.replace(/"/g,'&quot;')}" style="width:100%;height:550px;border:none"></iframe>`;
+  // Set default edit values
+  document.getElementById('e-subject').value=emailEdits.subject||`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y}`;
+  document.getElementById('e-greeting').value=emailEdits.greeting||'';
 }
 
-async function sendEmail(){
-  const sid=document.getElementById('em-s').value,mo=document.getElementById('em-m').value,yr=document.getElementById('em-y').value,to=document.getElementById('em-to').value;
-  const store=STORES.find(s=>s.id===sid)||{name:sid};
-  if(!to){toast('Vui lòng nhập email!','er');return;}
-  if(!CFG.api){toast('Cần API URL để gửi email!','er');openSetup();return;}
-  showLD('Đang gửi email...');
+async function sendOne(){
+  const {sid,m,y,s}=getEmailData();
+  const to=document.getElementById('eto').value.trim();
+  if(!sid){toast('Chọn cửa hàng!','terr');return;}
+  if(!to){toast('Nhập email người nhận!','terr');return;}
+  if(!C.apiUrl){toast('Cần API URL để gửi email!','terr');openSetup();return;}
+  const html=buildEmailHTML(sid,s,m,y);
+  const subj=emailEdits.subject||`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y} — ${ST.find(x=>x.id===sid)?.name||sid}`;
+  load('Đang gửi email...');
   try{
-    await fetch(CFG.api,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'sendEmail',storeId:sid,month:mo,year:yr,email:to,storeName:store.name||sid})});
-    toast('✓ Yêu cầu gửi email đã được xử lý','ok');
-  }catch(e){toast('Lỗi: '+e.message,'er');}
-  finally{hideLD();}
+    await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({action:'sendEmail',email:to,subject:subj,htmlBody:html})});
+    toast(`✓ Đã gửi email tới ${to}`,'tok');
+  }catch(e){toast('Lỗi: '+e.message,'terr');}
+  finally{unload();}
 }
 
-function nav(id){
-  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  document.getElementById('pg-'+id).classList.add('on');
-  document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('on',['dash','pl','inp','email'][i]===id));
-  document.querySelectorAll('.mob-b').forEach((b,i)=>b.classList.toggle('on',['dash','pl','inp','email'][i]===id));
+// BULK
+function rBulk(){
+  const list=document.getElementById('bulk-list');
+  list.innerHTML=ST.map(s=>`
+    <div class="chk-row" style="padding:9px 17px">
+      <input type="checkbox" id="chk-${s.id}" value="${s.id}">
+      <label for="chk-${s.id}" style="flex:1;cursor:pointer">
+        <span style="font-weight:600">${s.id}</span>
+        <span style="color:var(--gray);font-size:12px;margin-left:8px">${s.email||'⚠️ Chưa có email'}</span>
+      </label>
+    </div>`).join('');
+}
+
+function checkAll(){
+  const chks=document.querySelectorAll('#bulk-list input[type=checkbox]');
+  const allChecked=[...chks].every(c=>c.checked);
+  chks.forEach(c=>c.checked=!allChecked);
+}
+
+function genAllDrafts(){
+  ST.forEach(s=>document.getElementById('chk-'+s.id)&&(document.getElementById('chk-'+s.id).checked=true));
+  toast('✓ Đã chọn tất cả '+ST.length+' cửa hàng. Bấm "Gửi đã chọn" để gửi.','tok');
+}
+
+async function sendSelected(){
+  if(!C.apiUrl){toast('Cần API URL để gửi email!','terr');openSetup();return;}
+  const m=document.getElementById('em').value;
+  const y=document.getElementById('ey').value;
+  const ss=agg(m,y);
+  const selected=ST.filter(s=>{
+    const chk=document.getElementById('chk-'+s.id);
+    return chk&&chk.checked&&s.email;
+  });
+  if(!selected.length){toast('Chọn ít nhất 1 cửa hàng có email!','terr');return;}
+  load(`Đang gửi ${selected.length} email...`);
+  let ok=0,fail=0;
+  for(const st of selected){
+    const s=ss.find(x=>x.id===st.id)||{rev:0,net:0,margin:0,gross:0,cogs:0,opex:0,cogsp:0};
+    const html=buildEmailHTML(st.id,s,m,y);
+    const subj=`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y} — ${st.name||st.id}`;
+    try{
+      await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({action:'sendEmail',email:st.email,subject:subj,htmlBody:html})});
+      ok++;
+    }catch(e){fail++;}
+    document.getElementById('ltxt').textContent=`Đã gửi ${ok}/${selected.length}...`;
+    await new Promise(r=>setTimeout(r,800));
+  }
+  unload();
+  toast(`✓ Gửi xong ${ok}/${selected.length} email`+(fail?` (${fail} lỗi)`:''),(fail?'twarn':'tok'));
+}
+
+// ===== NAV =====
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+id).classList.add('on');
+  document.querySelectorAll('.ntab').forEach((t,i)=>t.classList.toggle('on',['dash','stores','pl','input','email'][i]===id));
+  document.querySelectorAll('.mb').forEach((b,i)=>b.classList.toggle('on',['dash','stores','pl','input','email'][i]===id));
   window.scrollTo(0,0);
 }
-function showLD(t){document.getElementById('ld').classList.add('on');document.getElementById('ld-t').textContent=t||'Đang tải...';}
-function hideLD(){document.getElementById('ld').classList.remove('on');}
-function toast(msg,type='ok'){const t=document.getElementById('tst');t.textContent=msg;t.className='tst '+type+' on';clearTimeout(t._to);t._to=setTimeout(()=>t.classList.remove('on'),4000);}
+
+// ===== UTILS =====
+function load(t){document.getElementById('loader').classList.add('on');document.getElementById('ltxt').textContent=t||'Đang tải...';}
+function unload(){document.getElementById('loader').classList.remove('on');}
+function toast(m,cls='tok'){const el=document.getElementById('toast');el.textContent=m;el.className='toast '+cls+' on';setTimeout(()=>el.classList.remove('on'),4500);}
 </script>
 </body>
 </html>
