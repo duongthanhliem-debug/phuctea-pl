@@ -182,6 +182,27 @@ textarea.fc{resize:vertical;min-height:120px;line-height:1.6}
 .chk-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
 .chk-row:last-child{border-bottom:none}
 input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--gold)}
+
+/* AI IMAGE INPUT */
+.img-drop{border:2px dashed var(--border);border-radius:var(--r);padding:32px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--white)}
+.img-drop:hover,.img-drop.over{border-color:var(--gold);background:var(--gold-l)}
+.img-drop input{display:none}
+.img-preview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin:10px 0}
+.img-thumb{position:relative;border-radius:var(--rs);overflow:hidden;aspect-ratio:1;background:var(--gray-l)}
+.img-thumb img{width:100%;height:100%;object-fit:cover}
+.img-thumb .rm{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.tx-confirm-card{background:var(--white);border:1.5px solid var(--gold);border-radius:var(--r);padding:14px;margin-bottom:10px;position:relative}
+.tx-confirm-card .badge-img{background:var(--gold-l);color:var(--brown-m);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:.04em}
+.tx-confirm-card select,.tx-confirm-card input{font-family:inherit;font-size:12px;padding:5px 8px;border:1.5px solid var(--border);border-radius:6px;width:100%;background:var(--white);color:var(--brown);margin-top:3px}
+.tx-confirm-card select:focus,.tx-confirm-card input:focus{outline:none;border-color:var(--gold)}
+.tx-confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.tx-confirm-card .del-btn{position:absolute;top:10px;right:10px;background:var(--red-l);color:var(--red);border:1px solid var(--red);border-radius:6px;font-size:11px;padding:2px 7px;cursor:pointer;font-family:inherit}
+.ai-thinking{display:flex;align-items:center;gap:10px;padding:14px;background:linear-gradient(135deg,var(--brown),var(--brown-m));border-radius:var(--r);color:#fff;font-size:13px;margin:10px 0}
+.ai-thinking .dot{width:7px;height:7px;background:var(--gold);border-radius:50%;animation:blink .8s infinite}
+.ai-thinking .dot:nth-child(2){animation-delay:.2s}
+.ai-thinking .dot:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+@media(max-width:900px){.input-grid{grid-template-columns:1fr!important}}
 </style>
 </head>
 <body>
@@ -189,10 +210,10 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 <!-- SETUP MODAL -->
 <div class="overlay" id="setup-modal">
   <div class="modal">
-    <div class="mlogo" style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">
+      <div class="mlogo" style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">
     <img src="logo4.png" alt="Logo" style="height: 50px; width: auto; object-fit: contain;">
 </div>
-    <div class="msub">Finance Hub · Cài đặt kết nối</div>
+    <div class="msub">P&L Hub · Cài đặt kết nối</div>
     <div style="margin-bottom:14px">
       <label class="mlabel">1. Google Sheet ID</label>
       <div class="mdesc">Lấy từ URL Sheet: <code style="background:#f0f0f0;padding:1px 5px;border-radius:3px;font-size:11px">spreadsheets/d/<b style="color:#e53e3e">ID</b>/edit</code></div>
@@ -202,6 +223,11 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
       <label class="mlabel">2. Apps Script URL (để nhập liệu & gửi email)</label>
       <div class="mdesc">Deploy Apps Script → Web app → Tất cả mọi người → copy URL exec</div>
       <input class="minput" id="cfg-api" placeholder="https://script.google.com/macros/s/.../exec">
+    </div>
+    <div style="margin-top:14px">
+      <label class="mlabel">3. Anthropic API Key (để dùng AI đọc ảnh)</label>
+      <div class="mdesc">Lấy tại <a href="https://console.anthropic.com" target="_blank" style="color:var(--brown-m)">console.anthropic.com</a> — dùng cho AI đọc ảnh. <strong>Nếu đã có Apps Script URL, bỏ qua mục này</strong> (proxy qua Apps Script không bị CORS).</div>
+      <input class="minput" id="cfg-apikey" type="password" placeholder="sk-ant-...">
     </div>
     <div id="cfg-err" class="merr"></div>
     <button class="mbtn" onclick="doSetup()">✓ Kết nối & bắt đầu</button>
@@ -274,7 +300,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     <div style="overflow-x:auto">
       <table class="tbl">
         <thead><tr>
-          <th>Cửa hàng</th><th>Khu vực</th><th>Doanh thu</th>
+          <th>Cửa hàng</th><th>Khu vực</th><th>Chủ chi nhánh</th><th>Doanh thu</th>
           <th>CP Vốn</th><th>CP VH</th><th>Lợi nhuận</th><th>Tỷ suất</th><th>Tình trạng</th><th></th>
         </tr></thead>
         <tbody id="dtb"></tbody>
@@ -318,6 +344,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     </div>
     <div class="fg"><label class="mlabel">Tên cửa hàng</label><input class="minput" id="sf-name" placeholder="VD: CENTER004 – Cần Thơ"></div>
     <div class="fg"><label class="mlabel">Địa chỉ</label><input class="minput" id="sf-addr" placeholder="Địa chỉ đầy đủ"></div>
+    <div class="fg"><label class="mlabel">Tên chủ chi nhánh</label><input class="minput" id="sf-owner" placeholder="VD: Nguyễn Văn A"></div>
     <div class="fr">
       <div class="fg"><label class="mlabel">Email chủ</label><input class="minput" id="sf-email" placeholder="email@example.com" type="email"></div>
       <div class="fg"><label class="mlabel">Ngày mở</label><input class="minput" id="sf-date" type="date"></div>
@@ -378,9 +405,10 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
   <div class="ph">
     <div><div class="pt">Nhập liệu thu – chi</div><div class="ps" id="api-st">Chưa cài API</div></div>
   </div>
-  <div style="max-width:560px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start" class="input-grid">
+  <div><!-- LEFT: manual form -->
     <div class="card">
-      <div class="ch" style="background:var(--brown)"><div class="ct" style="color:#fff">Thông tin giao dịch</div></div>
+      <div class="ch" style="background:var(--brown)"><div class="ct" style="color:#fff">✍️ Nhập thủ công</div></div>
       <div class="cb">
         <div class="fr">
           <div class="fg">
@@ -417,13 +445,76 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
       </div>
     </div>
     <div class="card">
-      <div class="ch"><div class="ct">Đã nhập hôm nay</div></div>
+      <div class="ch"><div class="ct">📋 Đã nhập hôm nay</div></div>
       <table class="tbl">
         <thead><tr><th>Danh mục</th><th>Loại</th><th>Số tiền</th></tr></thead>
         <tbody id="rtb"><tr><td colspan="3" style="text-align:center;padding:16px;color:var(--gray)">Chưa có</td></tr></tbody>
       </table>
     </div>
-  </div>
+  </div><!-- end LEFT -->
+
+  <!-- RIGHT: AI Image Input -->
+  <div>
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,var(--brown),var(--brown-m))">
+        <div class="ct" style="color:#fff">📲Nhập từ ảnh (AI)</div>
+        <span style="font-size:10px;background:var(--gold);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700">BETA</span>
+      </div>
+      <div class="cb">
+        <div style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.7;background:var(--gray-l);border-radius:var(--rs);padding:10px">
+Tải ảnh chụp màn hình lên → Chọn của hàng → Phân tích với AI → Kiểm tra và điều chỉnh nếu cần → Lưu.
+</div>
+        
+        <!-- Drop zone -->
+        <div class="img-drop" id="img-drop" onclick="document.getElementById('img-file-input').click()"
+             ondragover="event.preventDefault();this.classList.add('over')"
+             ondragleave="this.classList.remove('over')"
+             ondrop="handleImgDrop(event)">
+          <input type="file" id="img-file-input" accept="image/*" multiple onchange="handleImgSelect(event)">
+          <div style="font-size:32px;margin-bottom:8px">📷</div>
+          <div style="font-weight:600;color:var(--brown);margin-bottom:4px">Chọn hoặc kéo thả ảnh vào đây</div>
+          <div style="font-size:12px;color:var(--gray)">Hỗ trợ nhiều ảnh cùng lúc · JPG, PNG, WebP</div>
+        </div>
+        
+        <!-- Image preview grid -->
+        <div class="img-preview-grid" id="img-preview-grid"></div>
+        
+        <!-- Cửa hàng selector for AI batch -->
+        <div class="fg" id="ai-store-row" style="display:none;margin-top:8px">
+          <label class="fl">Cửa hàng (áp dụng cho tất cả ảnh)</label>
+          <select class="fc" id="ai-store"></select>
+          <div style="margin-top:6px;font-size:11px;color:var(--gray)">
+            Cần API Key hoặc Apps Script URL? → 
+            <span onclick="openSetup()" style="color:var(--gold);cursor:pointer;font-weight:600;text-decoration:underline">⚙️ Mở Cài đặt</span>
+          </div>
+        </div>
+        
+        <!-- Analyze button -->
+        <button class="btn bp" id="btn-analyze" style="width:100%;margin-top:10px;display:none" onclick="analyzeImages()">
+          🤖 Phân tích với AI
+        </button>
+        
+        <!-- AI thinking indicator -->
+        <div class="ai-thinking" id="ai-thinking" style="display:none">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span id="ai-thinking-txt">AI đang đọc ảnh...</span>
+        </div>
+        
+        <!-- Results area -->
+        <div id="ai-results" style="margin-top:12px"></div>
+        
+        <!-- Confirm & save all button -->
+        <div id="ai-confirm-bar" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;color:var(--gray);margin-bottom:8px" id="ai-confirm-summary"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn bo" onclick="clearAiResults()">🗑️ Xoá tất cả</button>
+            <button class="btn bp" style="background:var(--green)" onclick="saveAiTxAll()">✅ Lưu tất cả (<span id="ai-count">0</span>)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end RIGHT -->
+  </div><!-- end input-grid -->
 </div>
 
 <!-- ========== EMAIL ========== -->
@@ -536,13 +627,13 @@ let TX=[],ST=[],REC=[];
 let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operation Manager | 0357 636 539'};
 let editingStoreId=null;
 
-const COGS=['NVL hệ thống','NVL địa phương','Vận chuyển'];
+const COGS=[
+  'NVL hệ thống','NVL địa phương','Chi phí vận chuyển','Vật phẩm','Công nợ','Nhập đồ ăn vặt'];
 const CATS={
-  thu:['GrabFood','ShopeeFood','Mang về','Tại chỗ','Giao hàng','Doanh thu vật phẩm','Thu khác'],
-  chi:['NVL hệ thống','NVL địa phương','Vận chuyển','Lương NV pha chế','Lương quản lý',
-       'Mặt bằng','Tiền điện','Tiền nước','Internet','Gas','Royalty Fee',
-       'Chiết khấu food app','Marketing','Sửa chữa','Thuế','Hao phí','Nước đá','Chi phí khác']
-};
+  thu:['GrabFood','ShopeeFood','Mang về','Tại chỗ','Giao hàng','Doanh thu vật phẩm','Doanh thu đồ ăn','Booking','Call Center','Web Order','Zalo','CSKH','Food app khác','Thu khác'],
+  chi:['NVL hệ thống','NVL địa phương','Chi phí vận chuyển','Vật phẩm','Công nợ','Nhập đồ ăn vặt','Lương NV pha chế','Lương quản lý',
+       'Mặt bằng','Tiền điện','Tiền nước','Internet','Gas','Phí duy trì','Chiết khấu food app','Marketing','Sửa chữa','Thuế','Hao phí','Nước đá',
+       'Nước lọc','Mua hoa','Chiết khấu CTKM','Xăng','Công cụ dụng cụ','Chi phí tài sản cố định','Chi phí in ấn tài liệu','Chi phí tâm linh','Chi phí khác']};
 
 // ===== FORMAT =====
 function fvnd(n){
@@ -559,9 +650,9 @@ function clean(s){return s?String(s).replace(/^"|"$/g,'').trim():'';}
 // ===== DEMO DATA =====
 function loadDemo(){
   ST=[
-    {id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',addr:'30/4, Ninh Kiều',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active'},
-    {id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',addr:'Hùng Vương, Ninh Kiều',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active'},
-    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',addr:'Phạm Thái Bường',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active'},
+    {id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',addr:'30/4, Ninh Kiều',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active',owner:'Nguyễn Văn A'},
+    {id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',addr:'Hùng Vương, Ninh Kiều',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active',owner:'Trần Thị B'},
+    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',addr:'Phạm Thái Bường',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active',owner:'Lê Văn C'},
   ];
   const mk=(sid,m,y,rev,cogs,opex)=>{
     const rows=[];
@@ -611,7 +702,7 @@ async function loadSheets(id){
 
   ST=parseCSV(sc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
     id:clean(r[0]),name:clean(r[1]),addr:clean(r[2]),area:clean(r[3]),
-    email:clean(r[4]),openDate:clean(r[5]),status:clean(r[6])||'active'
+    email:clean(r[4]),openDate:clean(r[5]),status:clean(r[6])||'active',owner:clean(r[7])||''
   }));
 
   TX=parseCSV(tc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
@@ -629,6 +720,7 @@ window.onload=()=>{
     try{C=JSON.parse(s);}catch(e){}
     document.getElementById('cfg-sid').value=C.sheetId||'';
     document.getElementById('cfg-api').value=C.apiUrl||'';
+    if(C.apiKey){window._aiKey=C.apiKey;}
     if(C.demo){doDemo();}
     else if(C.sheetId){document.getElementById('setup-modal').classList.add('off');reload();}
   }
@@ -640,6 +732,7 @@ window.onload=()=>{
 function openSetup(){
   document.getElementById('cfg-sid').value=C.sheetId||'';
   document.getElementById('cfg-api').value=C.apiUrl||'';
+  if(document.getElementById('cfg-apikey'))document.getElementById('cfg-apikey').value=C.apiKey||'';
   document.getElementById('setup-modal').classList.remove('off');
 }
 
@@ -651,7 +744,8 @@ async function doSetup(){
   err.style.display='none';
   load('Đang kết nối...');
   try{
-    C={sheetId:sid,apiUrl:au,demo:false};
+    const ak=document.getElementById('cfg-apikey').value.trim();
+    C={sheetId:sid,apiUrl:au,apiKey:ak,demo:false};
     await loadSheets(sid);
     save();document.getElementById('setup-modal').classList.add('off');
     renderAll();toast('✓ Kết nối thành công!','tok');
@@ -704,7 +798,7 @@ function renderAll(){
 
 function fillSels(){
   const opts=ST.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
-  ['pls','ts','es'].forEach(id=>{
+  ['pls','ts','es','ai-store'].forEach(id=>{
     const el=document.getElementById(id);
     const cur=el.value;
     el.innerHTML=(id==='pls'||id==='es'?'<option value="">-- Cửa hàng --</option>':'')+opts;
@@ -757,14 +851,14 @@ function rDash(){
   document.getElementById('dtb').innerHTML=ss.length?ss.map(s=>{
     const b=s.net<0?'<span class="bdg br2">⚠ Lỗ</span>':s.margin>=20?'<span class="bdg bg2">✓ Tốt</span>':'<span class="bdg by2">→ TB</span>';
     return `<tr style="${s.net<0?'background:var(--red-l)':''}">
-      <td><strong>${s.id}</strong></td><td>${s.area||''}</td>
+      <td><strong>${s.id}</strong></td><td>${s.area||''}</td><td>${s.owner||'—'}</td>
       <td>${fvnd(s.rev)}</td><td>${fvnd(s.cogs)} (${s.cogsp}%)</td><td>${fvnd(s.opex)}</td>
       <td style="font-weight:600;color:${s.net>=0?'var(--green)':'var(--red)'}">${s.net>=0?'+':''}${fvnd(s.net)}</td>
       <td><strong style="color:${s.margin>=20?'var(--green)':s.margin>=0?'var(--brown-l)':'var(--red)'}">${s.margin}%</strong></td>
       <td>${b}</td>
       <td><button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="gopl('${s.id}')">Chi tiết →</button></td>
     </tr>`;
-  }).join(''):'<tr><td colspan="9" style="text-align:center;padding:26px;color:var(--gray)">Không có dữ liệu cho bộ lọc này</td></tr>';
+  }).join(''):'<tr><td colspan="10" style="text-align:center;padding:26px;color:var(--gray)">Không có dữ liệu cho bộ lọc này</td></tr>';
 
   // AI
   const ss2=agg(m,y);
@@ -800,7 +894,7 @@ function rStores(){
       <div class="store-dot ${s.status==='active'?'sdot-g':'sdot-r'}"></div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:600;font-size:14px">${s.name||s.id}</div>
-        <div style="font-size:12px;color:var(--gray)">${s.area||''} · ${s.email||'Chưa có email'} · Mở: ${s.openDate||'—'}</div>
+        <div style="font-size:12px;color:var(--gray)">${s.area||''} · ${s.owner?'👤 '+s.owner+' · ':''}${s.email||'Chưa có email'} · Mở: ${s.openDate||'—'}</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
         <button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="gopl('${s.id}')">📋 P&L</button>
@@ -813,7 +907,7 @@ function rStores(){
 function openAddStore(){
   editingStoreId=null;
   document.getElementById('sform-title').textContent='➕ Thêm cửa hàng';
-  ['sf-id','sf-name','sf-area','sf-addr','sf-email'].forEach(id=>document.getElementById(id).value='');
+  ['sf-id','sf-name','sf-area','sf-addr','sf-email','sf-owner'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('sf-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('sf-status').value='active';
   document.getElementById('sf-id').disabled=false;
@@ -830,6 +924,7 @@ function editStore(id){
   document.getElementById('sf-area').value=s.area||'';
   document.getElementById('sf-addr').value=s.addr||'';
   document.getElementById('sf-email').value=s.email||'';
+  document.getElementById('sf-owner').value=s.owner||'';
   document.getElementById('sf-date').value=s.openDate||'';
   document.getElementById('sf-status').value=s.status||'active';
   document.getElementById('store-modal').classList.remove('off');
@@ -843,6 +938,7 @@ function saveStore(){
   const area=document.getElementById('sf-area').value.trim();
   const addr=document.getElementById('sf-addr').value.trim();
   const email=document.getElementById('sf-email').value.trim();
+  const owner=document.getElementById('sf-owner').value.trim();
   const openDate=document.getElementById('sf-date').value;
   const status=document.getElementById('sf-status').value;
 
@@ -851,10 +947,10 @@ function saveStore(){
 
   if(editingStoreId){
     const idx=ST.findIndex(s=>s.id===editingStoreId);
-    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,openDate,status};
+    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,owner,openDate,status};
   }else{
     if(ST.find(s=>s.id===id)){toast('ID đã tồn tại!','terr');return;}
-    ST.push({id,name,area,addr,email,openDate,status});
+    ST.push({id,name,area,addr,email,owner,openDate,status});
   }
 
   closeStoreModal();
@@ -1045,7 +1141,7 @@ function buildEmailHTML(store,s,m,y){
       <b>Hành động khẩn:</b> (1) Audit hao phí từng ca ngay tuần này, (2) Tạm dừng CTKM làm giảm biên lợi nhuận, (3) Liên hệ Phúc Tea để được hỗ trợ kế hoạch phục hồi.`;
   }
 
-  const greeting=emailEdits.greeting||`Kính gửi anh/chị <b>${storeInfo.name||store}</b>,`;
+  const greeting=emailEdits.greeting||`Kính gửi anh/chị <b>${storeInfo.owner?storeInfo.owner+' — ':''} ${storeInfo.name||store}</b>,`;
   const sig=emailEdits.sig||'Thanh Liêm — Operation Manager | 0357 636 539';
   const extra=emailEdits.extra?`<p style="color:#718096;font-size:14px;margin-top:12px">${emailEdits.extra}</p>`:'';
 
@@ -1192,7 +1288,7 @@ function rBulk(){
     <div class="chk-row" style="padding:9px 17px">
       <input type="checkbox" id="chk-${s.id}" value="${s.id}">
       <label for="chk-${s.id}" style="flex:1;cursor:pointer">
-        <span style="font-weight:600">${s.id}</span>
+        <span style="font-weight:600">${s.id}</span>${s.owner?' <span style="color:var(--brown-m);font-size:12px">('+s.owner+')</span>':''}
         <span style="color:var(--gray);font-size:12px;margin-left:8px">${s.email||'⚠️ Chưa có email'}</span>
       </label>
     </div>`).join('');
@@ -1250,6 +1346,381 @@ function go(id){
 function load(t){document.getElementById('loader').classList.add('on');document.getElementById('ltxt').textContent=t||'Đang tải...';}
 function unload(){document.getElementById('loader').classList.remove('on');}
 function toast(m,cls='tok'){const el=document.getElementById('toast');el.textContent=m;el.className='toast '+cls+' on';setTimeout(()=>el.classList.remove('on'),4500);}
+
+// ===== AI IMAGE INPUT =====
+let aiImageFiles = [];
+let aiPendingTx = [];
+
+const AI_CATEGORY_HINTS = {
+  // Revenue
+  'grab':'GrabFood','grabfood':'GrabFood','shopee':'ShopeeFood','shopeefood':'ShopeeFood',
+  'mang về':'Mang về','mang ve':'Mang về','tại chỗ':'Tại chỗ','tai cho':'Tại chỗ',
+  // COGS
+  'nguyên vật liệu hệ thống':'Chi phí nguyên vật liệu hệ thống',
+  'nvl hệ thống':'NVL hệ thống','nvl he thong':'NVL hệ thống',
+  'nguyên liệu':'Chi phí nguyên vật liệu địa phương',
+  'nvl địa phương':'NVL địa phương','nvl dia phuong':'NVL địa phương',
+  'trà':'Chi phí nguyên vật liệu địa phương','tra sua':'Chi phí nguyên vật liệu địa phương',
+  'sữa':'Chi phí nguyên vật liệu địa phương','bột':'Chi phí nguyên vật liệu địa phương',
+  'đường':'Chi phí nguyên vật liệu địa phương','duong':'Chi phí nguyên vật liệu địa phương',
+  'trân châu':'Chi phí nguyên vật liệu địa phương','tran chau':'Chi phí nguyên vật liệu địa phương',
+  'thạch':'Chi phí nguyên vật liệu địa phương','thach':'Chi phí nguyên vật liệu địa phương',
+  'sương sáo':'Chi phí nguyên vật liệu địa phương','suong sao':'Chi phí nguyên vật liệu địa phương',
+  'nha đam':'Chi phí nguyên vật liệu địa phương','pudding':'Chi phí nguyên vật liệu địa phương',
+  'mứt':'Chi phí nguyên vật liệu địa phương','socola':'Chi phí nguyên vật liệu địa phương',
+  'matcha':'Chi phí nguyên vật liệu địa phương','cheese':'Chi phí nguyên vật liệu địa phương',
+  'vận chuyển':'Chi phí vận chuyển','ship':'Chi phí vận chuyển','giao hàng':'Chi phí vận chuyển',
+  'vật phẩm':'Chi phí Vật phẩm','cốc':'Chi phí Vật phẩm','ly':'Chi phí Vật phẩm',
+  'ống hút':'Chi phí Vật phẩm','túi':'Chi phí Vật phẩm','hộp':'Chi phí Vật phẩm',
+  'nhãn':'Chi phí Vật phẩm','màng bọc':'Chi phí Vật phẩm',
+  'công nợ':'Công nợ','cong no':'Công nợ',
+  // OPEX
+  'lương':'Lương NV pha chế','luong':'Lương NV pha chế','quản lý':'Lương quản lý',
+  'mặt bằng':'Mặt bằng','mat bang':'Mặt bằng','thuê':'Mặt bằng',
+  'điện':'Tiền điện','dien':'Tiền điện','nước':'Tiền nước',
+  'internet':'Internet','wifi':'Internet','gas':'Gas',
+  'royalty':'Royalty Fee','phí nhượng quyền':'Royalty Fee',
+  'chiết khấu':'Chiết khấu food app','ck food':'Chiết khấu food app',
+  'marketing':'Marketing','quảng cáo':'Marketing','sửa chữa':'Sửa chữa',
+  'thuế':'Thuế','hao phí':'Hao phí','nước đá':'Nước đá',
+};
+
+function guessCategory(text){
+  if(!text) return 'Chi phí khác';
+  const t = text.toLowerCase();
+  for(const [k,v] of Object.entries(AI_CATEGORY_HINTS)){
+    if(t.includes(k)) return v;
+  }
+  return 'Chi phí khác';
+}
+
+function handleImgDrop(e){
+  e.preventDefault();
+  document.getElementById('img-drop').classList.remove('over');
+  const files = Array.from(e.dataTransfer.files).filter(f=>f.type.startsWith('image/'));
+  addImageFiles(files);
+}
+
+function handleImgSelect(e){
+  const files = Array.from(e.target.files).filter(f=>f.type.startsWith('image/'));
+  addImageFiles(files);
+  e.target.value='';
+}
+
+function addImageFiles(files){
+  files.forEach(f=>{
+    if(!aiImageFiles.find(x=>x.name===f.name&&x.size===f.size)) aiImageFiles.push(f);
+  });
+  renderImgPreviews();
+  document.getElementById('btn-analyze').style.display = aiImageFiles.length ? 'flex' : 'none';
+  document.getElementById('ai-store-row').style.display = aiImageFiles.length ? 'block' : 'none';
+  // populate AI store dropdown if empty
+  const sel = document.getElementById('ai-store');
+  if(!sel.options.length || (sel.options.length===1&&!sel.options[0].value)){
+    sel.innerHTML='<option value="">-- Chọn cửa hàng --</option>'+
+      ST.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
+  }
+}
+
+function renderImgPreviews(){
+  const grid = document.getElementById('img-preview-grid');
+  grid.innerHTML = aiImageFiles.map((f,i)=>{
+    const url = URL.createObjectURL(f);
+    return `<div class="img-thumb"><img src="${url}"><button class="rm" onclick="removeImg(${i})">✕</button></div>`;
+  }).join('');
+}
+
+function removeImg(i){
+  aiImageFiles.splice(i,1);
+  renderImgPreviews();
+  if(!aiImageFiles.length){
+    document.getElementById('btn-analyze').style.display='none';
+    document.getElementById('ai-store-row').style.display='none';
+  }
+}
+
+async function analyzeImages(){
+  const storeId = document.getElementById('ai-store').value;
+  if(!storeId){toast('Chọn cửa hàng trước!','terr');return;}
+
+  // Need either: Apps Script URL (proxy mode) or direct API key
+  const hasProxy = !!C.apiUrl;
+  const apiKey = window._aiKey || C.apiKey || '';
+  
+  if(!hasProxy && !apiKey){
+    const k = prompt('Nhập Anthropic API Key để dùng tính năng AI đọc ảnh:\n\nHoặc cài đặt Apps Script URL trong ⚙️ Cài đặt để dùng chế độ proxy (không cần nhập key ở đây).\n\n(Key sẽ chỉ lưu trong phiên này)');
+    if(!k){toast('Cần API Key hoặc Apps Script URL proxy để phân tích ảnh','terr');return;}
+    window._aiKey = k.trim();
+  }
+
+  document.getElementById('btn-analyze').style.display='none';
+  document.getElementById('ai-thinking').style.display='flex';
+  document.getElementById('ai-results').innerHTML='';
+  document.getElementById('ai-confirm-bar').style.display='none';
+  aiPendingTx = [];
+
+  const finalKey = window._aiKey || C.apiKey || '';
+
+  for(let i=0;i<aiImageFiles.length;i++){
+    document.getElementById('ai-thinking-txt').textContent=`AI đang đọc ảnh ${i+1}/${aiImageFiles.length}...`;
+    try{
+      const b64 = await fileToBase64(aiImageFiles[i]);
+      const result = await callClaudeVision(b64, aiImageFiles[i].type, finalKey);
+      const parsed = parseAiResponse(result, storeId);
+      aiPendingTx.push(...parsed);
+    }catch(err){
+      console.warn('AI error img',i,err);
+      aiPendingTx.push({
+        _error: true,
+        _filename: aiImageFiles[i].name,
+        errorMsg: err.message||'Không đọc được ảnh này'
+      });
+    }
+  }
+
+  document.getElementById('ai-thinking').style.display='none';
+  renderAiResults(storeId);
+  document.getElementById('btn-analyze').style.display='flex';
+}
+
+function fileToBase64(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(r.result.split(',')[1]);
+    r.onerror=rej;
+    r.readAsDataURL(file);
+  });
+}
+
+async function callClaudeVision(b64, mimeType, apiKey){
+  const AI_PROMPT = `Đây là ảnh chụp tin nhắn Zalo báo cáo chi tiêu của cửa hàng trà sữa Phúc Tea.
+Hãy đọc ảnh và trích xuất TẤT CẢ các khoản chi tiêu có trong ảnh.
+Trả về JSON array, mỗi phần tử có dạng:
+{"description":"mô tả ngắn khoản chi","amount":50000,"date":"YYYY-MM-DD hoặc rỗng","reporter":"tên người báo cáo nếu có","payer":"tên người chi nếu có","note":"ghi chú thêm"}
+Quy tắc số tiền: 50k=50000, 1tr=1000000, 1.5tr=1500000.
+Chỉ trả về JSON array thuần tuý, không markdown, không giải thích.
+Nếu không có khoản chi nào, trả về [].`;
+
+  const payload = {
+    model:'claude-opus-4-5',
+    max_tokens:2000,
+    messages:[{
+      role:'user',
+      content:[
+        {type:'image',source:{type:'base64',media_type:mimeType,data:b64}},
+        {type:'text',text:AI_PROMPT}
+      ]
+    }]
+  };
+
+  // Strategy 1: If Apps Script URL is configured → use it as CORS-safe proxy
+  if(C.apiUrl){
+    const proxyPayload = {
+      action: 'claudeVision',
+      anthropicPayload: payload,
+      apiKey: apiKey  // Apps Script uses this to call Anthropic server-side
+    };
+    // Apps Script proxy: POST with text/plain to avoid preflight, get response via polling or direct
+    // Since no-cors doesn't return body, we use a different approach:
+    // The Apps Script must be set up to accept claudeVision action and return result
+    // We use mode:'cors' since Apps Script can set CORS headers
+    try{
+      const resp = await fetch(C.apiUrl, {
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body: JSON.stringify(proxyPayload)
+      });
+      if(resp.ok){
+        const data = await resp.json().catch(()=>null);
+        if(data && data.result) return data.result;
+        if(data && data.error) throw new Error('Apps Script: '+data.error);
+      }
+    }catch(proxyErr){
+      // If proxy fails (e.g. no-cors mode), fall through to direct
+      console.warn('Proxy attempt failed, trying direct:', proxyErr.message);
+    }
+  }
+
+  // Strategy 2: Direct call with anthropic CORS bypass header
+  if(!apiKey) throw new Error('Cần API Key hoặc cấu hình Apps Script URL để dùng tính năng AI đọc ảnh. Vào ⚙️ Cài đặt để nhập.');
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify(payload)
+  });
+  
+  if(!resp.ok){
+    const errData = await resp.json().catch(()=>({}));
+    const msg = errData.error?.message || `HTTP ${resp.status}`;
+    if(resp.status===401) throw new Error('API Key không hợp lệ. Kiểm tra lại key trong ⚙️ Cài đặt.');
+    if(resp.status===403) throw new Error('API Key bị từ chối quyền truy cập.');
+    throw new Error('Anthropic API: '+msg);
+  }
+  const data = await resp.json();
+  return data.content?.[0]?.text||'[]';
+}
+
+function parseAiResponse(raw, storeId){
+  try{
+    let txt = raw.trim();
+    // strip markdown code blocks if present
+    txt = txt.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    const arr = JSON.parse(txt);
+    if(!Array.isArray(arr)) return [];
+    const today = new Date().toISOString().split('T')[0];
+    return arr.map((item,idx)=>({
+      _id: Date.now()+idx,
+      store: storeId,
+      date: item.date||today,
+      month: (item.date||today).split('-')[1],
+      year: (item.date||today).split('-')[0],
+      type: 'chi',
+      category: guessCategory(item.description),
+      amount: Number(item.amount)||0,
+      note: [item.description,item.reporter?'Báo: '+item.reporter:'',item.payer?'Chi: '+item.payer:''].filter(Boolean).join(' | '),
+      _raw: item
+    }));
+  }catch(e){
+    console.warn('parse error',e,raw);
+    return [];
+  }
+}
+
+function renderAiResults(storeId){
+  const container = document.getElementById('ai-results');
+  if(!aiPendingTx.length){
+    container.innerHTML='<div style="text-align:center;padding:20px;color:var(--gray)">Không tìm thấy giao dịch nào trong ảnh</div>';
+    return;
+  }
+
+  const storeOpts = ST.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
+  const allCats = [...new Set([...COGS,...CATS.chi])];
+  const catOpts = allCats.map(c=>`<option value="${c}">${c}</option>`).join('');
+
+  container.innerHTML = aiPendingTx.map((tx,i)=>{
+    if(tx._error) return `<div class="tx-confirm-card" style="border-color:var(--red)">
+      <div style="color:var(--red);font-size:12px;font-weight:600">❌ Lỗi: ${tx._filename||''}</div>
+      <div style="color:var(--gray);font-size:11px;margin-top:4px">${tx.errorMsg}</div>
+      <button class="del-btn" onclick="removeAiTx(${i})">✕</button>
+    </div>`;
+    
+    const isCOGS = COGS.includes(tx.category);
+    return `<div class="tx-confirm-card" data-idx="${i}">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <span class="badge-img">${isCOGS?'B — COGS':'C — VẬN HÀNH'}</span>
+        <span style="font-size:11px;color:var(--gray)">Giao dịch #${i+1}</span>
+      </div>
+      <button class="del-btn" onclick="removeAiTx(${i})">✕</button>
+      <div class="tx-confirm-row">
+        <div>
+          <label class="fl" style="font-size:10px">Cửa hàng</label>
+          <select onchange="updateAiTx(${i},'store',this.value)">
+            ${ST.map(s=>`<option value="${s.id}"${s.id===tx.store?' selected':''}>${s.name||s.id}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="fl" style="font-size:10px">Ngày</label>
+          <input type="date" value="${tx.date}" onchange="updateAiTx(${i},'date',this.value)">
+        </div>
+      </div>
+      <div class="tx-confirm-row" style="margin-top:6px">
+        <div>
+          <label class="fl" style="font-size:10px">Danh mục</label>
+          <select onchange="updateAiTx(${i},'category',this.value)" style="font-size:11px">
+            ${allCats.map(c=>`<option value="${c}"${c===tx.category?' selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="fl" style="font-size:10px">Số tiền (₫)</label>
+          <input type="number" value="${tx.amount}" onchange="updateAiTx(${i},'amount',Number(this.value))">
+        </div>
+      </div>
+      <div style="margin-top:6px">
+        <label class="fl" style="font-size:10px">Ghi chú</label>
+        <input type="text" value="${tx.note||''}" onchange="updateAiTx(${i},'note',this.value)" style="font-size:11px">
+      </div>
+      <div style="margin-top:6px;font-size:11px;color:var(--gray)">
+        💰 <strong style="color:${isCOGS?'var(--brown-m)':'var(--brown)'}">${fvnd(tx.amount)}</strong>
+      </div>
+    </div>`;
+  }).join('');
+
+  const validCount = aiPendingTx.filter(t=>!t._error&&t.amount>0).length;
+  document.getElementById('ai-count').textContent = validCount;
+  document.getElementById('ai-confirm-summary').textContent = `Tìm thấy ${validCount} giao dịch hợp lệ. Kiểm tra và chỉnh sửa nếu cần trước khi lưu.`;
+  document.getElementById('ai-confirm-bar').style.display = validCount ? 'block' : 'none';
+}
+
+function updateAiTx(i, field, value){
+  if(aiPendingTx[i]) aiPendingTx[i][field] = value;
+  // Update COGS badge in card
+  const card = document.querySelector(`.tx-confirm-card[data-idx="${i}"]`);
+  if(card && field==='category'){
+    const badge = card.querySelector('.badge-img');
+    if(badge) badge.textContent = COGS.includes(value)?'B — COGS':'C — VẬN HÀNH';
+  }
+  if(field==='date' && value){
+    const parts = value.split('-');
+    if(aiPendingTx[i]){ aiPendingTx[i].month=parts[1]; aiPendingTx[i].year=parts[0]; }
+  }
+  // update amount display
+  if(field==='amount'){
+    const card2 = document.querySelector(`.tx-confirm-card[data-idx="${i}"]`);
+    if(card2){
+      const amtEl = card2.querySelector('strong');
+      if(amtEl) amtEl.textContent = fvnd(value);
+    }
+  }
+  const validCount = aiPendingTx.filter(t=>!t._error&&t.amount>0).length;
+  document.getElementById('ai-count').textContent = validCount;
+}
+
+function removeAiTx(i){
+  aiPendingTx.splice(i,1);
+  const storeId = document.getElementById('ai-store').value;
+  renderAiResults(storeId);
+  if(!aiPendingTx.length) document.getElementById('ai-confirm-bar').style.display='none';
+}
+
+function clearAiResults(){
+  aiPendingTx=[];
+  aiImageFiles=[];
+  document.getElementById('img-preview-grid').innerHTML='';
+  document.getElementById('ai-results').innerHTML='';
+  document.getElementById('ai-confirm-bar').style.display='none';
+  document.getElementById('btn-analyze').style.display='none';
+  document.getElementById('ai-store-row').style.display='none';
+}
+
+async function saveAiTxAll(){
+  const valid = aiPendingTx.filter(t=>!t._error&&t.amount>0);
+  if(!valid.length){toast('Không có giao dịch hợp lệ','terr');return;}
+  
+  let saved=0, failed=0;
+  for(const tx of valid){
+    const txData={date:tx.date,month:tx.month,year:tx.year,store:tx.store,type:tx.type,category:tx.category,amount:tx.amount,note:tx.note||''};
+    TX.push(txData);
+    REC.unshift(txData);
+    if(C.apiUrl){
+      try{
+        await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+          body:JSON.stringify({action:'addTransaction',...txData})});
+        saved++;
+      }catch(e){failed++;}
+    } else { saved++; }
+  }
+  
+  rRec();
+  toast(`✅ Đã lưu ${saved} giao dịch từ ảnh${failed?' ('+failed+' lỗi Sheets)':''}`, failed?'twarn':'tok');
+  clearAiResults();
+}
+
 </script>
 </body>
 </html>
