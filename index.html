@@ -218,7 +218,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     <div class="ntitle"><span>Phúc Tea</span> Finance</div>
   </div>
   <div class="ntabs">
-    <div class="ntab on"  onclick="go('dash')">📊 Dashboard</div>
+    <div class="ntab on"  onclick="go('dash')">📊Dashboard</div>
     <div class="ntab"     onclick="go('stores')">🏪 Cửa hàng</div>
     <div class="ntab"     onclick="go('pl')">📋 P&L</div>
     <div class="ntab"     onclick="go('input')">✏️ Nhập liệu</div>
@@ -468,7 +468,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
           </div>
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
-            <button class="btn bo" onclick="previewEmail()">👁 Xem trước</button>
+            <button class="btn bo" onclick="previewEmail()">🔎 Xem trước</button>
             <button class="btn bp" onclick="sendOne()">📧 Gửi 1 email</button>
           </div>
         </div>
@@ -490,7 +490,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
         <div class="ch">
           <div class="ct">Xem trước & Chỉnh sửa email</div>
           <div style="display:flex;gap:7px">
-            <button class="btn bg" style="font-size:12px" onclick="showPreviewTab('visual')">👁 Xem</button>
+            <button class="btn bg" style="font-size:12px" onclick="showPreviewTab('visual')">🔎 Xem</button>
             <button class="btn bg" style="font-size:12px" onclick="showPreviewTab('edit')">✏️ Sửa</button>
           </div>
         </div>
@@ -516,7 +516,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
           </div>
           <div class="fg">
             <label class="fl">Chữ ký</label>
-            <input type="text" class="fc" id="e-sig" value="Thanh Liêm — Operation Manager | 0901 234 567">
+            <input type="text" class="fc" id="e-sig" value="Thanh Liêm — Operation Manager | 0357 636 539">
           </div>
           <button class="btn bp" style="width:100%" onclick="applyEdit()">✓ Áp dụng & Xem trước</button>
         </div>
@@ -529,7 +529,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 // ===== STATE =====
 let C={sheetId:'',apiUrl:'',demo:false};
 let TX=[],ST=[],REC=[];
-let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operation Manager | 0901 234 567'};
+let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operation Manager | 0357 636 539'};
 let editingStoreId=null;
 
 const COGS=['NVL hệ thống','NVL địa phương','Vận chuyển'];
@@ -1042,7 +1042,7 @@ function buildEmailHTML(store,s,m,y){
   }
 
   const greeting=emailEdits.greeting||`Kính gửi anh/chị <b>${storeInfo.name||store}</b>,`;
-  const sig=emailEdits.sig||'Thanh Liêm — Operation Manager | 0901 234 567';
+  const sig=emailEdits.sig||'Thanh Liêm — Operation Manager | 0357 636 539';
   const extra=emailEdits.extra?`<p style="color:#718096;font-size:14px;margin-top:12px">${emailEdits.extra}</p>`:'';
 
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
@@ -1127,7 +1127,7 @@ function buildEmailHTML(store,s,m,y){
   </div>
 
   <div style="background:#F7F8FA;padding:16px 28px;text-align:center;font-size:11px;color:#718096;border-top:1px solid #E8E0D4">
-    © ${y} Phúc Tea · Hệ thống nhượng quyền
+    © ${y} Phúc Tea · Operations
   </div>
 </div>
 </body></html>`;
