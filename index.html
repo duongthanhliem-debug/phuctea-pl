@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Phúc Tea P&L Hub</title>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -344,7 +345,10 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     </div>
     <div class="fg"><label class="mlabel">Tên cửa hàng</label><input class="minput" id="sf-name" placeholder="VD: CENTER004 – Cần Thơ"></div>
     <div class="fg"><label class="mlabel">Địa chỉ</label><input class="minput" id="sf-addr" placeholder="Địa chỉ đầy đủ"></div>
-    <div class="fg"><label class="mlabel">Tên chủ chi nhánh</label><input class="minput" id="sf-owner" placeholder="VD: Nguyễn Văn A"></div>
+    <div class="fr">
+      <div class="fg"><label class="mlabel">Tên chủ chi nhánh</label><input class="minput" id="sf-owner" placeholder="VD: Nguyễn Văn A"></div>
+      <div class="fg"><label class="mlabel">SĐT chủ chi nhánh</label><input class="minput" id="sf-phone" placeholder="VD: 0909123456" type="tel"></div>
+    </div>
     <div class="fr">
       <div class="fg"><label class="mlabel">Email chủ</label><input class="minput" id="sf-email" placeholder="email@example.com" type="email"></div>
       <div class="fg"><label class="mlabel">Ngày mở</label><input class="minput" id="sf-date" type="date"></div>
@@ -453,67 +457,83 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     </div>
   </div><!-- end LEFT -->
 
-  <!-- RIGHT: AI Image Input -->
+  <!-- RIGHT COLUMN -->
   <div>
-    <div class="card">
+    <!-- AI Image Input -->
+    <div class="card" style="margin-bottom:16px">
       <div class="ch" style="background:linear-gradient(135deg,var(--brown),var(--brown-m))">
-        <div class="ct" style="color:#fff">📲Nhập từ ảnh (AI)</div>
+        <div class="ct" style="color:#fff">📲 Nhập từ ảnh (AI)</div>
         <span style="font-size:10px;background:var(--gold);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700">BETA</span>
       </div>
       <div class="cb">
-        <div style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.7;background:var(--gray-l);border-radius:var(--rs);padding:10px">
-Tải ảnh chụp màn hình lên → Chọn của hàng → Phân tích với AI → Kiểm tra và điều chỉnh nếu cần → Lưu.
-</div>
-        
-        <!-- Drop zone -->
+        <div style="font-size:12px;color:var(--gray);margin-bottom:12px;line-height:1.7;background:var(--gray-l);border-radius:var(--rs);padding:10px">Tải ảnh chụp màn hình → Chọn cửa hàng → Phân tích AI → Kiểm tra → Lưu.</div>
         <div class="img-drop" id="img-drop" onclick="document.getElementById('img-file-input').click()"
              ondragover="event.preventDefault();this.classList.add('over')"
              ondragleave="this.classList.remove('over')"
              ondrop="handleImgDrop(event)">
           <input type="file" id="img-file-input" accept="image/*" multiple onchange="handleImgSelect(event)">
-          <div style="font-size:32px;margin-bottom:8px">📷</div>
-          <div style="font-weight:600;color:var(--brown);margin-bottom:4px">Chọn hoặc kéo thả ảnh vào đây</div>
-          <div style="font-size:12px;color:var(--gray)">Hỗ trợ nhiều ảnh cùng lúc · JPG, PNG, WebP</div>
+          <div style="font-size:28px;margin-bottom:6px">📷</div>
+          <div style="font-weight:600;color:var(--brown);margin-bottom:3px;font-size:13px">Chọn hoặc kéo thả ảnh</div>
+          <div style="font-size:11px;color:var(--gray)">Nhiều ảnh · JPG, PNG, WebP</div>
         </div>
-        
-        <!-- Image preview grid -->
         <div class="img-preview-grid" id="img-preview-grid"></div>
-        
-        <!-- Cửa hàng selector for AI batch -->
         <div class="fg" id="ai-store-row" style="display:none;margin-top:8px">
-          <label class="fl">Cửa hàng (áp dụng cho tất cả ảnh)</label>
+          <label class="fl">Cửa hàng</label>
           <select class="fc" id="ai-store"></select>
-          <div style="margin-top:6px;font-size:11px;color:var(--gray)">
-            Cần API Key hoặc Apps Script URL? → 
-            <span onclick="openSetup()" style="color:var(--gold);cursor:pointer;font-weight:600;text-decoration:underline">⚙️ Mở Cài đặt</span>
-          </div>
+          <div style="margin-top:5px;font-size:11px;color:var(--gray)">Cần API Key? → <span onclick="openSetup()" style="color:var(--gold);cursor:pointer;font-weight:600;text-decoration:underline">⚙️ Cài đặt</span></div>
         </div>
-        
-        <!-- Analyze button -->
-        <button class="btn bp" id="btn-analyze" style="width:100%;margin-top:10px;display:none" onclick="analyzeImages()">
-          🤖 Phân tích với AI
-        </button>
-        
-        <!-- AI thinking indicator -->
+        <button class="btn bp" id="btn-analyze" style="width:100%;margin-top:10px;display:none" onclick="analyzeImages()">🤖 Phân tích với AI</button>
         <div class="ai-thinking" id="ai-thinking" style="display:none">
           <div class="dot"></div><div class="dot"></div><div class="dot"></div>
           <span id="ai-thinking-txt">AI đang đọc ảnh...</span>
         </div>
-        
-        <!-- Results area -->
         <div id="ai-results" style="margin-top:12px"></div>
-        
-        <!-- Confirm & save all button -->
         <div id="ai-confirm-bar" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
           <div style="font-size:12px;color:var(--gray);margin-bottom:8px" id="ai-confirm-summary"></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn bo" onclick="clearAiResults()">🗑️ Xoá tất cả</button>
-            <button class="btn bp" style="background:var(--green)" onclick="saveAiTxAll()">✅ Lưu tất cả (<span id="ai-count">0</span>)</button>
+            <button class="btn bo" onclick="clearAiResults()">🗑️ Xoá</button>
+            <button class="btn bp" style="background:var(--green)" onclick="saveAiTxAll()">✅ Lưu (<span id="ai-count">0</span>)</button>
           </div>
         </div>
       </div>
     </div>
-  </div><!-- end RIGHT -->
+
+    <!-- Excel Import -->
+    <div class="card">
+      <div class="ch" style="background:linear-gradient(135deg,#1a6b3c,#2D8248);flex-wrap:wrap;gap:6px">
+        <div class="ct" style="color:#fff;font-size:13px">📊 Nhập từ Excel (iPos/Fabi)</div>
+        <span style="font-size:10px;background:var(--gold);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700;flex-shrink:0">AUTO</span>
+      </div>
+      <div class="cb">
+        <div style="font-size:11px;color:var(--gray);background:var(--gray-l);border-radius:var(--rs);padding:9px;margin-bottom:10px;line-height:1.6">Đăng nhập vào Fabi (IPOS) → Vào mục B03 → Lọc thời gian và lọc cửa hàng → Xuất báo cáo theo cửa hàng đã chọn → Vào file vừa xuất, chỉ giữ lại cột Giảm giá và Doanh thu (gross) của từng nguồn đơn hàng (nhớ ghi lại tên nguồn đơn), các cột còn lại xóa hết → Lưu lại → Up file đã chỉnh sửa lên đây → Kiểm tra lại và Lưu tất cả.</div>
+        <div class="img-drop" id="xlsx-drop"
+             onclick="document.getElementById('xlsx-file-input').click()"
+             ondragover="event.preventDefault();this.classList.add('over')"
+             ondragleave="this.classList.remove('over')"
+             ondrop="handleXlsxDrop(event)"
+             style="border-color:var(--green);padding:20px">
+          <input type="file" id="xlsx-file-input" accept=".xlsx,.xls,.csv" onchange="handleXlsxSelect(event)">
+          <div style="font-size:28px;margin-bottom:6px">📊</div>
+          <div style="font-weight:600;color:var(--brown);margin-bottom:3px;font-size:13px">Chọn hoặc kéo thả file Excel</div>
+          <div style="font-size:11px;color:var(--gray)">.xlsx · .xls — Nhiều sheet = nhiều cửa hàng</div>
+        </div>
+        <div id="xlsx-file-info" style="display:none;margin-top:8px;font-size:12px;padding:8px;background:var(--green-l);border-radius:var(--rs);color:var(--green);font-weight:600"></div>
+        <button class="btn" id="btn-xlsx-analyze" style="width:100%;margin-top:10px;display:none;background:var(--green);color:#fff;padding:11px" onclick="analyzeXlsx()">🔍 Phân tích file Excel</button>
+        <div class="ai-thinking" id="xlsx-thinking" style="display:none">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span id="xlsx-thinking-txt">Đang đọc file...</span>
+        </div>
+        <div id="xlsx-results" style="margin-top:10px;max-height:600px;overflow-y:auto"></div>
+        <div id="xlsx-confirm-bar" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;color:var(--gray);margin-bottom:8px" id="xlsx-confirm-summary"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn bo" onclick="clearXlsx()">🗑️ Huỷ</button>
+            <button class="btn" style="background:var(--green);color:#fff" onclick="saveXlsxAll()">✅ Lưu tất cả</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- end RIGHT COLUMN -->
   </div><!-- end input-grid -->
 </div>
 
@@ -650,9 +670,9 @@ function clean(s){return s?String(s).replace(/^"|"$/g,'').trim():'';}
 // ===== DEMO DATA =====
 function loadDemo(){
   ST=[
-    {id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',addr:'30/4, Ninh Kiều',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active',owner:'Nguyễn Văn A'},
-    {id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',addr:'Hùng Vương, Ninh Kiều',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active',owner:'Trần Thị B'},
-    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',addr:'Phạm Thái Bường',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active',owner:'Lê Văn C'},
+    {id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',addr:'30/4, Ninh Kiều',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active',owner:'Nguyễn Văn A',phone:'0909111222'},
+    {id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',addr:'Hùng Vương, Ninh Kiều',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active',owner:'Trần Thị B',phone:'0909333444'},
+    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',addr:'Phạm Thái Bường',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active',owner:'Lê Văn C',phone:'0909555666'},
   ];
   const mk=(sid,m,y,rev,cogs,opex)=>{
     const rows=[];
@@ -702,7 +722,8 @@ async function loadSheets(id){
 
   ST=parseCSV(sc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
     id:clean(r[0]),name:clean(r[1]),addr:clean(r[2]),area:clean(r[3]),
-    email:clean(r[4]),openDate:clean(r[5]),status:clean(r[6])||'active',owner:clean(r[7])||''
+    email:clean(r[4]),openDate:clean(r[5]),status:clean(r[6])||'active',
+    owner:clean(r[7])||'',phone:clean(r[8])||''
   }));
 
   TX=parseCSV(tc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
@@ -860,27 +881,25 @@ function rDash(){
     </tr>`;
   }).join(''):'<tr><td colspan="10" style="text-align:center;padding:26px;color:var(--gray)">Không có dữ liệu cho bộ lọc này</td></tr>';
 
-  // AI
-  const ss2=agg(m,y);
-  const best=ss2.length?ss2.reduce((a,b)=>a.margin>b.margin?a:b):null;
-  const worst=ss2.length?ss2.reduce((a,b)=>a.net<b.net?a:b):null;
-  const losses=ss2.filter(s=>s.net<0);
-  const highNVL=ss2.filter(s=>s.cogsp>35);
-  let ai='';
-  if(!trev){ai='<div class="aii">Chưa có dữ liệu. Nhập giao dịch hoặc kiểm tra kết nối Sheets.</div>';}
-  else{
-    if(tmg>=20){ai+=`<div class="aii"><strong style="color:var(--gold)">✅ Chuỗi đạt mục tiêu 20%:</strong> Tỷ suất hiện tại ${tmg}%. ${best?.id||''} dẫn đầu với ${best?.margin}%. Duy trì mô hình vận hành này và nhân rộng cho các chi nhánh còn lại.</div>`;}
-    else{ai+=`<div class="aii"><strong style="color:var(--gold)">📊 Tỷ suất ${tmg}% — chưa đạt mục tiêu 20%:</strong> Tổng lợi nhuận ${fvnd(tnet)}. Để cải thiện: (1) tăng doanh thu giờ cao điểm, (2) tối ưu ca nhân sự thấp điểm, (3) renegotiate chi phí mặt bằng nếu có thể.</div>`;}
-    losses.forEach(s=>{
-      const nvlColor=s.cogsp>40?'var(--red)':'var(--gold)';
-      ai+=`<div class="aii"><strong style="color:var(--red)">🔴 ${s.id} lỗ ${fvnd(Math.abs(s.net))}:</strong> NVL chiếm ${s.cogsp}% doanh thu. <strong>Đề xuất khẩn:</strong> (1) Kiểm tra hao phí nguyên liệu từng ca, (2) Đối chiếu định mức pha chế thực tế vs tiêu chuẩn, (3) Xem xét điều chỉnh giá bán tại khu vực nếu cần.</div>`;
+  // AI analysis
+  if(!trev){
+    document.getElementById('daib').innerHTML='<div class="aii">Chưa có dữ liệu. Nhập giao dịch hoặc kiểm tra kết nối Sheets.</div>';
+  } else {
+    document.getElementById('daib').innerHTML=`<div class="aii" style="display:flex;align-items:center;gap:8px"><div class="dot"></div><div class="dot" style="animation-delay:.2s"></div><div class="dot" style="animation-delay:.4s"></div>&nbsp;AI đang phân tích dữ liệu chuỗi...</div>`;
+    callClaudeAnalytics('dashboard',{stores:allSs,trev,tnet,tmg,period:(m?'Tháng '+m+'/':'')+y}).then(txt=>{
+      document.getElementById('daib').innerHTML=txt;
+    }).catch(()=>{
+      // fallback to rule-based
+      const ss2=allSs;const best=ss2.reduce((a,b)=>a.margin>b.margin?a:b,ss2[0]);
+      const losses=ss2.filter(s=>s.net<0);const highNVL=ss2.filter(s=>s.cogsp>35);
+      let ai='';
+      if(tmg>=20)ai+=`<div class="aii"><strong style="color:var(--gold)">✅ Chuỗi đạt mục tiêu 20%:</strong> Tỷ suất ${tmg}%. ${best?.id} dẫn đầu ${best?.margin}%. Tiếp tục nhân rộng mô hình hiệu quả.</div>`;
+      else ai+=`<div class="aii"><strong style="color:var(--gold)">📊 Tỷ suất ${tmg}% — chưa đạt 20%:</strong> Cần tối ưu chi phí và tăng doanh thu.</div>`;
+      losses.forEach(s=>ai+=`<div class="aii"><strong style="color:var(--red)">🔴 ${s.id} lỗ ${fvnd(Math.abs(s.net))}:</strong> NVL ${s.cogsp}%. Kiểm tra hao phí nguyên liệu ngay.</div>`);
+      highNVL.filter(s=>s.net>=0).forEach(s=>ai+=`<div class="aii"><strong style="color:var(--gold)">⚠️ ${s.id} NVL ${s.cogsp}%:</strong> Cần kiểm soát tốt hơn.</div>`);
+      document.getElementById('daib').innerHTML=ai;
     });
-    highNVL.filter(s=>s.net>=0).forEach(s=>{
-      ai+=`<div class="aii"><strong style="color:var(--gold)">⚠️ ${s.id} — NVL ${s.cogsp}% (cao):</strong> Dù có lãi nhưng NVL đang ăn nhiều vào lợi nhuận. Kiểm tra hao phí và đào tạo lại quy trình pha chế để tiết kiệm 3-5%.</div>`;
-    });
-    if(best&&best.margin>=25){ai+=`<div class="aii"><strong style="color:var(--gold)">🏆 Học hỏi từ ${best.id} (${best.margin}%):</strong> Đây là mô hình hiệu quả nhất chuỗi. Admin nên quan sát và tài liệu hóa quy trình vận hành để nhân rộng.</div>`;}
   }
-  document.getElementById('daib').innerHTML=ai;
 }
 
 // ===== STORES =====
@@ -894,7 +913,7 @@ function rStores(){
       <div class="store-dot ${s.status==='active'?'sdot-g':'sdot-r'}"></div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:600;font-size:14px">${s.name||s.id}</div>
-        <div style="font-size:12px;color:var(--gray)">${s.area||''} · ${s.owner?'👤 '+s.owner+' · ':''}${s.email||'Chưa có email'} · Mở: ${s.openDate||'—'}</div>
+        <div style="font-size:12px;color:var(--gray)">${s.area||''} · ${s.owner?'👤 '+s.owner+(s.phone?' ('+s.phone+')':'')+ ' · ':''}${s.email||'Chưa có email'} · Mở: ${s.openDate||'—'}</div>
       </div>
       <div style="display:flex;gap:6px;flex-shrink:0">
         <button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="gopl('${s.id}')">📋 P&L</button>
@@ -907,7 +926,7 @@ function rStores(){
 function openAddStore(){
   editingStoreId=null;
   document.getElementById('sform-title').textContent='➕ Thêm cửa hàng';
-  ['sf-id','sf-name','sf-area','sf-addr','sf-email','sf-owner'].forEach(id=>document.getElementById(id).value='');
+  ['sf-id','sf-name','sf-area','sf-addr','sf-email','sf-owner','sf-phone'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('sf-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('sf-status').value='active';
   document.getElementById('sf-id').disabled=false;
@@ -925,6 +944,7 @@ function editStore(id){
   document.getElementById('sf-addr').value=s.addr||'';
   document.getElementById('sf-email').value=s.email||'';
   document.getElementById('sf-owner').value=s.owner||'';
+  document.getElementById('sf-phone').value=s.phone||'';
   document.getElementById('sf-date').value=s.openDate||'';
   document.getElementById('sf-status').value=s.status||'active';
   document.getElementById('store-modal').classList.remove('off');
@@ -939,6 +959,7 @@ function saveStore(){
   const addr=document.getElementById('sf-addr').value.trim();
   const email=document.getElementById('sf-email').value.trim();
   const owner=document.getElementById('sf-owner').value.trim();
+  const phone=document.getElementById('sf-phone').value.trim();
   const openDate=document.getElementById('sf-date').value;
   const status=document.getElementById('sf-status').value;
 
@@ -947,10 +968,10 @@ function saveStore(){
 
   if(editingStoreId){
     const idx=ST.findIndex(s=>s.id===editingStoreId);
-    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,owner,openDate,status};
+    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,owner,phone,openDate,status};
   }else{
     if(ST.find(s=>s.id===id)){toast('ID đã tồn tại!','terr');return;}
-    ST.push({id,name,area,addr,email,owner,openDate,status});
+    ST.push({id,name,area,addr,email,owner,phone,openDate,status});
   }
 
   closeStoreModal();
@@ -1018,12 +1039,17 @@ function rPL(){
 
   document.getElementById('plai').style.display='block';
   document.getElementById('plait').textContent=sid+(m?' – T'+m:'')+'/'+y;
-  let ai='';
-  if(s.margin>=25){ai=`<div class="aii"><strong style="color:var(--gold)">✅ Xuất sắc (${s.margin}%):</strong> Cửa hàng hoạt động rất hiệu quả. NVL ${s.cogsp}% ở mức tốt. Đề xuất: (1) Đẩy mạnh doanh thu online giờ 14h-17h qua flash sale, (2) Tăng thêm cửa hàng hoặc expand menu.</div>`;}
-  else if(s.margin>=15){ai=`<div class="aii"><strong style="color:var(--gold)">📈 Ổn định (${s.margin}%):</strong> Hoạt động tốt nhưng còn dư địa cải thiện. Đề xuất: (1) Tối ưu ca nhân sự giờ thấp điểm tiết kiệm 2-3 tr/tháng, (2) Tăng đơn hàng GrabFood bằng voucher 10%.</div>`;}
-  else if(s.margin>=0){ai=`<div class="aii"><strong style="color:var(--gold)">⚠️ Cần chú ý (${s.margin}%):</strong> Tỷ suất thấp hơn mục tiêu 20%. Đề xuất khẩn: (1) Đánh giá lại định mức NVL (hiện ${s.cogsp}%), (2) Cắt chi phí vận hành không thiết yếu, (3) Tăng giá bán 3-5% nếu thị trường cho phép.</div>`;}
-  else{ai=`<div class="aii"><strong style="color:var(--red)">🚨 Lỗ ${fvnd(Math.abs(s.net))} — cần can thiệp ngay!</strong> NVL chiếm ${s.cogsp}% là nguyên nhân chính. Hành động ngay: (1) Audit hao phí từng ca trong 2 tuần tới, (2) Tạm dừng chương trình khuyến mãi làm giảm biên, (3) Họp khẩn với chủ shop để xây kế hoạch phục hồi.</div>`;}
-  document.getElementById('plaib').innerHTML=ai;
+  document.getElementById('plaib').innerHTML=`<div class="aii" style="display:flex;align-items:center;gap:8px"><div class="dot"></div><div class="dot" style="animation-delay:.2s"></div><div class="dot" style="animation-delay:.4s"></div>&nbsp;AI đang phân tích P&L ${sid}...</div>`;
+  callClaudeAnalytics('pl',{store:s,sid,period:(m?'T'+m+'/':'')+y}).then(txt=>{
+    document.getElementById('plaib').innerHTML=txt;
+  }).catch(()=>{
+    let ai='';
+    if(s.margin>=25)ai=`<div class="aii"><strong style="color:var(--gold)">✅ Xuất sắc (${s.margin}%):</strong> Hiệu quả vượt mục tiêu. NVL ${s.cogsp}%. Tiếp tục đẩy doanh thu online.</div>`;
+    else if(s.margin>=15)ai=`<div class="aii"><strong style="color:var(--gold)">📈 Ổn định (${s.margin}%):</strong> Còn dư địa cải thiện. Tối ưu nhân sự giờ thấp điểm.</div>`;
+    else if(s.margin>=0)ai=`<div class="aii"><strong style="color:var(--gold)">⚠️ Cần chú ý (${s.margin}%):</strong> Thấp hơn mục tiêu 20%. Đánh giá lại định mức NVL ${s.cogsp}%.</div>`;
+    else ai=`<div class="aii"><strong style="color:var(--red)">🚨 Lỗ ${fvnd(Math.abs(s.net))} — cần can thiệp ngay!</strong> Audit hao phí từng ca trong tuần này.</div>`;
+    document.getElementById('plaib').innerHTML=ai;
+  });
 }
 
 // ===== INPUT =====
@@ -1125,21 +1151,8 @@ function buildEmailHTML(store,s,m,y){
   const status=s.net>=0?'✅ CÓ LÃI':'⚠️ ĐANG LỖ';
   const statusBg=s.net>=0?'#F0FFF4':'#FFF5F5';
 
-  // AI analysis for email
-  let analysis='';
-  if(s.margin>=25){
-    analysis=`<b>Xuất sắc!</b> Tỷ suất ${s.margin}% — top chuỗi tháng này. Chi phí nguyên liệu kiểm soát tốt ở ${s.cogsp}%.<br><br>
-      <b>Đề xuất tiếp theo:</b> (1) Đẩy mạnh doanh thu GrabFood giờ 14h-17h bằng flash sale giảm 10%, (2) Xem xét mở rộng menu mùa hè, (3) Duy trì định mức NVL hiện tại.`;
-  }else if(s.margin>=15){
-    analysis=`Hoạt động ổn định với tỷ suất ${s.margin}%. NVL ${s.cogsp}% — còn dư địa cải thiện.<br><br>
-      <b>Đề xuất:</b> (1) Tối ưu ca nhân sự giờ thấp điểm (14h-17h), (2) Tăng đơn hàng online qua voucher, (3) Kiểm tra hao phí nguyên liệu cuối ngày.`;
-  }else if(s.margin>=0){
-    analysis=`Tỷ suất ${s.margin}% — <b>thấp hơn mục tiêu 20%</b>. NVL chiếm ${s.cogsp}% doanh thu.<br><br>
-      <b>Cần thực hiện ngay:</b> (1) Audit định mức NVL từng ca trong 2 tuần, (2) Cắt chi phí không thiết yếu, (3) Đánh giá lại cơ cấu nhân sự ca thấp điểm.`;
-  }else{
-    analysis=`<b style="color:#E53E3E">⚠️ Cửa hàng đang lỗ ${fvnd(Math.abs(s.net))}!</b> NVL chiếm ${s.cogsp}% là vấn đề chính.<br><br>
-      <b>Hành động khẩn:</b> (1) Audit hao phí từng ca ngay tuần này, (2) Tạm dừng CTKM làm giảm biên lợi nhuận, (3) Liên hệ Phúc Tea để được hỗ trợ kế hoạch phục hồi.`;
-  }
+  // AI analysis for email - will be filled async
+  let analysis = emailEdits._lastAiAnalysis || buildFallbackEmailAnalysis(s);
 
   const greeting=emailEdits.greeting||`Kính gửi anh/chị <b>${storeInfo.owner?storeInfo.owner+' — ':''} ${storeInfo.name||store}</b>,`;
   const sig=emailEdits.sig||'Thanh Liêm — Operation Manager | 0357 636 539';
@@ -1253,13 +1266,20 @@ function getEmailData(){
   return{sid,m,y,s,store:ST.find(x=>x.id===sid)||{name:sid}};
 }
 
-function previewEmail(){
+async function previewEmail(){
   const {sid,m,y,s}=getEmailData();
   if(!sid){toast('Chọn cửa hàng trước','terr');return;}
   showPreviewTab('visual');
+  // Show loading state
+  document.getElementById('eprev').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:200px;gap:10px;color:var(--gray)"><div class="spin" style="width:24px;height:24px;border-width:3px"></div> AI đang soạn nhận định...</div>`;
+  // Generate real AI analysis for email
+  try{
+    emailEdits._lastAiAnalysis = await generateEmailAnalysis(s, sid, m, y);
+  }catch(e){
+    emailEdits._lastAiAnalysis = buildFallbackEmailAnalysis(s);
+  }
   const html=buildEmailHTML(sid,s,m,y);
   document.getElementById('eprev').innerHTML=`<iframe srcdoc="${html.replace(/"/g,'&quot;')}" style="width:100%;height:550px;border:none"></iframe>`;
-  // Set default edit values
   document.getElementById('e-subject').value=emailEdits.subject||`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y}`;
   document.getElementById('e-greeting').value=emailEdits.greeting||'';
 }
@@ -1270,6 +1290,7 @@ async function sendOne(){
   if(!sid){toast('Chọn cửa hàng!','terr');return;}
   if(!to){toast('Nhập email người nhận!','terr');return;}
   if(!C.apiUrl){toast('Cần API URL để gửi email!','terr');openSetup();return;}
+  try{emailEdits._lastAiAnalysis=await generateEmailAnalysis(s,sid,m,y);}catch(e){emailEdits._lastAiAnalysis=buildFallbackEmailAnalysis(s);}
   const html=buildEmailHTML(sid,s,m,y);
   const subj=emailEdits.subject||`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y} — ${ST.find(x=>x.id===sid)?.name||sid}`;
   load('Đang gửi email...');
@@ -1719,6 +1740,411 @@ async function saveAiTxAll(){
   rRec();
   toast(`✅ Đã lưu ${saved} giao dịch từ ảnh${failed?' ('+failed+' lỗi Sheets)':''}`, failed?'twarn':'tok');
   clearAiResults();
+}
+
+
+// ===== CLAUDE ANALYTICS (real AI for dashboard/PL/email) =====
+async function callClaudeText(prompt){
+  const apiKey = window._aiKey || C.apiKey || '';
+  const payload = {
+    model:'claude-sonnet-4-5',
+    max_tokens:1500,
+    messages:[{role:'user',content:prompt}]
+  };
+
+  // Try Apps Script proxy first (no CORS issue)
+  if(C.apiUrl){
+    try{
+      const resp = await fetch(C.apiUrl,{
+        method:'POST',headers:{'Content-Type':'text/plain'},
+        body:JSON.stringify({action:'claudeText',prompt,apiKey})
+      });
+      if(resp.ok){
+        const d = await resp.json().catch(()=>null);
+        if(d&&d.result) return d.result;
+      }
+    }catch(e){console.warn('proxy text failed',e.message);}
+  }
+
+  // Direct call with CORS bypass header
+  if(!apiKey) throw new Error('Cần API Key');
+  const resp = await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify(payload)
+  });
+  if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(e.error?.message||'API error '+resp.status);}
+  const d = await resp.json();
+  return d.content?.[0]?.text||'';
+}
+
+async function callClaudeAnalytics(type, data){
+  let prompt = '';
+  if(type === 'dashboard'){
+    const {stores,trev,tnet,tmg,period} = data;
+    const storeDetails = stores.map(s=>
+      `- ${s.id}${s.owner?` (${s.owner})`:''}${s.name&&s.name!==s.id?' — '+s.name.split('–').pop().trim():''}: DT ${fvnd(s.rev)}, LN ${s.net>=0?'+':''}${fvnd(s.net)} (${s.margin}%), NVL ${s.cogsp}%, OPEX ${fvnd(s.opex)}`
+    ).join('\n');
+    prompt = `Bạn là chuyên gia tài chính chuỗi trà sữa Phúc Tea. Phân tích dữ liệu kinh doanh ${period} và đưa ra nhận định + đề xuất hành động cụ thể, thực tế.
+
+DỮ LIỆU TỔNG HỢP CHUỖI:
+- Tổng doanh thu: ${fvnd(trev)}
+- Lợi nhuận ròng: ${tnet>=0?'+':''}${fvnd(tnet)}
+- Tỷ suất LN bình quân: ${tmg}% (mục tiêu: 20%)
+- Số cửa hàng: ${stores.length}
+
+CHI TIẾT TỪNG CỬA HÀNG:
+${storeDetails}
+
+Hãy viết phân tích NGẮN GỌN (tối đa 4 đoạn), THỰC TẾ, KHÔNG RẬP KHUÔN. Mỗi đoạn là 1 thẻ <div class="aii">...</div>. Tập trung vào:
+1. Đánh giá tổng thể chuỗi và xu hướng
+2. Cửa hàng nổi bật (tốt nhất / cần chú ý nhất) - chỉ nêu cụ thể nếu có dữ liệu đáng chú ý
+3. Rủi ro / cơ hội cụ thể với con số thực
+4. 2-3 hành động ưu tiên cho tuần tới
+
+Dùng HTML đơn giản, emoji phù hợp. Không dùng heading hay bullet ngoài thẻ aii. Viết bằng tiếng Việt tự nhiên.`;
+  } else if(type === 'pl'){
+    const {store:s, sid, period} = data;
+    const revDetails = Object.entries(s.rcat||{}).map(([k,v])=>`  + ${k}: ${fvnd(v)}`).join('\n');
+    const cogsDetails = Object.entries(s.cocat||{}).map(([k,v])=>`  - ${k}: ${fvnd(v)}`).join('\n');
+    const opexDetails = Object.entries(s.ocat||{}).map(([k,v])=>`  - ${k}: ${fvnd(v)}`).join('\n');
+    prompt = `Bạn là chuyên gia tài chính chuỗi trà sữa Phúc Tea. Phân tích P&L chi tiết cửa hàng ${sid} kỳ ${period}.
+
+KẾT QUẢ KINH DOANH:
+DOANH THU: ${fvnd(s.rev)}
+${revDetails}
+
+CHI PHÍ VỐN (COGS): ${fvnd(s.cogs)} (${s.cogsp}% DT)
+${cogsDetails}
+
+LỢI NHUẬN GỘP: ${s.gross>=0?'+':''}${fvnd(s.gross)} (${s.rev>0?Math.round(s.gross/s.rev*100):0}%)
+
+CHI PHÍ VẬN HÀNH: ${fvnd(s.opex)}
+${opexDetails}
+
+LỢI NHUẬN RÒNG: ${s.net>=0?'+':''}${fvnd(s.net)} — Tỷ suất: ${s.margin}%
+
+Viết phân tích THỰC TẾ (3-4 đoạn <div class="aii">...</div>) tập trung vào:
+1. Điểm mạnh / yếu cụ thể của kỳ này (so với ngưỡng chuẩn: NVL ≤35%, tỷ suất ≥20%)
+2. Nguồn doanh thu nào mạnh/yếu, tại sao
+3. Chi phí nào bất thường hoặc cần kiểm soát
+4. Đề xuất 2-3 hành động cụ thể tuần tới với kết quả kỳ vọng
+
+Không rập khuôn, dùng số liệu thực, viết bằng tiếng Việt.`;
+  }
+  const raw = await callClaudeText(prompt);
+  // Return as-is (already contains aii divs) or wrap
+  if(raw.includes('<div class="aii">')) return raw;
+  return `<div class="aii">${raw.replace(/\n\n/g,'</div><div class="aii">').replace(/\n/g,'<br>')}</div>`;
+}
+
+function buildFallbackEmailAnalysis(s){
+  if(s.margin>=20) return `<b>✅ Kết quả tốt!</b> Tỷ suất ${s.margin}% đạt mục tiêu. NVL kiểm soát ở ${s.cogsp}%.<br><br><b>Tiếp tục:</b> Đẩy mạnh doanh thu online, duy trì định mức NVL hiện tại.`;
+  if(s.margin>=10) return `Tỷ suất ${s.margin}% còn dưới mục tiêu 20%. NVL ${s.cogsp}%.<br><br><b>Cần làm:</b> Tối ưu nhân sự giờ thấp điểm, tăng đơn online.`;
+  if(s.margin>=0) return `Tỷ suất ${s.margin}% — <b>thấp hơn mục tiêu</b>. NVL chiếm ${s.cogsp}%.<br><br><b>Khẩn:</b> Audit định mức NVL, cắt chi phí không thiết yếu.`;
+  return `<b style="color:#E53E3E">⚠️ Đang lỗ ${fvnd(Math.abs(s.net))}!</b> Cần can thiệp ngay.<br><br><b>Hành động:</b> Audit hao phí từng ca, tạm dừng CTKM giảm biên.`;
+}
+
+async function generateEmailAnalysis(s, sid, m, y){
+  const prompt = `Bạn là chuyên gia tài chính Phúc Tea. Viết phần "Nhận định & đề xuất" cho email báo cáo gửi chủ cửa hàng ${sid} tháng ${m}/${y}.
+
+Số liệu: DT ${fvnd(s.rev)}, LN ${s.net>=0?'+':''}${fvnd(s.net)}, tỷ suất ${s.margin}%, NVL ${s.cogsp}%.
+Chi tiết thu: ${JSON.stringify(s.rcat||{})}
+Chi tiết COGS: ${JSON.stringify(s.cocat||{})}
+Chi tiết OPEX: ${JSON.stringify(s.ocat||{})}
+
+Viết 2-3 đoạn văn THỰC TẾ, THÂN THIỆN dành cho chủ shop (không phải kế toán). Tone: chuyên nghiệp nhưng gần gũi, khích lệ khi tốt, thẳng thắn khi cần cải thiện. Dùng tiếng Việt tự nhiên. Kết thúc bằng 1-2 hành động cụ thể cần làm ngay. Không dùng HTML, chỉ dùng <br> để xuống dòng.`;
+  return await callClaudeText(prompt);
+}
+
+// ===== EXCEL REVENUE IMPORT (iPos/Fabi format) =====
+let xlsxData = null;
+let xlsxPendingTx = [];
+let xlsxFile = null; // stored file reference (input gets cleared after selection)
+
+const FOOD_APP_SOURCES = ['grab','grabfood','shopee','shopeefood','baemin','gofood','goviet','loship','ahamove','momo','zalopay','vnpay','food app','foodapp','delivery','app','now'];
+
+function isFoodApp(name){
+  const n = (name||'').toLowerCase().replace(/\s/g,'');
+  return FOOD_APP_SOURCES.some(k=>n.includes(k.replace(/\s/g,'')));
+}
+
+function handleXlsxDrop(e){
+  e.preventDefault();
+  document.getElementById('xlsx-drop').classList.remove('over');
+  const f = Array.from(e.dataTransfer.files).find(f=>f.name.match(/\.(xlsx|xls|csv)$/i));
+  if(f){ xlsxFile=f; processXlsxFile(f); }
+}
+
+function handleXlsxSelect(e){
+  const f = e.target.files[0];
+  if(f){ xlsxFile=f; processXlsxFile(f); }
+  // NOTE: do NOT clear e.target.value here — we need the file reference to persist
+}
+
+function processXlsxFile(file){
+  xlsxData = null;
+  xlsxPendingTx = [];
+  document.getElementById('xlsx-results').innerHTML='';
+  document.getElementById('xlsx-confirm-bar').style.display='none';
+  
+  const info = document.getElementById('xlsx-file-info');
+  info.style.display='block';
+  info.textContent = `📄 ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+  
+  document.getElementById('btn-xlsx-analyze').style.display='flex';
+}
+
+async function analyzeXlsx(){
+  if(!xlsxFile){toast('Chon file Excel truoc','terr');return;}
+  const apiKey = window._aiKey || C.apiKey || '';
+  if(!apiKey && !C.apiUrl){
+    toast('Can API Key Anthropic hoac Apps Script URL. Vao Cai dat.','terr');
+    openSetup(); return;
+  }
+  document.getElementById('btn-xlsx-analyze').style.display='none';
+  document.getElementById('xlsx-thinking').style.display='flex';
+  document.getElementById('xlsx-thinking-txt').textContent='Dang doc file Excel...';
+  document.getElementById('xlsx-results').innerHTML='';
+  document.getElementById('xlsx-confirm-bar').style.display='none';
+  try{
+    const buf = await xlsxFile.arrayBuffer();
+    const wb = XLSX.read(buf, {type:'array', cellDates:false});
+    const parsed = [];
+    const totalSheets = wb.SheetNames.length;
+    for(let si=0; si<totalSheets; si++){
+      const sheetName = wb.SheetNames[si];
+      document.getElementById('xlsx-thinking-txt').textContent=`AI đang phân tích sheet ${si+1}/${totalSheets}: ${sheetName}...`;
+      await new Promise(r=>setTimeout(r,30));
+      const ws = wb.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:true});
+      if(!rows.length) continue;
+      const maxRows = Math.min(rows.length, 200);
+      const usedRows = rows.slice(0, maxRows);
+      let maxCols = 0;
+      usedRows.forEach(r=>{if(r.length>maxCols) maxCols=r.length;});
+      maxCols = Math.min(maxCols, 20);
+      const csvText = usedRows.map(row=>
+        Array.from({length:maxCols},(_,ci)=>String(row[ci]??'').replace(/\n/g,' ')).join('\t')
+      ).join('\n');
+      const prompt = `Ban la chuyen gia phan tich du lieu ban hang iPos/Fabi. Day la du lieu raw tu sheet "${sheetName}" (tab-separated, moi sheet = 1 cua hang):\n\`\`\`\n${csvText}\n\`\`\`\n\nNhiem vu - Trich xuat du lieu theo quy tac:\n1. DOANH THU (Thu): Tong Gross tung nguon don hang (GrabFood, ShopeeFood, Mang ve, Tai cho...) theo tung THANG. Lay so Gross truoc chiet khau. Giu nguyen ten nguon.\n2. CHIET KHAU (Chi): Tong chiet khau tung nguon theo thang. GrabFood/ShopeeFood/food app -> "Chiet khau food app". Nguon khac -> "Chiet khau CTKM".\n3. Bo qua cac cot khac.\n\nTra ve JSON array THUAN TUY (KHONG markdown), vi du:\n[{"month":"2026-01","sources":[{"name":"GrabFood","gross":12500000,"discount":1250000},{"name":"Mang ve","gross":8000000,"discount":0}]}]\n\nNeu khong co du lieu hop le, tra ve [].`;
+      try{
+        const raw = await callClaudeText(prompt);
+        let txt = raw.trim().replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+        const m = txt.match(/\[[\s\S]*\]/);
+        if(m) txt = m[0];
+        const arr = JSON.parse(txt);
+        if(!Array.isArray(arr)||!arr.length){
+          parsed.push({sheetName, error:'AI khong tim thay du lieu doanh thu trong sheet nay.', monthGroups:{}, discountGroups:{}, rows:0});
+          continue;
+        }
+        const monthGroups={}, discountGroups={};
+        arr.forEach(({month, sources})=>{
+          const mk = String(month||'unknown');
+          if(!monthGroups[mk]) monthGroups[mk]={};
+          if(!discountGroups[mk]) discountGroups[mk]={};
+          (sources||[]).forEach(({name, gross, discount})=>{
+            const src=String(name||'').trim()||'Doanh thu';
+            monthGroups[mk][src]=(monthGroups[mk][src]||0)+(Number(gross)||0);
+            const disc=Math.abs(Number(discount)||0);
+            if(disc>0){
+              if(!discountGroups[mk][src]) discountGroups[mk][src]={gross:0,discount:0};
+              discountGroups[mk][src].gross+=(Number(gross)||0);
+              discountGroups[mk][src].discount+=disc;
+            }
+          });
+        });
+        parsed.push({sheetName, monthGroups, discountGroups, rows:arr.length});
+      }catch(aiErr){
+        parsed.push({sheetName, error:'Loi AI: '+aiErr.message, monthGroups:{}, discountGroups:{}, rows:0});
+      }
+    }
+    xlsxData = parsed;
+    document.getElementById('xlsx-thinking').style.display='none';
+    renderXlsxResults(parsed);
+  }catch(err){
+    document.getElementById('xlsx-thinking').style.display='none';
+    document.getElementById('btn-xlsx-analyze').style.display='flex';
+    console.error(err);
+    toast('Loi doc file: '+err.message,'terr');
+  }
+}
+
+function renderXlsxResults(parsed){
+  const container = document.getElementById('xlsx-results');
+  xlsxPendingTx = [];
+  
+  if(!parsed.length){
+    container.innerHTML='<div style="color:var(--gray);padding:16px;text-align:center">Không có sheet nào hợp lệ</div>';
+    return;
+  }
+  
+  let html = '';
+  let totalTx = 0;
+  
+  parsed.forEach((sheet, si) => {
+    if(sheet.error){
+      html += `<div style="background:var(--red-l);border-radius:var(--rs);padding:10px;margin-bottom:10px;font-size:12px;color:var(--red)">
+        ❌ <strong>${sheet.sheetName}</strong>: ${sheet.error}
+      </div>`;
+      return;
+    }
+    
+    // Match sheet name to store
+    const matchedStore = ST.find(s=>
+      sheet.sheetName.toLowerCase().includes(s.id.toLowerCase()) ||
+      (s.name&&sheet.sheetName.toLowerCase().includes(s.name.toLowerCase().split('–')[0].trim())) ||
+      (s.name&&s.name.toLowerCase().includes(sheet.sheetName.toLowerCase()))
+    );
+    
+    const storeOpts = `<option value="">-- Chọn cửa hàng --</option>${ST.map(s=>`<option value="${s.id}"${matchedStore&&matchedStore.id===s.id?' selected':''}>${s.name||s.id}</option>`).join('')}`;
+    
+    const months = Object.keys(sheet.monthGroups).sort();
+    if(!months.length) return;
+    
+    html += `<div style="border:1.5px solid var(--gold);border-radius:var(--r);padding:14px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <strong style="font-size:13px">📋 Sheet: ${sheet.sheetName}</strong>
+        <span style="font-size:11px;color:var(--gray)">${sheet.rows} dòng · ${months.length} tháng</span>
+      </div>
+      <div style="margin-bottom:8px">
+        <label class="fl" style="font-size:10px">Cửa hàng tương ứng</label>
+        <select style="width:100%;font-family:inherit;font-size:12px;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;background:var(--white)" id="xlsx-store-${si}" onchange="rebuildXlsxTx()">
+          ${storeOpts}
+        </select>
+      </div>`;
+    
+    months.forEach(mk => {
+      const [yr, mo] = mk === 'unknown' ? ['?','?'] : mk.split('-');
+      const sources = sheet.monthGroups[mk];
+      const discounts = sheet.discountGroups[mk]||{};
+      const totalGross = Object.values(sources).reduce((a,b)=>a+b,0);
+      
+      html += `<div style="background:var(--gray-l);border-radius:var(--rs);padding:10px;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--brown);margin-bottom:6px">
+          📅 Tháng ${mo}/${yr} — Tổng Gross: <span style="color:var(--green)">${fvnd(totalGross)}</span>
+        </div>
+        <div style="font-size:11px;color:var(--gray);margin-bottom:6px">Thu:</div>`;
+      
+      Object.entries(sources).forEach(([src, amt]) => {
+        const txId = `xlsx-${si}-${mk}-${src.replace(/\s+/g,'')}`;
+        html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;margin-bottom:4px;font-size:11px">
+          <span style="color:var(--brown)">${src||'(không tên)'}</span>
+          <input type="number" id="${txId}-amt" value="${amt}" style="width:110px;text-align:right;font-family:inherit;font-size:11px;padding:3px 6px;border:1px solid var(--border);border-radius:4px" onchange="rebuildXlsxTx()">
+          <span style="color:var(--gray);font-size:10px">₫</span>
+        </div>`;
+        totalTx++;
+        
+        // Check if there's a discount for this source
+        const disc = discounts[src];
+        if(disc && disc.discount > 0){
+          const discTxId = `${txId}-disc`;
+          const discCat = isFoodApp(src) ? 'Chiết khấu food app' : 'Chiết khấu CTKM';
+          html += `<div style="display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:center;margin-bottom:4px;font-size:11px;opacity:.8">
+            <span style="color:var(--red)">↳ Chiết khấu ${src} → <em>${discCat}</em></span>
+            <input type="number" id="${discTxId}-amt" value="${disc.discount}" style="width:110px;text-align:right;font-family:inherit;font-size:11px;padding:3px 6px;border:1px solid var(--red);border-radius:4px;color:var(--red)" onchange="rebuildXlsxTx()">
+            <span style="color:var(--gray);font-size:10px">₫</span>
+          </div>`;
+          totalTx++;
+        }
+      });
+      
+      html += `</div>`;
+    });
+    
+    html += `</div>`;
+  });
+  
+  container.innerHTML = html;
+  rebuildXlsxTx();
+  
+  document.getElementById('xlsx-confirm-summary').textContent = `Tìm thấy ${totalTx} khoản doanh thu. Kiểm tra cửa hàng và số liệu trước khi lưu.`;
+  document.getElementById('xlsx-confirm-bar').style.display = totalTx ? 'block' : 'none';
+}
+
+function rebuildXlsxTx(){
+  if(!xlsxData) return;
+  xlsxPendingTx = [];
+  
+  xlsxData.forEach((sheet, si) => {
+    if(sheet.error) return;
+    const storeId = document.getElementById('xlsx-store-'+si)?.value;
+    if(!storeId) return;
+    
+    const months = Object.keys(sheet.monthGroups).sort();
+    months.forEach(mk => {
+      const [yr, mo] = mk === 'unknown' ? [new Date().getFullYear().toString(), String(new Date().getMonth()+1).padStart(2,'0')] : mk.split('-');
+      const sources = sheet.monthGroups[mk];
+      const discounts = sheet.discountGroups[mk]||{};
+      const today = `${yr}-${mo}-01`;
+      
+      Object.entries(sources).forEach(([src, amt]) => {
+        const txId = `xlsx-${si}-${mk}-${src.replace(/\s+/g,'')}`;
+        const inputAmt = parseFloat(document.getElementById(txId+'-amt')?.value||amt)||amt;
+        if(inputAmt>0){
+          xlsxPendingTx.push({
+            date: today, month: mo, year: yr, store: storeId,
+            type:'thu', category: src||'Doanh thu', amount: inputAmt, note:`Import Excel ${sheet.sheetName}`
+          });
+        }
+        
+        const disc = discounts[src];
+        if(disc && disc.discount > 0){
+          const discTxId = `xlsx-${si}-${mk}-${src.replace(/\s+/g,'')}-disc`;
+          const discAmt = parseFloat(document.getElementById(discTxId+'-amt')?.value||disc.discount)||disc.discount;
+          const discCat = isFoodApp(src) ? 'Chiết khấu food app' : 'Chiết khấu CTKM';
+          if(discAmt>0){
+            xlsxPendingTx.push({
+              date: today, month: mo, year: yr, store: storeId,
+              type:'chi', category: discCat, amount: discAmt, note:`Chiết khấu ${src} — Import Excel ${sheet.sheetName}`
+            });
+          }
+        }
+      });
+    });
+  });
+}
+
+async function saveXlsxAll(){
+  rebuildXlsxTx();
+  if(!xlsxPendingTx.length){toast('Không có dữ liệu hợp lệ (chọn cửa hàng cho từng sheet)','terr');return;}
+  
+  const hasStore = xlsxPendingTx.some(t=>!!t.store);
+  if(!hasStore){toast('Vui lòng chọn cửa hàng cho ít nhất 1 sheet','terr');return;}
+  
+  const validTx = xlsxPendingTx.filter(t=>t.store&&t.amount>0);
+  load(`Đang lưu ${validTx.length} giao dịch...`);
+  
+  let saved=0, failed=0;
+  for(const tx of validTx){
+    TX.push(tx); REC.unshift(tx);
+    if(C.apiUrl){
+      try{
+        await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
+          body:JSON.stringify({action:'addTransaction',...tx})});
+        saved++;
+      }catch(e){failed++;}
+    } else { saved++; }
+  }
+  
+  unload();
+  rRec(); rDash();
+  toast(`✅ Đã lưu ${saved} giao dịch thu từ Excel${failed?' ('+failed+' lỗi Sheets)':''}`, failed?'twarn':'tok');
+  clearXlsx();
+}
+
+function clearXlsx(){
+  xlsxData = null; xlsxPendingTx = []; xlsxFile = null;
+  document.getElementById('xlsx-results').innerHTML='';
+  document.getElementById('xlsx-confirm-bar').style.display='none';
+  document.getElementById('btn-xlsx-analyze').style.display='none';
+  document.getElementById('xlsx-file-info').style.display='none';
+  document.getElementById('xlsx-file-input').value='';
 }
 
 </script>
