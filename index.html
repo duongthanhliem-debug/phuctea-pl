@@ -670,9 +670,9 @@ function clean(s){return s?String(s).replace(/^"|"$/g,'').trim():'';}
 // ===== DEMO DATA =====
 function loadDemo(){
   ST=[
-    {id:'CENTER001',name:'CENTER001 – Cần Thơ',area:'Cần Thơ',addr:'30/4, Ninh Kiều',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active',owner:'Nguyễn Văn A',phone:'0909111222'},
-    {id:'CENTER002',name:'CENTER002 – Cần Thơ',area:'Cần Thơ',addr:'Hùng Vương, Ninh Kiều',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active',owner:'Trần Thị B',phone:'0909333444'},
-    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',area:'Vĩnh Long',addr:'Phạm Thái Bường',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active',owner:'Lê Văn C',phone:'0909555666'},
+    {id:'CENTER001',name:'CENTER001 – Cần Thơ',addr:'30/4, Ninh Kiều',area:'Cần Thơ',owner:'Nguyễn Văn A',phone:'0909111222',email:'center001@phuctea.com',openDate:'2024-01-01',status:'active'},
+    {id:'CENTER002',name:'CENTER002 – Cần Thơ',addr:'Hùng Vương, Ninh Kiều',area:'Cần Thơ',owner:'Trần Thị B',phone:'0909333444',email:'center002@phuctea.com',openDate:'2024-03-01',status:'active'},
+    {id:'CENTER003',name:'CENTER003 – Vĩnh Long',addr:'Phạm Thái Bường',area:'Vĩnh Long',owner:'Lê Văn C',phone:'0909555666',email:'center003@phuctea.com',openDate:'2024-06-01',status:'active'},
   ];
   const mk=(sid,m,y,rev,cogs,opex)=>{
     const rows=[];
@@ -968,10 +968,10 @@ function saveStore(){
 
   if(editingStoreId){
     const idx=ST.findIndex(s=>s.id===editingStoreId);
-    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,owner,phone,openDate,status};
+    if(idx>=0)ST[idx]={id:editingStoreId,name,addr,area,owner,phone,email,openDate,status};
   }else{
     if(ST.find(s=>s.id===id)){toast('ID đã tồn tại!','terr');return;}
-    ST.push({id,name,area,addr,email,owner,phone,openDate,status});
+    ST.push({id,name,addr,area,owner,phone,email,openDate,status});
   }
 
   closeStoreModal();
