@@ -631,7 +631,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
           </div>
           <div class="fg">
             <label class="fl">Chữ ký</label>
-            <input type="text" class="fc" id="e-sig" value="Thanh Liêm — Operation Manager | 0357 636 539">
+            <input type="text" class="fc" id="e-sig" value="Thanh Liêm — Operations Manager | 0357 636 539">
           </div>
           <button class="btn bp" style="width:100%" onclick="applyEdit()">✓ Áp dụng & Xem trước</button>
         </div>
@@ -644,7 +644,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 // ===== STATE =====
 let C={sheetId:'',apiUrl:'',demo:false};
 let TX=[],ST=[],REC=[];
-let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operation Manager | 0357 636 539'};
+let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operations Manager | 0357 636 539'};
 let editingStoreId=null;
 
 const COGS=[
@@ -1155,7 +1155,7 @@ function buildEmailHTML(store,s,m,y){
   let analysis = emailEdits._lastAiAnalysis || buildFallbackEmailAnalysis(s);
 
   const greeting=emailEdits.greeting||`Kính gửi anh/chị <b>${storeInfo.owner?storeInfo.owner+' — ':''} ${storeInfo.name||store}</b>,`;
-  const sig=emailEdits.sig||'Thanh Liêm — Operation Manager | 0357 636 539';
+  const sig=emailEdits.sig||'Thanh Liêm — Operations Manager | 0357 636 539';
   const extra=emailEdits.extra?`<p style="color:#718096;font-size:14px;margin-top:12px">${emailEdits.extra}</p>`:'';
 
   return `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
