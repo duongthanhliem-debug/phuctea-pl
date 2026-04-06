@@ -6,6 +6,7 @@
 <title>Phúc Tea P&L Hub</title>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <style>
 :root{
   --gold:#F5A623;--gold-l:#FDF3E3;--gold-m:#F7C56E;
@@ -254,6 +255,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     <div class="ntab"     onclick="go('pl')">📋 P&L</div>
     <div class="ntab"     onclick="go('input')">✏️ Nhập liệu</div>
     <div class="ntab"     onclick="go('email')">📧 Email</div>
+    <div class="ntab"     onclick="go('schedule')">⏰ Lịch gửi</div>
   </div>
   <div class="nright">
     <span class="nbadge" id="abadge" style="display:none">0</span>
@@ -266,6 +268,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
   <div class="mb"    onclick="go('pl')"><span class="mi">📋</span>P&L</div>
   <div class="mb"    onclick="go('input')"><span class="mi">✏️</span>Nhập</div>
   <div class="mb"    onclick="go('email')"><span class="mi">📧</span>Email</div>
+  <div class="mb"    onclick="go('schedule')"><span class="mi">⏰</span>Lịch</div>
 </div>
 
 <!-- ========== DASHBOARD ========== -->
@@ -606,6 +609,21 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
             <div id="schedule-info" style="font-size:11px;color:var(--brown-m);margin-top:5px;display:none"></div>
           </div>
 
+          <!-- ATTACHMENTS -->
+          <div class="fg" style="background:var(--white);border:1.5px solid var(--border);border-radius:var(--rs);padding:11px">
+            <label class="fl">📎 Tệp đính kèm</label>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:5px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer">
+                <input type="checkbox" id="e-attach-pl" checked> Tự động đính kèm Báo cáo P&L (PDF)
+              </label>
+              <div style="border-top:1px solid var(--border);padding-top:8px">
+                <label class="fl" style="font-size:10px">Thêm tệp thủ công (PDF, Excel, Ảnh...)</label>
+                <input type="file" id="e-manual-files" multiple style="font-size:11px;width:100%" onchange="handleManualFiles(event)">
+                <div id="manual-files-list" style="margin-top:5px;display:flex;flex-wrap:wrap;gap:5px"></div>
+              </div>
+            </div>
+          </div>
+
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px">
             <button class="btn bo" onclick="previewEmail()">🔎 Xem trước</button>
             <button class="btn bp" onclick="sendOne()">📧 Gửi email</button>
@@ -664,12 +682,58 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
   </div>
 </div>
 
+<!-- ========== SCHEDULED EMAILS ========== -->
+<div class="page" id="p-schedule">
+  <div class="ph">
+    <div><div class="pt">Danh sách email đã lên lịch</div><div class="ps">Xem lại, chỉnh sửa hoặc hủy các email chưa gửi</div></div>
+    <div class="fb">
+      <button class="btn bo" onclick="loadScheduledEmails()">🔄 Làm mới</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch">
+      <div class="ct">Email đang chờ gửi</div>
+      <div style="font-size:12px;color:var(--gray)" id="schedule-count">0 email</div>
+    </div>
+    <div id="schedule-list">
+      <div class="empty2">Đang tải danh sách...</div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SCHEDULE MODAL -->
+<div class="overlay off" id="edit-schedule-modal">
+  <div class="modal">
+    <div class="mlogo">✏️ Sửa lịch gửi email</div>
+    <div style="height:16px"></div>
+    <div class="fg">
+      <label class="mlabel">Người nhận</label>
+      <input class="minput" id="esched-to" type="email">
+    </div>
+    <div class="fg">
+      <label class="mlabel">Tiêu đề</label>
+      <input class="minput" id="esched-subject">
+    </div>
+    <div class="fr">
+      <div class="fg"><label class="mlabel">Ngày gửi</label><input class="minput" id="esched-date" type="date"></div>
+      <div class="fg"><label class="mlabel">Giờ gửi (24h)</label><input class="minput" id="esched-time" type="time"></div>
+    </div>
+    <input type="hidden" id="esched-id">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+      <button class="mbtn" style="background:var(--gray-l);color:var(--brown);margin-top:0" onclick="closeEditScheduleModal()">Hủy</button>
+      <button class="mbtn" style="margin-top:0" onclick="updateScheduledEmail()">Lưu thay đổi</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ===== STATE =====
 let C={sheetId:'',apiUrl:'',demo:false};
 let TX=[],ST=[],REC=[];
 let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operations Manager | 0357 636 539'};
 let editingStoreId=null;
+let manualAttachments=[];
+let scheduledEmails=[];
 
 const COGS=[
   'NVL hệ thống','NVL địa phương','Chi phí vận chuyển','Vật phẩm','Công nợ','Nhập đồ ăn vặt'];
@@ -839,6 +903,8 @@ function agg(month,year){
 // ===== RENDER ALL =====
 function renderAll(){
   fillSels();rDash();rPL();rStores();rBulk();updateApiSt();
+  const schedPage = document.getElementById('p-schedule');
+  if(schedPage && schedPage.classList.contains('on')) loadScheduledEmails();
 }
 
 function fillSels(){
@@ -1301,15 +1367,45 @@ async function sendOne(){
   try{emailEdits._lastAiAnalysis=await generateEmailAnalysis(s,sid,m,y);}catch(e){emailEdits._lastAiAnalysis=buildFallbackEmailAnalysis(s);}
   const html=buildEmailHTML(sid,s,m,y);
   const subj=emailEdits.subject||`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y} — ${ST.find(x=>x.id===sid)?.name||sid}`;
+  
+  // Attachments
+  const attachments = [...manualAttachments];
+  if(document.getElementById('e-attach-pl').checked){
+    load('Đang tạo báo cáo PDF...');
+    try {
+      const pdfBase64 = await generatePLPDFBase64(sid, m, y);
+      attachments.push({
+        name: `PL_${sid}_T${m}_${y}.pdf`,
+        type: 'application/pdf',
+        data: pdfBase64
+      });
+    } catch(e) {
+      console.error('PDF error', e);
+      if(!confirm('Không thể tạo PDF báo cáo. Vẫn tiếp tục gửi email không đính kèm?')) { unload(); return; }
+    }
+  }
+
   load(isScheduled?'Đang lên lịch gửi email...':'Đang gửi email...');
   try{
     await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({action:'sendEmail',email:to,subject:subj,htmlBody:html,sendDate,sendTime,scheduled:isScheduled})});
+      body:JSON.stringify({
+        action:'sendEmail',
+        email:to,
+        subject:subj,
+        htmlBody:html,
+        sendDate,
+        sendTime,
+        scheduled:isScheduled,
+        attachments: attachments
+      })});
     if(isScheduled){
       toast(`✅ Đã lên lịch gửi email lúc ${sendTime||'00:00'} ngày ${sendDate||'hôm nay'}!`,'tok');
     }else{
       toast(`✓ Đã gửi email tới ${to}`,'tok');
     }
+    // Clear manual attachments after send
+    manualAttachments = [];
+    renderManualFileList();
   }catch(e){toast('Lỗi: '+e.message,'terr');}
   finally{unload();}
 }
@@ -1357,9 +1453,32 @@ async function sendSelected(){
     const s=ss.find(x=>x.id===st.id)||{rev:0,net:0,margin:0,gross:0,cogs:0,opex:0,cogsp:0};
     const html=buildEmailHTML(st.id,s,m,y);
     const subj=`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y} — ${st.name||st.id}`;
+    
+    // Attachments for bulk
+    const attachments = [...manualAttachments];
+    if(document.getElementById('e-attach-pl').checked){
+      try {
+        const pdfBase64 = await generatePLPDFBase64(st.id, m, y);
+        attachments.push({
+          name: `PL_${st.id}_T${m}_${y}.pdf`,
+          type: 'application/pdf',
+          data: pdfBase64
+        });
+      } catch(e) { console.error('PDF error bulk', st.id, e); }
+    }
+
     try{
       await fetch(C.apiUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},
-        body:JSON.stringify({action:'sendEmail',email:st.email,subject:subj,htmlBody:html,sendDate,sendTime,scheduled:isScheduled})});
+        body:JSON.stringify({
+          action:'sendEmail',
+          email:st.email,
+          subject:subj,
+          htmlBody:html,
+          sendDate,
+          sendTime,
+          scheduled:isScheduled,
+          attachments: attachments
+        })});
       ok++;
     }catch(e){fail++;}
     document.getElementById('ltxt').textContent=`Đã xử lý ${ok+fail}/${selected.length}...`;
@@ -1377,8 +1496,8 @@ async function sendSelected(){
 function go(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-'+id).classList.add('on');
-  document.querySelectorAll('.ntab').forEach((t,i)=>t.classList.toggle('on',['dash','stores','pl','input','email'][i]===id));
-  document.querySelectorAll('.mb').forEach((b,i)=>b.classList.toggle('on',['dash','stores','pl','input','email'][i]===id));
+  document.querySelectorAll('.ntab').forEach((t,i)=>t.classList.toggle('on',['dash','stores','pl','input','email','schedule'][i]===id));
+  document.querySelectorAll('.mb').forEach((b,i)=>b.classList.toggle('on',['dash','stores','pl','input','email','schedule'][i]===id));
   window.scrollTo(0,0);
 }
 
@@ -2398,13 +2517,215 @@ async function saveXlsxAll(){
 
 function clearXlsx(){
   xlsxData = null; xlsxPendingTx = []; xlsxFile = null;
+  document.getElementById('xlsx-file-info').style.display='none';
   document.getElementById('xlsx-results').innerHTML='';
   document.getElementById('xlsx-confirm-bar').style.display='none';
   document.getElementById('btn-xlsx-analyze').style.display='none';
-  document.getElementById('xlsx-file-info').style.display='none';
   document.getElementById('xlsx-file-input').value='';
 }
 
+// ===== PDF GENERATION FOR ATTACHMENT =====
+async function generatePLPDFBase64(sid, m, y){
+  const ss=agg(m,y);
+  const s=ss.find(x=>x.id===sid);
+  if(!s||!s.rev) throw new Error('No data');
+  const storeInfo=ST.find(x=>x.id===sid)||{name:sid};
+  const period=(m?'Tháng '+m+'/':'')+y;
+  const pct=v=>s.rev>0?Math.round(v/s.rev*100)+'%':'—';
+  const col=s.net>=0?'#2D8248':'#E53E3E';
+
+  const makeRow=(label,val,pctVal,bg,bold)=>`
+    <tr style="background:${bg||'#fff'}">
+      <td style="padding:9px 13px;font-weight:${bold?700:400};color:${bold?'#3D2B1F':'#555'}">${label}</td>
+      <td style="padding:9px 13px;text-align:right;font-weight:${bold?700:400}">${val}</td>
+      <td style="padding:9px 13px;text-align:right;color:#718096">${pctVal}</td>
+    </tr>`;
+
+  let revRows='', cogsRows='', opexRows='';
+  Object.entries(s.rcat).forEach(([k,v])=>{if(v)revRows+=makeRow('&nbsp;&nbsp;'+k,fvnd(v),pct(v));});
+  Object.entries(s.cocat).forEach(([k,v])=>{if(v)cogsRows+=makeRow('&nbsp;&nbsp;'+k,fvnd(v),pct(v));});
+  Object.entries(s.ocat).forEach(([k,v])=>{if(v)opexRows+=makeRow('&nbsp;&nbsp;'+k,fvnd(v),pct(v));});
+
+  const content=`<div style="font-family:'Be Vietnam Pro',Arial;padding:40px;color:#3D2B1F">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;border-bottom:3px solid #F5A623;padding-bottom:20px">
+      <div>
+        <h1 style="font-size:24px;margin:0">BÁO CÁO P&L — ${storeInfo.name}</h1>
+        <div style="font-size:14px;color:#718096;margin-top:5px">Kỳ báo cáo: ${period} · Xuất ngày: ${new Date().toLocaleDateString('vi-VN')}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-weight:700;color:#F5A623;font-size:18px">Phúc Tea</div>
+        <div style="font-size:12px;color:#718096">Financial Report</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:15px;margin-bottom:30px">
+      <div style="background:#FDF3E3;padding:15px;border-radius:10px;text-align:center">
+        <div style="font-size:11px;color:#718096;text-transform:uppercase">Doanh thu</div>
+        <div style="font-size:18px;font-weight:700;color:#2D8248;margin-top:5px">${fvnd(s.rev)}</div>
+      </div>
+      <div style="background:#FAF7F2;padding:15px;border-radius:10px;text-align:center">
+        <div style="font-size:11px;color:#718096;text-transform:uppercase">Lợi nhuận ròng</div>
+        <div style="font-size:18px;font-weight:700;color:${col};margin-top:5px">${s.net>=0?'+':''}${fvnd(s.net)}</div>
+      </div>
+      <div style="background:#FDF3E3;padding:15px;border-radius:10px;text-align:center">
+        <div style="font-size:11px;color:#718096;text-transform:uppercase">Tỷ suất LN</div>
+        <div style="font-size:18px;font-weight:700;color:${col};margin-top:5px">${s.margin}%</div>
+      </div>
+      <div style="background:#FAF7F2;padding:15px;border-radius:10px;text-align:center">
+        <div style="font-size:11px;color:#718096;text-transform:uppercase">CP Nguyên liệu</div>
+        <div style="font-size:18px;font-weight:700;margin-top:5px">${s.cogsp}%</div>
+      </div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">
+      <thead style="background:#3D2B1F;color:#F5A623">
+        <tr><th style="padding:12px;text-align:left">HẠNG MỤC</th><th style="padding:12px;text-align:right">SỐ TIỀN (VNĐ)</th><th style="padding:12px;text-align:right">% DT</th></tr>
+      </thead>
+      <tbody>
+        <tr style="background:#FAF7F2;font-weight:700"><td colspan="3" style="padding:10px">A — DOANH THU</td></tr>
+        ${revRows}
+        <tr style="background:#FDF3E3;font-weight:700"><td style="padding:10px">TỔNG DOANH THU</td><td style="text-align:right;padding:10px">${fvnd(s.rev)}</td><td style="text-align:right;padding:10px">100%</td></tr>
+        <tr style="background:#FAF7F2;font-weight:700"><td colspan="3" style="padding:10px">B — CHI PHÍ VỐN BÁN HÀNG (COGS)</td></tr>
+        ${cogsRows}
+        <tr style="background:#FDF3E3;font-weight:700"><td style="padding:10px">TỔNG CPVBH</td><td style="text-align:right;padding:10px;color:#E53E3E">${fvnd(s.cogs)}</td><td style="text-align:right;padding:10px;color:#718096">${pct(s.cogs)}</td></tr>
+        <tr style="background:#FDF3E3;font-weight:700;border-top:2px solid #3D2B1F"><td style="padding:10px">(1) LỢI NHUẬN GỘP</td><td style="text-align:right;padding:10px;color:${s.gross>=0?'#2D8248':'#E53E3E'}">${s.gross>=0?'+':''}${fvnd(s.gross)}</td><td style="text-align:right;padding:10px">${pct(s.gross)}</td></tr>
+        <tr style="background:#FAF7F2;font-weight:700"><td colspan="3" style="padding:10px">C — CHI PHÍ VẬN HÀNH</td></tr>
+        ${opexRows}
+        <tr style="background:#FDF3E3;font-weight:700"><td style="padding:10px">TỔNG CPVH</td><td style="text-align:right;padding:10px;color:#E53E3E">${fvnd(s.opex)}</td><td style="text-align:right;padding:10px;color:#718096">${pct(s.opex)}</td></tr>
+        <tr style="background:#3D2B1F;color:#fff;font-weight:700"><td style="padding:12px">LỢI NHUẬN RÒNG</td><td style="text-align:right;padding:12px;color:#F5A623;font-size:18px">${s.net>=0?'+':''}${fvnd(s.net)}</td><td style="text-align:right;padding:12px;color:#F5A623">${s.margin}%</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:40px;border-top:1px solid #E8E0D4;padding-top:20px;text-align:center;font-size:12px;color:#718096">
+      © ${y} Phúc Tea · Hệ thống quản trị P&L Hub · Báo cáo được tạo tự động
+    </div>
+  </div>`;
+
+  const worker = html2pdf().from(content).set({
+    margin: 0,
+    filename: `PL_${sid}.pdf`,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  });
+
+  return await worker.output('datauristring');
+}
+
+// ===== MANUAL ATTACHMENTS =====
+async function handleManualFiles(e){
+  const files = Array.from(e.target.files);
+  for(const f of files){
+    if(f.size > 5 * 1024 * 1024){ toast(`File ${f.name} quá lớn (tối đa 5MB)`,'terr'); continue; }
+    try {
+      const b64 = await fileToBase64(f);
+      manualAttachments.push({name: f.name, type: f.type, data: b64});
+    } catch(err) { toast(`Lỗi đọc file ${f.name}`,'terr'); }
+  }
+  renderManualFileList();
+  e.target.value = '';
+}
+
+function renderManualFileList(){
+  const container = document.getElementById('manual-files-list');
+  container.innerHTML = manualAttachments.map((f,i)=>`
+    <div style="background:var(--gray-l);padding:4px 8px;border-radius:6px;font-size:11px;display:flex;align-items:center;gap:5px;border:1.5px solid var(--border)">
+      <span>📄 ${f.name}</span>
+      <button onclick="removeManualFile(${i})" style="border:none;background:none;color:var(--red);cursor:pointer;font-weight:bold">✕</button>
+    </div>`).join('');
+}
+
+function removeManualFile(i){
+  manualAttachments.splice(i,1);
+  renderManualFileList();
+}
+
+// ===== SCHEDULED EMAILS MANAGEMENT =====
+async function loadScheduledEmails(){
+  if(!C.apiUrl){ document.getElementById('schedule-list').innerHTML='<div class="empty2">Cần API URL để xem danh sách này</div>'; return; }
+  document.getElementById('schedule-list').innerHTML='<div class="empty2">Đang tải...</div>';
+  try {
+    const url = C.apiUrl + (C.apiUrl.includes('?') ? '&' : '?') + 'action=getScheduledEmails';
+    const r = await fetch(url);
+    const data = await r.json();
+    scheduledEmails = data.emails || [];
+    renderScheduledEmails();
+  } catch(e) {
+    document.getElementById('schedule-list').innerHTML=`<div class="empty2">Lỗi tải dữ liệu: ${e.message}</div>`;
+  }
+}
+
+function renderScheduledEmails(){
+  const container = document.getElementById('schedule-list');
+  const countEl = document.getElementById('schedule-count');
+  if(countEl) countEl.textContent = scheduledEmails.length + ' email';
+  
+  if(!scheduledEmails.length){
+    container.innerHTML = '<div class="empty2">Chưa có email nào được lên lịch</div>';
+    return;
+  }
+  container.innerHTML = scheduledEmails.map((e,i)=>{
+    // Format date display nicely
+    let dateStr = e.sendDate;
+    if(dateStr && typeof dateStr === 'string' && dateStr.includes('T')) dateStr = dateStr.split('T')[0];
+    
+    return `<div class="store-row" style="align-items:flex-start">
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:14px;display:flex;align-items:center;gap:8px">
+          ${e.subject || '(Không có tiêu đề)'} <span class="bdg by2" style="font-size:10px">Chờ gửi</span>
+        </div>
+        <div style="font-size:12px;color:var(--gray);margin-top:4px">
+          📧 Tới: <strong>${e.email || '—'}</strong> · ⏰ Lúc: <span style="color:var(--brown)">${e.sendTime || '00:00'} ngày ${dateStr || '—'}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="btn bg" style="font-size:12px;padding:3px 9px" onclick="openEditSchedule(${i})">✏️</button>
+        <button class="btn brd" style="font-size:12px;padding:3px 9px" onclick="cancelScheduledEmail('${e.id}')">🗑️ Huỷ</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openEditSchedule(i){
+  const e = scheduledEmails[i];
+  if(!e)return;
+  document.getElementById('esched-id').value = e.id;
+  document.getElementById('esched-to').value = e.email;
+  document.getElementById('esched-subject').value = e.subject;
+  document.getElementById('esched-date').value = e.sendDate;
+  document.getElementById('esched-time').value = e.sendTime;
+  document.getElementById('edit-schedule-modal').classList.remove('off');
+}
+
+function closeEditScheduleModal(){ document.getElementById('edit-schedule-modal').classList.add('off'); }
+
+async function updateScheduledEmail(){
+  const id = document.getElementById('esched-id').value;
+  const email = document.getElementById('esched-to').value;
+  const subject = document.getElementById('esched-subject').value;
+  const sendDate = document.getElementById('esched-date').value;
+  const sendTime = document.getElementById('esched-time').value;
+  
+  if(!id)return;
+  load('Đang cập nhật...');
+  try {
+    await fetch(C.apiUrl, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({action:'updateScheduledEmail', id, email, subject, sendDate, sendTime})});
+    toast('✓ Đã cập nhật lịch gửi','tok');
+    closeEditScheduleModal();
+    setTimeout(loadScheduledEmails, 1000);
+  } catch(e) { toast('Lỗi: '+e.message, 'terr'); }
+  finally { unload(); }
+}
+
+async function cancelScheduledEmail(id){
+  if(!confirm('Huỷ và xoá email đã lên lịch này?')) return;
+  load('Đang huỷ...');
+  try {
+    await fetch(C.apiUrl, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({action:'cancelScheduledEmail', id})});
+    toast('Đã huỷ lịch gửi email','twarn');
+    setTimeout(loadScheduledEmails, 1000);
+  } catch(e) { toast('Lỗi: '+e.message, 'terr'); }
+  finally { unload(); }
+}
 </script>
 </body>
 </html>
