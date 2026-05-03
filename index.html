@@ -220,6 +220,38 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 </head>
 <body>
 
+
+<!-- ========== LOGIN MODAL ========== -->
+<div class="overlay" id="login-modal">
+  <div class="modal" style="max-width:400px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="margin-bottom:10px;display:flex;justify-content:center"><img src="logo4.png" style="height:56px;width:auto" onerror="this.style.display='none'"></div>
+      <div class="mlogo">P&L Hub</div>
+      <div style="font-size:13px;color:var(--gray);margin-top:4px">Đăng nhập để tiếp tục</div>
+    </div>
+    <div class="fg">
+      <label class="fl">Email</label>
+      <input type="email" class="fc" id="l-email" placeholder="email@phuctea.vn" autocomplete="email">
+    </div>
+    <div class="fg" style="position:relative">
+      <label class="fl">Mật khẩu</label>
+      <input type="password" class="fc" id="l-pass" placeholder="••••••••" autocomplete="current-password">
+      <span id="l-pass-toggle" style="position:absolute;right:12px;top:34px;cursor:pointer;font-size:16px;color:var(--gray)">👁</span>
+    </div>
+    <div id="l-err" style="color:var(--red);font-size:13px;margin:6px 0;min-height:18px;text-align:center"></div>
+    <button class="mbtn" id="l-btn">Đăng nhập</button>
+    <div style="display:flex;justify-content:space-between;margin-top:14px;font-size:13px">
+      <span style="color:var(--gray)">Chưa có tài khoản? <a href="https://zalo.me/0357636539" target="_blank" style="color:var(--gold);font-weight:600;text-decoration:none">Liên hệ Zalo</a></span>
+      <a href="https://zalo.me/0357636539" target="_blank" style="color:var(--brown-l);text-decoration:none">Quên mật khẩu?</a>
+    </div>
+    <div style="margin-top:14px;padding:10px 14px;background:var(--gold-l);border-radius:8px;font-size:12px;color:var(--brown-m);text-align:center">
+      📞 Hỗ trợ: <strong>Thanh Liêm</strong> — Operations Manager<br>
+      <a href="tel:0357636539" style="color:var(--brown);font-weight:700;text-decoration:none">0357 636 539</a> &nbsp;|&nbsp;
+      <a href="https://zalo.me/0357636539" target="_blank" style="color:var(--brown);font-weight:700;text-decoration:none">Zalo</a>
+    </div>
+  </div>
+</div>
+
 <!-- SETUP MODAL -->
 <div class="overlay off" id="setup-modal">
   <div class="modal">
@@ -270,8 +302,10 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
   </div>
   <div class="nright">
     <span class="nbadge" id="abadge" style="display:none">0</span>
-    <button class="ncfg" onclick="openSetup()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Cài đặt</button>
+    <span id="nav-user" style="font-size:12px;color:rgba(255,255,255,.75);margin-right:8px;display:none"></span>
+    <button class="ncfg" id="btn-cfg" style="display:none" onclick="openSetup()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Cài đặt</button>
 
+    <button class="ncfg" id="btn-logout" style="display:none" onclick="doLogout()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Đăng xuất</button>
   </div>
 </nav>
 <div class="mob">
@@ -748,11 +782,142 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 // ============================================================
 
 
-// ── Stubs giữ tương thích (auth đã bỏ) ──────────────────────
-function getUser()  { return { name:'', email:'', role:'system', stores:[] }; }
-function saveUser() {}
-function clearUser(){}
-function applyStoreFilter() {}
+// ── AUTH — User session ───────────────────────────────────────
+const _SESSION_KEY = 'ptuser_v2';
+
+function getUser() {
+  try { return JSON.parse(localStorage.getItem(_SESSION_KEY)) || null; }
+  catch(e) { return null; }
+}
+function saveUser(u) { localStorage.setItem(_SESSION_KEY, JSON.stringify(u)); }
+function clearUser() { localStorage.removeItem(_SESSION_KEY); }
+
+function togglePassVis(id, el) {
+  const inp = document.getElementById(id);
+  if (!inp) return;
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  el.textContent = inp.type === 'password' ? '👁' : '🙈';
+}
+
+// ── Đăng nhập: gọi Apps Script để check NhanSu ───────────────
+async function doLogin() {
+  const email = (document.getElementById('l-email').value || '').trim().toLowerCase();
+  const pass  = (document.getElementById('l-pass').value  || '').trim();
+  const errEl = document.getElementById('l-err');
+  const btn   = document.getElementById('l-btn');
+  errEl.textContent = '';
+  if (!email) { errEl.textContent = 'Vui lòng nhập email'; return; }
+  if (!pass)  { errEl.textContent = 'Vui lòng nhập mật khẩu'; return; }
+
+  btn.disabled = true; btn.textContent = 'Đang xác thực...';
+  try {
+    // Đọc sheet NhanSu trực tiếp qua CSV (không cần Apps Script)
+    const sheetId = C.sheetId || _CONFIG_SHEET_ID;
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=NhanSu`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Không đọc được dữ liệu nhân sự (HTTP ' + res.status + ')');
+    const txt = await res.text();
+
+    // Parse CSV
+    function parseCSVLine(line) {
+      const cells = []; let cur = '', q = false;
+      for (const ch of line) {
+        if (ch === '"') { q = !q; }
+        else if (ch === ',' && !q) { cells.push(cur.trim()); cur = ''; }
+        else cur += ch;
+      }
+      cells.push(cur.trim());
+      return cells;
+    }
+
+    const rows = txt.split('\n').slice(1).map(parseCSVLine).filter(r => r.length > 4);
+    // Cột: A=0,B=1,...,E=4(email),I=8(stores),J=9(role),M=12(status),O=14(password)
+    const found = rows.find(r => (r[4]||'').trim().toLowerCase() === email);
+
+    if (!found) {
+      errEl.textContent = 'Email chưa được đăng ký trong hệ thống'; return;
+    }
+
+    const rowRole   = (found[9]  || '').trim();
+    const rowStatus = (found[12] || '').trim();
+    const rowPass   = (found[14] || '').trim();
+    const rowName   = (found[1]  || '').trim();
+    const rowStores = (found[8]  || '').trim();
+
+    // Kiểm tra mật khẩu
+    if (rowPass !== pass) {
+      errEl.textContent = 'Mật khẩu không đúng'; return;
+    }
+
+    // Kiểm tra trạng thái
+    if (!rowStatus.toLowerCase().includes('đang cộng tác') && !rowStatus.toLowerCase().includes('dang cong tac')) {
+      errEl.textContent = 'Tài khoản không còn hoạt động (' + rowStatus + ')'; return;
+    }
+
+    // Kiểm tra phân quyền
+    const roleLower = rowRole.toLowerCase();
+    if (roleLower !== 'admin' && roleLower !== 'system') {
+      errEl.textContent = 'Tài khoản không có quyền truy cập P&L Hub'; return;
+    }
+
+    const stores = rowStores ? rowStores.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean) : [];
+    const user = { email, name: rowName, role: rowRole, stores };
+    console.log('[Login] success:', user.name, user.role);
+    saveUser(user);
+    afterLogin(user);
+
+  } catch(e) {
+    console.error('[Login]', e);
+    errEl.textContent = 'Lỗi: ' + e.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Đăng nhập';
+  }
+}
+
+// ── Sau khi đăng nhập thành công ─────────────────────────────
+function afterLogin(user) {
+  // Ẩn login modal
+  document.getElementById('login-modal').classList.add('off');
+  // Hiển thị tên user và nút đăng xuất trên nav
+  const navUser = document.getElementById('nav-user');
+  if (navUser) { navUser.textContent = (user.name || user.email); navUser.style.display = 'inline'; }
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) btnLogout.style.display = 'inline-block';
+  // Chỉ System mới thấy nút Cài đặt
+  const btnCfg = document.getElementById('btn-cfg');
+  if (btnCfg) btnCfg.style.display = (user.role === 'System') ? 'inline-block' : 'none';
+  // Load data
+  loadConfigAndData(user);
+}
+
+// ── Đăng xuất ────────────────────────────────────────────────
+function doLogout() {
+  clearUser();
+  // Reset nav
+  const navUser = document.getElementById('nav-user');
+  if (navUser) { navUser.textContent = ''; navUser.style.display = 'none'; }
+  const btnLogout = document.getElementById('btn-logout');
+  if (btnLogout) btnLogout.style.display = 'none';
+  const btnCfg = document.getElementById('btn-cfg');
+  if (btnCfg) btnCfg.style.display = 'none';
+  // Reset data
+  TX = []; ST = []; REC = [];
+  // Hiển thị login
+  document.getElementById('login-modal').classList.remove('off');
+  toast('Đã đăng xuất', 'tok');
+}
+
+// ── Lọc cửa hàng theo phân quyền ─────────────────────────────
+function applyStoreFilter(user) {
+  if (!user || user.role === 'System') return; // System xem tất cả
+  if (user.role === 'Admin' && user.stores && user.stores.length > 0) {
+    // Admin chỉ thấy cửa hàng của mình (đối chiếu cột I sheet NhanSu vs cột A sheet Cửa hàng)
+    const allowed = user.stores.map(s => s.trim().toUpperCase());
+    ST = ST.filter(s => allowed.includes((s.id || '').trim().toUpperCase()));
+    TX = TX.filter(t => allowed.includes((t.store || '').trim().toUpperCase()));
+  }
+}
+
 // !! Config tự động đọc từ sheet Config — không cần sửa tại đây !!
 const _CONFIG_SHEET_ID = '1oBbGWf4YUAsz8XS9wr-sq8N4IoKen5mvCsILvfI7od0';
 let OPS_API_URL = '';
@@ -778,52 +943,64 @@ async function callOps(payload) {
 
 // ── Session ──────────────────────────────────────────────────
 
-// ── LOAD CONFIG + DATA (không cần đăng nhập) ───────────────
-async function loadConfigAndData() {
+// ── LOAD CONFIG + DATA ───────────────────────────────────────
+async function loadConfigAndData(user) {
   load('Đang tải cấu hình...');
-  try {
-    await bootstrapConfig();
-  } catch(e) { console.warn('Không load config:', e.message); }
+  try { await bootstrapConfig(); }
+  catch(e) { console.warn('Không load config:', e.message); }
 
   if (!C.sheetId) {
     unload();
-    openSetup();
-    toast('Chưa có Sheet ID. Vui lòng cài đặt.','twarn');
+    if (user && user.role === 'System') { openSetup(); toast('Chưa có Sheet ID. Vui lòng cài đặt.','twarn'); }
+    else toast('Chưa có cấu hình. Liên hệ System Admin.','terr');
     return;
   }
 
   load('Đang tải dữ liệu P&L...');
   try {
     await loadSheets(C.sheetId);
+    if (user) applyStoreFilter(user);
     renderAll();
-    toast('✓ Đã tải dữ liệu P&L', 'tok');
+    toast('✓ Xin chào ' + (user ? (user.name || user.email) : '') , 'tok');
   } catch(e) { toast('Lỗi tải dữ liệu: ' + e.message, 'terr'); }
   finally { unload(); }
 }
 
 
 
-// ── RELOAD (patch lại để áp filter) ──────────────────────────
+// ── RELOAD ───────────────────────────────────────────────────
 async function reload() {
   if (C.demo) { loadDemo(); renderAll(); return; }
   if (!C.sheetId) { openSetup(); return; }
   load('Đang tải từ Sheets...');
   try {
     await loadSheets(C.sheetId);
-    renderAll();
-    toast('✓ Cập nhật xong', 'tok');
+    const user = getUser();
+    if (user) applyStoreFilter(user);
+    renderAll(); toast('✓ Cập nhật xong', 'tok');
   } catch(e) { toast('Lỗi: ' + e.message, 'terr'); }
   finally { unload(); }
 }
 
 // ── KHỞI ĐỘNG ────────────────────────────────────────────────
-window.addEventListener('load', () => {
-  loadConfigAndData();
+window.addEventListener('load', async () => {
   const tdEl = document.getElementById('td');
   if (tdEl) tdEl.value = new Date().toISOString().split('T')[0];
   if (typeof buildCats === 'function') buildCats('thu');
   const sigEl = document.getElementById('e-sig');
   if (sigEl && typeof emailEdits !== 'undefined') sigEl.value = emailEdits.sig || '';
+
+  // Tải config trước (để có OPS_API_URL cho login)
+  await bootstrapConfig();
+
+  // Kiểm tra session
+  const user = getUser();
+  if (user && user.email && user.role) {
+    afterLogin(user);
+  } else {
+    // Hiện màn hình login
+    document.getElementById('login-modal').classList.remove('off');
+  }
 });
 
 
@@ -837,14 +1014,22 @@ let scheduledEmails=[];
 
 // Đọc sheet Config ngay khi tải web
 async function bootstrapConfig() {
+  // 1. Khôi phục từ localStorage cache trước (login nhanh khi đã từng load)
+  try {
+    const cached = JSON.parse(localStorage.getItem('ptcfg') || '{}');
+    if (cached.apiUrl  && !OPS_API_URL) { OPS_API_URL = cached.apiUrl; C.apiUrl = cached.apiUrl; }
+    if (cached.sheetId && !C.sheetId)   C.sheetId = cached.sheetId;
+    if (cached.apiKey  && !C.apiKey)    { C.apiKey = cached.apiKey; window._aiKey = cached.apiKey; }
+  } catch(e) {}
+
+  // 2. Fetch mới từ sheet Config
   try {
     const url = `https://docs.google.com/spreadsheets/d/${_CONFIG_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Config`;
     const r = await fetch(url);
-    if (!r.ok) { console.warn('bootstrapConfig: HTTP', r.status); return; }
+    if (!r.ok) { console.warn('[Config] HTTP', r.status, '— dùng cache'); return; }
     const txt = await r.text();
-    console.log('[Config] raw CSV:', txt.slice(0, 300));
+    console.log('[Config] raw CSV:', txt.slice(0, 400));
 
-    // Parse CSV — Google Sheets bọc cells trong "..." nếu có dấu phẩy/xuống dòng
     function parseCSVLine(line) {
       const cells = []; let cur = '', q = false;
       for (let i = 0; i < line.length; i++) {
@@ -858,30 +1043,28 @@ async function bootstrapConfig() {
     }
 
     const cfg = {};
-    txt.split('\n').slice(1).forEach(line => {  // bỏ header row
+    txt.split('\n').slice(1).forEach(line => {
       if (!line.trim()) return;
       const [k, ...vparts] = parseCSVLine(line);
       const key = (k || '').trim().toLowerCase();
       const val = vparts.join(',').trim();
       if (key && val) cfg[key] = val;
     });
+    console.log('[Config] parsed keys:', Object.keys(cfg));
 
-    console.log('[Config] parsed:', cfg);
-
-    // Match key linh hoạt (có space hoặc underscore)
     const get = (...keys) => { for (const k of keys) if (cfg[k]) return cfg[k]; return ''; };
-
-    const scriptUrl = get('apps script url', 'apps_script_url', 'appsscripturl');
-    const sheetId   = get('google sheet id', 'google_sheet_id', 'googlesheetid');
-    const apiKey    = get('anthropic api key', 'anthropic_api_key', 'anthropicapikey');
+    const scriptUrl = get('apps script url', 'apps_script_url');
+    const sheetId   = get('google sheet id',  'google_sheet_id');
+    const apiKey    = get('anthropic api key','anthropic_api_key');
 
     if (scriptUrl) { OPS_API_URL = scriptUrl; C.apiUrl = scriptUrl; }
-    C.sheetId = sheetId || _CONFIG_SHEET_ID;
+    if (sheetId)   C.sheetId = sheetId;
+    if (!C.sheetId) C.sheetId = _CONFIG_SHEET_ID;
     if (apiKey)    { C.apiKey = apiKey; window._aiKey = apiKey; }
 
-    console.log('[Config] applied → sheetId:', C.sheetId, '| apiUrl:', C.apiUrl ? '✓' : '✗', '| apiKey:', C.apiKey ? '✓' : '✗');
+    console.log('[Config] done → apiUrl:', OPS_API_URL ? OPS_API_URL.slice(0,50)+'…' : '✗ EMPTY', '| sheetId:', C.sheetId ? '✓' : '✗');
     save();
-  } catch(e) { console.warn('[Config] bootstrapConfig error:', e.message); }
+  } catch(e) { console.warn('[Config] fetch error:', e.message); }
 }
 
 
@@ -975,6 +1158,8 @@ async function loadSheets(id){
 // ===== SETUP (handled by window.load in auth block) =====
 
 function openSetup(){
+  const user = getUser();
+  if (user && user.role !== 'System') { toast('Chỉ System Admin mới được vào Cài đặt','terr'); return; }
   document.getElementById('cfg-sid').value=C.sheetId||'';
   document.getElementById('cfg-api').value=C.apiUrl||'';
   if(document.getElementById('cfg-apikey'))document.getElementById('cfg-apikey').value=C.apiKey||'';
@@ -1069,20 +1254,29 @@ function rDash(){
   const m=document.getElementById('dm').value;
   const y=document.getElementById('dy').value;
   const filter=document.getElementById('dfilter').value;
-  let ss=agg(m,y);
+
+  // Admin chỉ xem cửa hàng của mình
+  const user = getUser();
+  let visibleST = ST;
+  if (user && user.role === 'Admin' && user.stores && user.stores.length > 0) {
+    const allowed = user.stores.map(s => s.trim().toUpperCase());
+    visibleST = ST.filter(s => allowed.includes((s.id||'').trim().toUpperCase()));
+  }
+
+  let ss=agg(m,y).filter(s => visibleST.some(vs => vs.id === s.id));
 
   // Filter
   if(filter==='lai')ss=ss.filter(s=>s.net>0&&s.cogsp<=35);
   else if(filter==='lo')ss=ss.filter(s=>s.net<0);
   else if(filter==='canh-bao')ss=ss.filter(s=>s.cogsp>35);
 
-  const allSs=agg(m,y);
+  const allSs=agg(m,y).filter(s => visibleST.some(vs => vs.id === s.id));
   const trev=allSs.reduce((a,b)=>a+b.rev,0);
   const tnet=allSs.reduce((a,b)=>a+b.net,0);
   const tmg=trev>0?Math.round(tnet/trev*1000)/10:0;
   const lc=allSs.filter(s=>s.net<0).length;
 
-  document.getElementById('dsub').textContent=(m?'Tháng '+m+'/':'')+y+' · '+ST.length+' cửa hàng'+(filter?' · Đang lọc':'');
+  document.getElementById('dsub').textContent=(m?'Tháng '+m+'/':'')+y+' · '+visibleST.length+' cửa hàng'+(filter?' · Đang lọc':'');
 
   const alerts=[];
   allSs.forEach(s=>{
@@ -2360,6 +2554,19 @@ document.addEventListener('DOMContentLoaded',()=>{
   ['e-send-date','e-send-time'].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.addEventListener('change',updateScheduleInfo);
+  });
+
+  // Login modal — dùng addEventListener thay vì onclick để tránh scope issues
+  const lBtn    = document.getElementById('l-btn');
+  const lPass   = document.getElementById('l-pass');
+  const lToggle = document.getElementById('l-pass-toggle');
+  if(lBtn)    lBtn.addEventListener('click', ()=>doLogin());
+  if(lPass)   lPass.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  if(lToggle) lToggle.addEventListener('click', function(){
+    const inp = document.getElementById('l-pass');
+    if(!inp) return;
+    inp.type = inp.type==='password' ? 'text' : 'password';
+    this.textContent = inp.type==='password' ? '👁' : '🙈';
   });
 
 });
