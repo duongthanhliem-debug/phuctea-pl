@@ -180,7 +180,18 @@ textarea.fc{resize:vertical;min-height:120px;line-height:1.6}
 .mi{font-size:18px}
 .empty2{text-align:center;padding:40px 20px;color:var(--gray)}
 
-/* CHECKLIST */
+/* AUTH EXTRAS */
+.auth-link{text-align:center;margin-top:10px;font-size:13px;color:var(--gray)}
+.auth-link a{color:var(--brown-m);cursor:pointer;text-decoration:underline;font-weight:600}
+.auth-link a:hover{color:var(--gold)}
+.auth-divider{text-align:center;margin:12px 0;font-size:12px;color:var(--border);position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+.auth-step{display:none}.auth-step.on{display:block}
+.step-badge{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--gold);color:var(--brown);font-size:11px;font-weight:700;margin-right:6px}
+.msuccess{background:#F0FFF4;color:var(--green);border:1.5px solid var(--green);border-radius:var(--rs);padding:12px 14px;font-size:13px;font-weight:600;text-align:center;display:none;margin-top:10px}
+.minfo{background:var(--blue-l);color:var(--blue);border-radius:var(--rs);padding:10px 13px;font-size:12px;line-height:1.6;margin-bottom:12px}
+
 .chk-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
 .chk-row:last-child{border-bottom:none}
 input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--gold)}
@@ -210,7 +221,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 <body>
 
 <!-- SETUP MODAL -->
-<div class="overlay" id="setup-modal">
+<div class="overlay off" id="setup-modal">
   <div class="modal">
       <div class="mlogo" style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">
     <img src="logo4.png" alt="Logo" style="height: 50px; width: auto; object-fit: contain;">
@@ -250,25 +261,26 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     <div class="ntitle"><span>Phúc Tea</span> P&L</div>
   </div>
   <div class="ntabs">
-    <div class="ntab on"  onclick="go('dash')">📊Dashboard</div>
-    <div class="ntab"     onclick="go('stores')">🏪 Cửa hàng</div>
-    <div class="ntab"     onclick="go('pl')">📋 P&L</div>
-    <div class="ntab"     onclick="go('input')">✏️ Nhập liệu</div>
-    <div class="ntab"     onclick="go('email')">📧 Email</div>
-    <div class="ntab"     onclick="go('schedule')">⏰ Lịch gửi</div>
+    <div class="ntab on"  onclick="go('dash')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</div>
+    <div class="ntab"     onclick="go('stores')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Cửa hàng</div>
+    <div class="ntab"     onclick="go('pl')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>P&amp;L</div>
+    <div class="ntab"     onclick="go('input')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Nhập liệu</div>
+    <div class="ntab"     onclick="go('email')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Email</div>
+    <div class="ntab"     onclick="go('schedule')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Lịch gửi</div>
   </div>
   <div class="nright">
     <span class="nbadge" id="abadge" style="display:none">0</span>
-    <button class="ncfg" onclick="openSetup()">⚙️ Cài đặt</button>
+    <button class="ncfg" onclick="openSetup()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Cài đặt</button>
+
   </div>
 </nav>
 <div class="mob">
-  <div class="mb on" onclick="go('dash')"><span class="mi">📊</span>Dashboard</div>
-  <div class="mb"    onclick="go('stores')"><span class="mi">🏪</span>Chuỗi</div>
-  <div class="mb"    onclick="go('pl')"><span class="mi">📋</span>P&L</div>
-  <div class="mb"    onclick="go('input')"><span class="mi">✏️</span>Nhập</div>
-  <div class="mb"    onclick="go('email')"><span class="mi">📧</span>Email</div>
-  <div class="mb"    onclick="go('schedule')"><span class="mi">⏰</span>Lịch</div>
+  <div class="mb on" onclick="go('dash')"><span class="mi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>Dashboard</div>
+  <div class="mb"    onclick="go('stores')"><span class="mi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Chuỗi</div>
+  <div class="mb"    onclick="go('pl')"><span class="mi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>P&amp;L</div>
+  <div class="mb"    onclick="go('input')"><span class="mi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>Nhập</div>
+  <div class="mb"    onclick="go('email')"><span class="mi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>Email</div>
+  <div class="mb"    onclick="go('schedule')"><span class="mi"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>Lịch</div>
 </div>
 
 <!-- ========== DASHBOARD ========== -->
@@ -516,7 +528,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
         <span style="font-size:10px;background:var(--gold);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700;flex-shrink:0">AUTO</span>
       </div>
       <div class="cb">
-        <div style="font-size:11px;color:var(--gray);background:var(--gray-l);border-radius:var(--rs);padding:9px;margin-bottom:10px;line-height:1.6">Đăng nhập vào Fabi (IPOS) → Vào mục B03 → Lọc thời gian và lọc cửa hàng → Xuất báo cáo theo cửa hàng đã chọn → Vào file vừa xuất, chỉ giữ lại 3 cột: Số hóa đơn, Giảm giá và Doanh thu (gross) của từng nguồn đơn hàng, các cột còn lại xóa hết → Lưu lại → Up file đã chỉnh sửa lên đây → Kiểm tra lại và Lưu tất cả.</div>
+        <div style="font-size:11px;color:var(--gray);background:var(--gray-l);border-radius:var(--rs);padding:9px;margin-bottom:10px;line-height:1.6">Đăng nhập vào Fabi (IPOS) → Vào mục B03 → Lọc thời gian và lọc cửa hàng → Xuất báo cáo theo cửa hàng đã chọn → Vào file vừa xuất, chỉ giữ lại cột Giảm giá và Doanh thu (gross) của từng nguồn đơn hàng (nhớ ghi lại tên nguồn đơn), các cột còn lại xóa hết → Lưu lại → Up file đã chỉnh sửa lên đây → Kiểm tra lại và Lưu tất cả.</div>
         <div class="img-drop" id="xlsx-drop"
              onclick="document.getElementById('xlsx-file-input').click()"
              ondragover="event.preventDefault();this.classList.add('over')"
@@ -672,6 +684,10 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
             <textarea class="fc" id="e-extra" placeholder="Thêm ghi chú hoặc thông báo đặc biệt..."></textarea>
           </div>
           <div class="fg">
+            <label class="fl">Nhận định & Đề xuất từ Phúc Tea</label>
+            <textarea class="fc" id="e-analysis" rows="6" placeholder="Nội dung nhận định do AI tạo — bạn có thể chỉnh sửa tại đây..." oninput="emailEdits._manualAnalysis=true;emailEdits._lastAiAnalysis=this.value"></textarea>
+          </div>
+          <div class="fg">
             <label class="fl">Chữ ký</label>
             <input type="text" class="fc" id="e-sig" value="Thanh Liêm — Operations Manager | 0357 636 539">
           </div>
@@ -727,6 +743,90 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
 </div>
 
 <script>
+// ============================================================
+// CONFIG & UTILITIES
+// ============================================================
+
+
+// ── Stubs giữ tương thích (auth đã bỏ) ──────────────────────
+function getUser()  { return { name:'', email:'', role:'system', stores:[] }; }
+function saveUser() {}
+function clearUser(){}
+function applyStoreFilter() {}
+// !! Config tự động đọc từ sheet Config — không cần sửa tại đây !!
+const _CONFIG_SHEET_ID = '1oBbGWf4YUAsz8XS9wr-sq8N4IoKen5mvCsILvfI7od0';
+let OPS_API_URL = '';
+
+// ── SHA-256 (browser native, không cần thư viện) ─────────────
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── Gọi Ops Center API ───────────────────────────────────────
+async function callOps(payload) {
+  const res = await fetch(OPS_API_URL, {
+    method : 'POST',
+    mode   : 'cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body   : JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Lỗi mạng: ' + res.status);
+  const data = await res.json();
+  return data;
+}
+
+// ── Session ──────────────────────────────────────────────────
+
+// ── LOAD CONFIG + DATA (không cần đăng nhập) ───────────────
+async function loadConfigAndData() {
+  load('Đang tải cấu hình...');
+  try {
+    await bootstrapConfig();
+  } catch(e) { console.warn('Không load config:', e.message); }
+
+  if (!C.sheetId) {
+    unload();
+    openSetup();
+    toast('Chưa có Sheet ID. Vui lòng cài đặt.','twarn');
+    return;
+  }
+
+  load('Đang tải dữ liệu P&L...');
+  try {
+    await loadSheets(C.sheetId);
+    renderAll();
+    toast('✓ Đã tải dữ liệu P&L', 'tok');
+  } catch(e) { toast('Lỗi tải dữ liệu: ' + e.message, 'terr'); }
+  finally { unload(); }
+}
+
+
+
+// ── RELOAD (patch lại để áp filter) ──────────────────────────
+async function reload() {
+  if (C.demo) { loadDemo(); renderAll(); return; }
+  if (!C.sheetId) { openSetup(); return; }
+  load('Đang tải từ Sheets...');
+  try {
+    await loadSheets(C.sheetId);
+    renderAll();
+    toast('✓ Cập nhật xong', 'tok');
+  } catch(e) { toast('Lỗi: ' + e.message, 'terr'); }
+  finally { unload(); }
+}
+
+// ── KHỞI ĐỘNG ────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  loadConfigAndData();
+  const tdEl = document.getElementById('td');
+  if (tdEl) tdEl.value = new Date().toISOString().split('T')[0];
+  if (typeof buildCats === 'function') buildCats('thu');
+  const sigEl = document.getElementById('e-sig');
+  if (sigEl && typeof emailEdits !== 'undefined') sigEl.value = emailEdits.sig || '';
+});
+
+
 // ===== STATE =====
 let C={sheetId:'',apiUrl:'',demo:false};
 let TX=[],ST=[],REC=[];
@@ -734,6 +834,56 @@ let emailEdits={subject:'',greeting:'',extra:'',sig:'Thanh Liêm — Operations 
 let editingStoreId=null;
 let manualAttachments=[];
 let scheduledEmails=[];
+
+// Đọc sheet Config ngay khi tải web
+async function bootstrapConfig() {
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${_CONFIG_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Config`;
+    const r = await fetch(url);
+    if (!r.ok) { console.warn('bootstrapConfig: HTTP', r.status); return; }
+    const txt = await r.text();
+    console.log('[Config] raw CSV:', txt.slice(0, 300));
+
+    // Parse CSV — Google Sheets bọc cells trong "..." nếu có dấu phẩy/xuống dòng
+    function parseCSVLine(line) {
+      const cells = []; let cur = '', q = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { q = !q; }
+        else if (ch === ',' && !q) { cells.push(cur); cur = ''; }
+        else { cur += ch; }
+      }
+      cells.push(cur);
+      return cells.map(c => c.trim());
+    }
+
+    const cfg = {};
+    txt.split('\n').slice(1).forEach(line => {  // bỏ header row
+      if (!line.trim()) return;
+      const [k, ...vparts] = parseCSVLine(line);
+      const key = (k || '').trim().toLowerCase();
+      const val = vparts.join(',').trim();
+      if (key && val) cfg[key] = val;
+    });
+
+    console.log('[Config] parsed:', cfg);
+
+    // Match key linh hoạt (có space hoặc underscore)
+    const get = (...keys) => { for (const k of keys) if (cfg[k]) return cfg[k]; return ''; };
+
+    const scriptUrl = get('apps script url', 'apps_script_url', 'appsscripturl');
+    const sheetId   = get('google sheet id', 'google_sheet_id', 'googlesheetid');
+    const apiKey    = get('anthropic api key', 'anthropic_api_key', 'anthropicapikey');
+
+    if (scriptUrl) { OPS_API_URL = scriptUrl; C.apiUrl = scriptUrl; }
+    C.sheetId = sheetId || _CONFIG_SHEET_ID;
+    if (apiKey)    { C.apiKey = apiKey; window._aiKey = apiKey; }
+
+    console.log('[Config] applied → sheetId:', C.sheetId, '| apiUrl:', C.apiUrl ? '✓' : '✗', '| apiKey:', C.apiKey ? '✓' : '✗');
+    save();
+  } catch(e) { console.warn('[Config] bootstrapConfig error:', e.message); }
+}
+
 
 const COGS=[
   'NVL hệ thống','NVL địa phương','Chi phí vận chuyển','Vật phẩm','Công nợ','Nhập đồ ăn vặt'];
@@ -822,21 +972,7 @@ async function loadSheets(id){
   if(!ST.length)throw new Error('Sheet "Cửa hàng" trống. Chạy taoSheet() trước.');
 }
 
-// ===== SETUP =====
-window.onload=()=>{
-  const s=localStorage.getItem('ptcfg');
-  if(s){
-    try{C=JSON.parse(s);}catch(e){}
-    document.getElementById('cfg-sid').value=C.sheetId||'';
-    document.getElementById('cfg-api').value=C.apiUrl||'';
-    if(C.apiKey){window._aiKey=C.apiKey;}
-    if(C.demo){doDemo();}
-    else if(C.sheetId){document.getElementById('setup-modal').classList.add('off');reload();}
-  }
-  document.getElementById('td').value=new Date().toISOString().split('T')[0];
-  buildCats('thu');
-  document.getElementById('e-sig').value=emailEdits.sig;
-};
+// ===== SETUP (handled by window.load in auth block) =====
 
 function openSetup(){
   document.getElementById('cfg-sid').value=C.sheetId||'';
@@ -856,6 +992,7 @@ async function doSetup(){
     const ak=document.getElementById('cfg-apikey').value.trim();
     C={sheetId:sid,apiUrl:au,apiKey:ak,demo:false};
     await loadSheets(sid);
+    if(user) applyStoreFilter(user);
     save();document.getElementById('setup-modal').classList.add('off');
     renderAll();toast('✓ Kết nối thành công!','tok');
   }catch(e){err.style.display='block';err.textContent='Lỗi: '+e.message;}
@@ -872,7 +1009,10 @@ async function reload(){
   if(C.demo){loadDemo();renderAll();return;}
   if(!C.sheetId){openSetup();return;}
   load('Đang tải từ Sheets...');
-  try{await loadSheets(C.sheetId);renderAll();toast('✓ Cập nhật xong','tok');}
+  try{
+    await loadSheets(C.sheetId);
+    renderAll();toast('✓ Cập nhật xong','tok');
+  }
   catch(e){toast('Lỗi: '+e.message,'terr');}
   finally{unload();}
 }
@@ -1189,6 +1329,11 @@ function onStoreSelect(){
   const sid=document.getElementById('es').value;
   const s=ST.find(x=>x.id===sid);
   if(s&&s.email)document.getElementById('eto').value=s.email;
+  // Reset manual analysis khi đổi cửa hàng để AI gen lại
+  emailEdits._manualAnalysis=false;
+  emailEdits._lastAiAnalysis='';
+  const analysisEl=document.getElementById('e-analysis');
+  if(analysisEl) analysisEl.value='';
 }
 
 function saveStoreEmail(){
@@ -1206,11 +1351,13 @@ function showPreviewTab(tab){
 }
 
 function applyEdit(){
+  const analysisEl = document.getElementById('e-analysis');
   emailEdits={
     subject:document.getElementById('e-subject').value,
     greeting:document.getElementById('e-greeting').value,
     extra:document.getElementById('e-extra').value,
     sig:document.getElementById('e-sig').value,
+    _lastAiAnalysis: analysisEl ? analysisEl.value : (emailEdits._lastAiAnalysis||''),
   };
   showPreviewTab('visual');
   previewEmail();
@@ -1343,16 +1490,23 @@ async function previewEmail(){
   showPreviewTab('visual');
   // Show loading state
   document.getElementById('eprev').innerHTML=`<div style="display:flex;align-items:center;justify-content:center;min-height:200px;gap:10px;color:var(--gray)"><div class="spin" style="width:24px;height:24px;border-width:3px"></div> AI đang soạn nhận định...</div>`;
-  // Generate real AI analysis for email
-  try{
-    emailEdits._lastAiAnalysis = await generateEmailAnalysis(s, sid, m, y);
-  }catch(e){
-    emailEdits._lastAiAnalysis = buildFallbackEmailAnalysis(s);
+  // Generate real AI analysis for email (chỉ nếu chưa có hoặc chưa bị sửa tay)
+  if (!emailEdits._manualAnalysis) {
+    try{
+      emailEdits._lastAiAnalysis = await generateEmailAnalysis(s, sid, m, y);
+    }catch(e){
+      emailEdits._lastAiAnalysis = buildFallbackEmailAnalysis(s);
+    }
   }
   const html=buildEmailHTML(sid,s,m,y);
   document.getElementById('eprev').innerHTML=`<iframe srcdoc="${html.replace(/"/g,'&quot;')}" style="width:100%;height:550px;border:none"></iframe>`;
   document.getElementById('e-subject').value=emailEdits.subject||`[Phúc Tea] Báo cáo tài chính tháng ${m}/${y}`;
   document.getElementById('e-greeting').value=emailEdits.greeting||'';
+  // Sync analysis vào textarea để người dùng có thể chỉnh
+  const analysisEl = document.getElementById('e-analysis');
+  if (analysisEl && !emailEdits._manualAnalysis) {
+    analysisEl.value = emailEdits._lastAiAnalysis || '';
+  }
 }
 
 async function sendOne(){
@@ -2203,6 +2357,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const el=document.getElementById(id);
     if(el)el.addEventListener('change',updateScheduleInfo);
   });
+
 });
 
 // ===== STORE SAVE — auto sync owner+phone to Sheet =====
