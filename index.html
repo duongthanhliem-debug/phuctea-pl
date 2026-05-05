@@ -236,7 +236,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     <div class="fg" style="position:relative">
       <label class="fl">Mật khẩu</label>
       <input type="password" class="fc" id="l-pass" placeholder="••••••••" autocomplete="current-password">
-      <span id="l-pass-toggle" style="position:absolute;right:12px;top:34px;cursor:pointer;font-size:16px;color:var(--gray)">👁</span>
+      <span id="l-pass-toggle" style="position:absolute;right:12px;top:34px;cursor:pointer;font-size:16px;color:var(--gray)">🐵</span>
     </div>
     <div id="l-err" style="color:var(--red);font-size:13px;margin:6px 0;min-height:18px;text-align:center"></div>
     <button class="mbtn" id="l-btn">Đăng nhập</button>
@@ -796,7 +796,7 @@ function togglePassVis(id, el) {
   const inp = document.getElementById(id);
   if (!inp) return;
   inp.type = inp.type === 'password' ? 'text' : 'password';
-  el.textContent = inp.type === 'password' ? '👁' : '🙈';
+  el.textContent = inp.type === 'password' ? '🐵' : '🙈';
 }
 
 // ── Đăng nhập: gọi Apps Script để check NhanSu ───────────────
@@ -2566,7 +2566,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     const inp = document.getElementById('l-pass');
     if(!inp) return;
     inp.type = inp.type==='password' ? 'text' : 'password';
-    this.textContent = inp.type==='password' ? '👁' : '🙈';
+    this.textContent = inp.type==='password' ? '🐵' : '🙈';
   });
 
 });
