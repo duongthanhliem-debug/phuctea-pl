@@ -166,6 +166,7 @@ textarea.fc{resize:vertical;min-height:120px;line-height:1.6}
 .store-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .sdot-g{background:var(--green)}
 .sdot-r{background:var(--red)}
+.sdot-y{background:var(--gold)}
 
 /* MOBILE */
 @media(max-width:768px){
@@ -343,15 +344,15 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
   <div class="ph">
     <div><div class="pt">Tổng quan chuỗi</div><div class="ps" id="dsub">Đang tải...</div></div>
     <div class="fb">
-      <select class="fsel" id="dm" onchange="rDash()">
+      <select class="fsel" id="dm" onchange="fillSels();rDash()">
         <option value="">Cả năm</option>
-        <option value="1">T1</option><option value="2" selected>T2</option>
-        <option value="3">T3</option><option value="4">T4</option><option value="5">T5</option>
-        <option value="6">T6</option><option value="7">T7</option><option value="8">T8</option>
-        <option value="9">T9</option><option value="10">T10</option>
-        <option value="11">T11</option><option value="12">T12</option>
+        <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+        <option value="3">Tháng 3</option><option value="4">Tháng 4</option><option value="5">Tháng 5</option>
+        <option value="6">Tháng 6</option><option value="7">Tháng 7</option><option value="8">Tháng 8</option>
+        <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+        <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
       </select>
-      <select class="fsel" id="dy" onchange="rDash()">
+      <select class="fsel" id="dy" onchange="fillSels();rDash()">
         <option value="2026">2026</option><option value="2025">2025</option>
       </select>
       <select class="fsel" id="dfilter" onchange="rDash()">
@@ -359,6 +360,12 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
         <option value="lai">Đang lãi</option>
         <option value="lo">Đang lỗ</option>
         <option value="canh-bao">Cảnh báo NVL</option>
+      </select>
+      <select class="fsel" id="dstatus" onchange="rDash()">
+        <option value="active">Đang hoạt động</option>
+        <option value="">Tất cả trạng thái</option>
+        <option value="inactive">Tạm dừng</option>
+        <option value="closed">Đã đóng cửa</option>
       </select>
       <button class="btn bo" onclick="reload()">🔄 Làm mới</button>
       <button class="btn bp" onclick="go('email')">📧 Báo cáo</button>
@@ -394,6 +401,12 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
   <div class="ph">
     <div><div class="pt">Quản lý cửa hàng</div><div class="ps" id="ssub">Danh sách nhượng quyền</div></div>
     <div class="fb">
+      <select class="fsel" id="sfilter-status" onchange="rStores()">
+        <option value="active">Đang hoạt động</option>
+        <option value="">Tất cả trạng thái</option>
+        <option value="inactive">Tạm dừng</option>
+        <option value="closed">Đã đóng cửa</option>
+      </select>
       <button class="btn bp" onclick="openAddStore()">+ Thêm cửa hàng</button>
       <button class="btn bo" onclick="saveStoresToSheet()">💾 Lưu lên Sheets</button>
     </div>
@@ -431,6 +444,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
       <select class="minput" id="sf-status">
         <option value="active">Đang hoạt động</option>
         <option value="inactive">Tạm dừng</option>
+        <option value="closed">Đã đóng cửa</option>
       </select>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
@@ -446,15 +460,15 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
     <div><div class="pt">P&L Chi tiết</div><div class="ps">Lãi – lỗ theo chuẩn Phúc Tea</div></div>
     <div class="fb">
       <select class="fsel" id="pls" onchange="rPL()"><option value="">-- Cửa hàng --</option></select>
-      <select class="fsel" id="plm" onchange="rPL()">
+      <select class="fsel" id="plm" onchange="fillSels();rPL()">
         <option value="">Cả năm</option>
-        <option value="1">T1</option><option value="2" selected>T2</option>
-        <option value="3">T3</option><option value="4">T4</option><option value="5">T5</option>
-        <option value="6">T6</option><option value="7">T7</option><option value="8">T8</option>
-        <option value="9">T9</option><option value="10">T10</option>
-        <option value="11">T11</option><option value="12">T12</option>
+        <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+        <option value="3">Tháng 3</option><option value="4">Tháng 4</option><option value="5">Tháng 5</option>
+        <option value="6">Tháng 6</option><option value="7">Tháng 7</option><option value="8">Tháng 8</option>
+        <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+        <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
       </select>
-      <select class="fsel" id="ply" onchange="rPL()">
+      <select class="fsel" id="ply" onchange="fillSels();rPL()">
         <option value="2026">2026</option><option value="2025">2025</option>
       </select>
       <button class="btn bo" onclick="toEmail()">📧 Gửi báo cáo</button>
@@ -523,7 +537,7 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
           <label class="fl">Ghi chú</label>
           <input type="text" class="fc" id="tnote" placeholder="Vd: Mua trân châu 3kg">
         </div>
-        <button class="btn bp" style="width:100%;padding:12px;font-size:15px" onclick="saveTx()">✓ Lưu giao dịch</button>
+        <button class="btn bp" id="btn-save-tx" style="width:100%;padding:12px;font-size:15px" onclick="saveTx()">✓ Lưu giao dịch</button>
       </div>
     </div>
     <div class="card">
@@ -576,14 +590,14 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
       </div>
     </div>
 
-    <!-- Excel Import -->
+    <!-- Excel Import Thu -->
     <div class="card">
-      <div class="ch" style="background:linear-gradient(135deg,#1a6b3c,#2D8248);flex-wrap:wrap;gap:6px">
-        <div class="ct" style="color:#fff;font-size:13px">📊 Nhập từ Excel (iPos/Fabi)</div>
-        <span style="font-size:10px;background:var(--gold);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700;flex-shrink:0">AUTO</span>
+      <div class="ch" style="background:linear-gradient(135deg,#1a6b3c,#2D8248)">
+        <div class="ct" style="color:#fff;font-size:13px">📊 Nhập từ Excel Thu (iPos/Fabi)</div>
+        <span style="font-size:10px;background:var(--gold);color:var(--brown);padding:2px 8px;border-radius:10px;font-weight:700">AI</span>
       </div>
       <div class="cb">
-        <div style="font-size:11px;color:var(--gray);background:var(--gray-l);border-radius:var(--rs);padding:9px;margin-bottom:10px;line-height:1.6">Đăng nhập vào Fabi (IPOS) → Vào mục B03 → Lọc thời gian và lọc cửa hàng → Xuất báo cáo theo cửa hàng đã chọn → Vào file vừa xuất, chỉ giữ lại cột Giảm giá và Doanh thu (gross) của từng nguồn đơn hàng (nhớ ghi lại tên nguồn đơn), các cột còn lại xóa hết → Lưu lại → Up file đã chỉnh sửa lên đây → Kiểm tra lại và Lưu tất cả.</div>
+        <div style="font-size:11px;color:var(--gray);background:var(--gray-l);border-radius:var(--rs);padding:9px;margin-bottom:10px;line-height:1.6">📈 <strong>File Thu (iPos/Fabi B03):</strong> Đăng nhập Fabi → Vào mục B03 → Xuất báo cáo nguồn đơn hàng → Up file gốc lên đây (không cần chỉnh sửa).</div>
         <div class="img-drop" id="xlsx-drop"
              onclick="document.getElementById('xlsx-file-input').click()"
              ondragover="event.preventDefault();this.classList.add('over')"
@@ -592,11 +606,11 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
              style="border-color:var(--green);padding:20px">
           <input type="file" id="xlsx-file-input" accept=".xlsx,.xls,.csv" onchange="handleXlsxSelect(event)">
           <div style="font-size:28px;margin-bottom:6px">📊</div>
-          <div style="font-weight:600;color:var(--brown);margin-bottom:3px;font-size:13px">Chọn hoặc kéo thả file Excel</div>
+          <div style="font-weight:600;color:var(--brown);margin-bottom:3px;font-size:13px">Chọn hoặc kéo thả file Excel Thu</div>
           <div style="font-size:11px;color:var(--gray)">.xlsx · .xls — Nhiều sheet = nhiều cửa hàng</div>
         </div>
         <div id="xlsx-file-info" style="display:none;margin-top:8px;font-size:12px;padding:8px;background:var(--green-l);border-radius:var(--rs);color:var(--green);font-weight:600"></div>
-        <button class="btn" id="btn-xlsx-analyze" style="width:100%;margin-top:10px;display:none;background:var(--green);color:#fff;padding:11px" onclick="analyzeXlsx()">🔍 Phân tích file Excel</button>
+        <button class="btn" id="btn-xlsx-analyze" style="width:100%;margin-top:10px;display:none;background:var(--green);color:#fff;padding:11px" onclick="analyzeXlsx()">🔍 Phân tích file Excel Thu</button>
         <div class="ai-thinking" id="xlsx-thinking" style="display:none">
           <div class="dot"></div><div class="dot"></div><div class="dot"></div>
           <span id="xlsx-thinking-txt">Đang đọc file...</span>
@@ -607,6 +621,46 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
             <button class="btn bo" onclick="clearXlsx()">🗑️ Huỷ</button>
             <button class="btn" style="background:var(--green);color:#fff" onclick="saveXlsxAll()">✅ Lưu tất cả</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Excel Import Chi -->
+    <div class="card">
+      <div class="ch" style="background:var(--gold)">
+        <div class="ct" style="color:var(--brown);font-size:13px;font-weight:700">📉 Nhập từ Excel Chi (iPos/Fabi)</div>
+        <span style="font-size:10px;background:var(--brown);color:var(--gold);padding:2px 8px;border-radius:10px;font-weight:700">AUTO</span>
+      </div>
+      <div class="cb">
+        <div style="font-size:11px;color:var(--gray);background:var(--gray-l);border-radius:var(--rs);padding:9px;margin-bottom:10px;line-height:1.6">📉 <strong>File Chi (iPos Cash Out):</strong> Fabi → Báo cáo thu chi → Xuất file Chi tiêu → Up file gốc lên đây. Web tự phân loại danh mục từ ghi chú, không cần AI.</div>
+        <div class="img-drop" id="chi-xlsx-drop"
+             onclick="document.getElementById('chi-xlsx-file-input').click()"
+             ondragover="event.preventDefault();this.classList.add('over')"
+             ondragleave="this.classList.remove('over')"
+             ondrop="handleChiXlsxDrop(event)"
+             style="border-color:var(--gold);padding:20px">
+          <input type="file" id="chi-xlsx-file-input" accept=".xlsx,.xls,.csv" onchange="handleChiXlsxSelect(event)">
+          <div style="font-size:28px;margin-bottom:6px">📉</div>
+          <div style="font-weight:600;color:var(--brown);margin-bottom:3px;font-size:13px">Chọn hoặc kéo thả file Excel Chi</div>
+          <div style="font-size:11px;color:var(--gray)">.xlsx · .xls — Nhiều sheet = nhiều cửa hàng</div>
+        </div>
+        <div id="chi-xlsx-file-info" style="display:none;margin-top:8px;font-size:12px;padding:8px;background:var(--gold-l);border-radius:var(--rs);color:var(--brown);font-weight:600"></div>
+        <button class="btn" id="btn-chi-xlsx-analyze" style="width:100%;margin-top:10px;display:none;background:var(--gold);color:var(--brown);padding:11px;font-weight:700" onclick="analyzeChiXlsx()">🔍 Phân tích file Excel Chi</button>
+        <div class="ai-thinking" id="chi-xlsx-thinking" style="display:none">
+          <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+          <span id="chi-xlsx-thinking-txt">Đang đọc file chi...</span>
+        </div>
+        <div id="chi-apply-bar-fixed" style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;background:var(--gold-l);border-radius:8px;margin-top:8px;border:1.5px solid var(--gold)">
+          <span style="font-size:12px;color:var(--brown)">Đã sửa danh mục item?</span>
+          <button onclick="renderChiResults(window._chiParsed)" style="font-family:inherit;font-size:12px;padding:6px 16px;background:var(--gold);color:var(--brown);border:none;border-radius:6px;cursor:pointer;font-weight:700;white-space:nowrap">🔄 Cập nhật nhóm</button>
+        </div>
+        <div id="chi-xlsx-results" style="margin-top:10px;max-height:600px;overflow-y:auto"></div>
+        <div id="chi-xlsx-confirm-bar" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+          <div style="font-size:12px;color:var(--gray);margin-bottom:8px" id="chi-xlsx-confirm-summary"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn bo" onclick="clearChiXlsx()">🗑️ Huỷ</button>
+            <button class="btn" style="background:var(--gold);color:var(--brown);font-weight:700" onclick="saveChiXlsxAll()">✅ Lưu tất cả chi</button>
           </div>
         </div>
       </div>
@@ -633,17 +687,17 @@ input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--go
           <div class="fr">
             <div class="fg">
               <label class="fl">Tháng</label>
-              <select class="fc" id="em">
-                <option value="1">T1</option><option value="2" selected>T2</option>
-                <option value="3">T3</option><option value="4">T4</option><option value="5">T5</option>
-                <option value="6">T6</option><option value="7">T7</option><option value="8">T8</option>
-                <option value="9">T9</option><option value="10">T10</option>
-                <option value="11">T11</option><option value="12">T12</option>
+              <select class="fc" id="em" onchange="fillSels()">
+                <option value="1">Tháng 1</option><option value="2">Tháng 2</option>
+                <option value="3">Tháng 3</option><option value="4">Tháng 4</option><option value="5">Tháng 5</option>
+                <option value="6">Tháng 6</option><option value="7">Tháng 7</option><option value="8">Tháng 8</option>
+                <option value="9">Tháng 9</option><option value="10">Tháng 10</option>
+                <option value="11">Tháng 11</option><option value="12">Tháng 12</option>
               </select>
             </div>
             <div class="fg">
               <label class="fl">Năm</label>
-              <select class="fc" id="ey"><option value="2026">2026</option><option value="2025">2025</option></select>
+              <select class="fc" id="ey" onchange="fillSels()"><option value="2026">2026</option><option value="2025">2025</option></select>
             </div>
           </div>
 
@@ -962,13 +1016,29 @@ async function callOps(payload) {
   return data;
 }
 
-// ── Gọi API qua GET (tránh CORS) ─────────────────────────────
+// ── Gọi API qua GET (action nhỏ, không có data lớn) ──────────
 async function callOpsGet(payload) {
   if (!C.apiUrl) throw new Error('Chưa có API URL');
+  // saveStores có thể rất lớn → dùng POST riêng
+  if (payload.action === 'saveStores' || payload.action === 'sendEmail') {
+    return callOpsPost(payload);
+  }
   const data = encodeURIComponent(JSON.stringify(payload));
   const url  = C.apiUrl + '?action=' + encodeURIComponent(payload.action) + '&data=' + data;
-  const res  = await fetch(url, { method: 'GET', mode: 'no-cors' });
-  // no-cors GET không trả response body — nhưng GS vẫn nhận và xử lý
+  // Nếu URL quá dài (>2000 ký tự) → fallback sang POST
+  if (url.length > 2000) return callOpsPost(payload);
+  await fetch(url, { method: 'GET', mode: 'no-cors' });
+}
+
+// ── Gọi API qua POST no-cors (data lớn, write operations) ────
+async function callOpsPost(payload) {
+  if (!C.apiUrl) throw new Error('Chưa có API URL');
+  await fetch(C.apiUrl, {
+    method : 'POST',
+    mode   : 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body   : JSON.stringify(payload)
+  });
 }
 
 
@@ -1020,6 +1090,13 @@ window.addEventListener('load', async () => {
   if (typeof buildCats === 'function') buildCats('thu');
   const sigEl = document.getElementById('e-sig');
   if (sigEl && typeof emailEdits !== 'undefined') sigEl.value = emailEdits.sig || '';
+  // Set default tháng/năm: sẽ được cập nhật sau khi load data (trong renderAll)
+  // Tạm set năm hiện tại, tháng sẽ được set đúng sau khi TX load xong
+  const now = new Date();
+  const todayM = String(now.getMonth()+1);
+  const todayY = String(now.getFullYear());
+  ['dm','em','plm'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=todayM;});
+  ['dy','ey','ply'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=todayY;});
 
   // Tải config trước (để có OPS_API_URL cho login)
   await bootstrapConfig();
@@ -1179,8 +1256,11 @@ async function loadSheets(id){
   }));
 
   TX=parseCSV(tc).slice(1).filter(r=>r[0]&&clean(r[0])!=='ID').map(r=>({
-    date:clean(r[1]),month:clean(r[2]),year:clean(r[3]),store:clean(r[4]),
-    type:clean(r[5]),category:clean(r[6]),amount:parseNum(r[7]),note:clean(r[8])||''
+    date:clean(r[1]),
+    month:String(parseInt(clean(r[2])||'0')).padStart(2,'0'), // normalize "5"→"05"
+    year:clean(r[3]),store:clean(r[4]),
+    type:clean(r[5]).toLowerCase(), // normalize "Thu"→"thu"
+    category:clean(r[6]),amount:parseNum(r[7]),note:clean(r[8])||''
   }));
 
   if(!ST.length)throw new Error('Sheet "Cửa hàng" trống. Chạy taoSheet() trước.');
@@ -1221,26 +1301,16 @@ function doDemo(){
   loadDemo();renderAll();toast('Dùng dữ liệu demo','twarn');
 }
 
-async function reload(){
-  if(C.demo){loadDemo();renderAll();return;}
-  if(!C.sheetId){openSetup();return;}
-  load('Đang tải từ Sheets...');
-  try{
-    await loadSheets(C.sheetId);
-    renderAll();toast('✓ Cập nhật xong','tok');
-  }
-  catch(e){toast('Lỗi: '+e.message,'terr');}
-  finally{unload();}
-}
 
 function save(){localStorage.setItem('ptcfg',JSON.stringify(C));}
 
 // ===== AGGREGATE =====
 function agg(month,year){
   const map={};
+  const mNorm=month?String(month).padStart(2,'0'):''; // normalize "5"→"05"
   ST.forEach(s=>map[s.id]={...s,rev:0,cogs:0,opex:0,rcat:{},cocat:{},ocat:{}});
   TX.forEach(tx=>{
-    if(month&&tx.month!==month)return;
+    if(mNorm&&tx.month!==mNorm)return;
     if(year&&tx.year!==year)return;
     if(!map[tx.store])return;
     const s=map[tx.store];
@@ -1257,18 +1327,55 @@ function agg(month,year){
 }
 
 // ===== RENDER ALL =====
+let _defaultMonthSet = false;
+function setDefaultMonth(){
+  if(_defaultMonthSet || !TX.length) return;
+  const thuTx = TX.filter(t=>t.type==='thu');
+  if(!thuTx.length) return;
+  // Lấy tháng/năm gần nhất có thu, sort giảm dần
+  const pairs = [...new Set(thuTx.map(t=>t.year+'-'+t.month))].sort().reverse();
+  if(!pairs.length) return;
+  const [y, mPad] = pairs[0].split('-');
+  const m = String(parseInt(mPad)); // "05"→"5"
+  ['dm','em','plm'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=m;});
+  ['dy','ey','ply'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=y;});
+  _defaultMonthSet = true;
+}
+
 function renderAll(){
+  setDefaultMonth(); // set tháng gần nhất có data (chỉ lần đầu)
   fillSels();rDash();rPL();rStores();rBulk();updateApiSt();
   const schedPage = document.getElementById('p-schedule');
   if(schedPage && schedPage.classList.contains('on')) loadScheduledEmails();
 }
 
 function fillSels(){
-  const opts=ST.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
-  ['pls','ts','es','ai-store'].forEach(id=>{
+  const allOpts=ST.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
+  // ts và ai-store: hiện tất cả cửa hàng
+  ['ts','ai-store'].forEach(id=>{
     const el=document.getElementById(id);
+    if(!el) return;
     const cur=el.value;
-    el.innerHTML=(id==='pls'||id==='es'?'<option value="">-- Cửa hàng --</option>':'')+opts;
+    el.innerHTML=allOpts;
+    if(cur)el.value=cur;
+  });
+  // pls (P&L) lọc theo plm/ply; es (Email) lọc theo em/ey
+  [['pls','plm','ply'],['es','em','ey']].forEach(([selId, mId, yId])=>{
+    const el=document.getElementById(selId);
+    if(!el) return;
+    const cur=el.value;
+    const m=document.getElementById(mId)?.value||'';
+    const y=document.getElementById(yId)?.value||'';
+    // Normalize tháng: TX.month lưu "05", dropdown value có thể "5" hoặc "05"
+    const mNorm = m ? m.padStart(2,'0') : '';
+    let filtered = ST;
+    if(mNorm&&y){
+      const hasData=new Set(TX.filter(t=>t.month===mNorm&&t.year===y).map(t=>t.store));
+      filtered=ST.filter(s=>hasData.has(s.id));
+      if(!filtered.length) filtered=ST; // fallback hiện tất cả nếu không có data
+    }
+    const opts=filtered.map(s=>`<option value="${s.id}">${s.name||s.id}</option>`).join('');
+    el.innerHTML='<option value="">-- Cửa hàng --</option>'+opts;
     if(cur)el.value=cur;
   });
 }
@@ -1285,6 +1392,7 @@ function rDash(){
   const m=document.getElementById('dm').value;
   const y=document.getElementById('dy').value;
   const filter=document.getElementById('dfilter').value;
+  const statusFilter=document.getElementById('dstatus').value;
 
   // Admin chỉ xem cửa hàng của mình
   const user = getUser();
@@ -1293,6 +1401,9 @@ function rDash(){
     const allowed = user.stores.map(s => s.trim().toUpperCase());
     visibleST = ST.filter(s => allowed.includes((s.id||'').trim().toUpperCase()));
   }
+
+  // Lọc theo trạng thái (mặc định chỉ active)
+  if(statusFilter) visibleST = visibleST.filter(s => s.status === statusFilter);
 
   let ss=agg(m,y).filter(s => visibleST.some(vs => vs.id === s.id));
 
@@ -1344,13 +1455,25 @@ function rDash(){
 
 // ===== STORES =====
 function rStores(){
-  document.getElementById('ssub').textContent=ST.length+' cửa hàng trong hệ thống';
-  document.getElementById('store-count').textContent=ST.length+' cửa hàng';
+  const statusFilter = (document.getElementById('sfilter-status')||{}).value ?? 'active';
+  let filtered = ST;
+  if(statusFilter) filtered = ST.filter(s => s.status === statusFilter);
+
+  const statusLabel = {'active':'Đang hoạt động','inactive':'Tạm dừng','closed':'Đã đóng cửa','':''};
+  document.getElementById('ssub').textContent = filtered.length + ' cửa hàng' + (statusFilter ? ' — ' + statusLabel[statusFilter] : ' trong hệ thống');
+  document.getElementById('store-count').textContent = filtered.length + ' cửa hàng';
   const list=document.getElementById('store-list');
-  if(!ST.length){list.innerHTML='<div class="empty2">Chưa có cửa hàng nào. Bấm "+ Thêm cửa hàng"</div>';return;}
-  list.innerHTML=ST.map(s=>`
+  if(!filtered.length){list.innerHTML='<div class="empty2">Không có cửa hàng nào phù hợp.</div>';return;}
+
+  function dotClass(status){
+    if(status==='active') return 'sdot-g';
+    if(status==='closed') return 'sdot-y';
+    return 'sdot-r';
+  }
+
+  list.innerHTML=filtered.map(s=>`
     <div class="store-row">
-      <div class="store-dot ${s.status==='active'?'sdot-g':'sdot-r'}"></div>
+      <div class="store-dot ${dotClass(s.status)}"></div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:600;font-size:14px">${s.name||s.id}</div>
         <div style="font-size:12px;color:var(--gray)">${s.area||''} · ${s.owner?'👤 '+s.owner+(s.phone?' ('+s.phone+')':'')+ ' · ':''}${s.email||'Chưa có email'} · Mở: ${s.openDate||'—'}</div>
@@ -1392,7 +1515,7 @@ function editStore(id){
 
 function closeStoreModal(){document.getElementById('store-modal').classList.add('off');}
 
-function saveStore(){
+async function saveStore(){
   const id=(document.getElementById('sf-id').value||'').trim().toUpperCase();
   const name=document.getElementById('sf-name').value.trim();
   const area=document.getElementById('sf-area').value.trim();
@@ -1417,6 +1540,17 @@ function saveStore(){
   closeStoreModal();
   fillSels();rStores();rDash();rBulk();
   toast(editingStoreId?'✓ Đã cập nhật cửa hàng':'✓ Đã thêm cửa hàng','tok');
+
+  // Lưu lên Sheets ngay
+  if(C.apiUrl){
+    const saveBtnStore = document.querySelector('#store-modal .mbtn');
+    if(saveBtnStore){saveBtnStore.disabled=true;saveBtnStore.textContent='⏳ Đang đồng bộ...';}
+    try{
+      await callOpsPost({action:'saveStores',stores:ST});
+      toast('✓ Đã đồng bộ lên Sheets','tok');
+    }catch(e){toast('Lưu local OK — Sheets: '+e.message,'twarn');}
+    if(saveBtnStore){saveBtnStore.disabled=false;saveBtnStore.textContent='Lưu cửa hàng';}
+  }
 }
 
 function delStore(id){
@@ -1430,7 +1564,7 @@ async function saveStoresToSheet(){
   if(!C.apiUrl){toast('Cần API URL để lưu lên Sheets','terr');openSetup();return;}
   load('Đang lưu danh sách cửa hàng...');
   try{
-    await callOpsGet({action:'saveStores',stores:ST});
+    await callOpsPost({action:'saveStores',stores:ST});
     toast('✓ Đã lưu danh sách cửa hàng lên Sheets','tok');
   }catch(e){toast('Lỗi: '+e.message,'terr');}
   finally{unload();}
@@ -1522,9 +1656,12 @@ async function saveTx(){
   if(!store){toast('Chọn cửa hàng!','terr');return;}
   if(!cat){toast('Chọn danh mục!','terr');return;}
   if(!amt||amt<=0){toast('Nhập số tiền!','terr');return;}
+  // Disable nút + hiện overlay loading
+  const saveBtn=document.getElementById('btn-save-tx');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='⏳ Đang lưu...';}
+  load('Đang lưu giao dịch...');
   const d=date.split('-');
-  const tx={date,month:d[1],year:d[0],store,type,category:cat,amount:amt,note};
-  TX.push(tx);REC.unshift(tx);rRec();
+  const tx={date,month:d[1],year:d[0],store,type,category:cat,amount:amt,note};  TX.push(tx);REC.unshift(tx);rRec();
   document.getElementById('tamt').value='';
   document.getElementById('tnote').value='';
   document.querySelectorAll('.cb3').forEach(b=>b.classList.remove('on'));
@@ -1535,6 +1672,8 @@ async function saveTx(){
       toast('✓ Đã lưu vào Sheets!','tok');
     }catch(e){toast('Lưu local OK, Sheets: '+e.message,'twarn');}
   }else{toast('✓ Lưu local (chưa có API)','twarn');}
+  unload();
+  if(saveBtn){saveBtn.disabled=false;saveBtn.textContent='✓ Lưu giao dịch';}
 }
 
 function rRec(){
@@ -1893,35 +2032,148 @@ const AI_CATEGORY_HINTS = {
   // Revenue
   'grab':'GrabFood','grabfood':'GrabFood','shopee':'ShopeeFood','shopeefood':'ShopeeFood',
   'mang về':'Mang về','mang ve':'Mang về','tại chỗ':'Tại chỗ','tai cho':'Tại chỗ',
-  // COGS
-  'nguyên vật liệu hệ thống':'Chi phí nguyên vật liệu hệ thống',
-  'nvl hệ thống':'NVL hệ thống','nvl he thong':'NVL hệ thống',
-  'nguyên liệu':'Chi phí nguyên vật liệu địa phương',
+  'zalo':'Zalo','call center':'Call Center','web order':'Web Order',
+  // Lương — phải check trước để không bị override bởi "nước"
+  'lương tháng':'Lương NV pha chế','luong thang':'Lương NV pha chế',
+  'thanh toán lương':'Lương NV pha chế','tl nv':'Lương NV pha chế',
+  'lương nv':'Lương NV pha chế','luong nv':'Lương NV pha chế',
+  'lương nhân viên':'Lương NV pha chế','luong nhan vien':'Lương NV pha chế',
+  'lương pha chế':'Lương NV pha chế',
+  'lương quản lý':'Lương quản lý','luong quan ly':'Lương quản lý',
+  'lương ql':'Lương quản lý','lương manager':'Lương quản lý',
+  // Nguyên liệu chợ / địa phương
+  'nguyên liệu chợ':'NVL địa phương','nguyen lieu cho':'NVL địa phương',
+  'chợ':'NVL địa phương','mua chợ':'NVL địa phương',
+  'nguyên liệu':'NVL địa phương','nguyen lieu':'NVL địa phương',
+  'nguyên vật liệu hệ thống':'NVL hệ thống','nguyen vat lieu he thong':'NVL hệ thống',
+  'nước hoa quả hệ thống':'NVL hệ thống','trà hệ thống':'NVL hệ thống',
+  // COGS — NVL địa phương
   'nvl địa phương':'NVL địa phương','nvl dia phuong':'NVL địa phương',
-  'trà':'Chi phí nguyên vật liệu địa phương','tra sua':'Chi phí nguyên vật liệu địa phương',
-  'sữa':'Chi phí nguyên vật liệu địa phương','bột':'Chi phí nguyên vật liệu địa phương',
-  'đường':'Chi phí nguyên vật liệu địa phương','duong':'Chi phí nguyên vật liệu địa phương',
-  'trân châu':'Chi phí nguyên vật liệu địa phương','tran chau':'Chi phí nguyên vật liệu địa phương',
-  'thạch':'Chi phí nguyên vật liệu địa phương','thach':'Chi phí nguyên vật liệu địa phương',
-  'sương sáo':'Chi phí nguyên vật liệu địa phương','suong sao':'Chi phí nguyên vật liệu địa phương',
-  'nha đam':'Chi phí nguyên vật liệu địa phương','pudding':'Chi phí nguyên vật liệu địa phương',
-  'mứt':'Chi phí nguyên vật liệu địa phương','socola':'Chi phí nguyên vật liệu địa phương',
-  'matcha':'Chi phí nguyên vật liệu địa phương','cheese':'Chi phí nguyên vật liệu địa phương',
-  'vận chuyển':'Chi phí vận chuyển','ship':'Chi phí vận chuyển','giao hàng':'Chi phí vận chuyển',
-  'vật phẩm':'Chi phí Vật phẩm','cốc':'Chi phí Vật phẩm','ly':'Chi phí Vật phẩm',
-  'ống hút':'Chi phí Vật phẩm','túi':'Chi phí Vật phẩm','hộp':'Chi phí Vật phẩm',
-  'nhãn':'Chi phí Vật phẩm','màng bọc':'Chi phí Vật phẩm',
+  'nguyên liệu phụ':'NVL địa phương','nguyen lieu phu':'NVL địa phương',
+  'chi phí nguyên liệu phụ':'NVL địa phương',
+  'trân châu':'NVL địa phương','tran chau':'NVL địa phương',
+  'thạch':'NVL địa phương','thach':'NVL địa phương',
+  'sương sáo':'NVL địa phương','nha đam':'NVL địa phương',
+  'pudding':'NVL địa phương','mứt':'NVL địa phương',
+  'matcha':'NVL địa phương','cheese':'NVL địa phương',
+  'khoai':'NVL địa phương','bơ':'NVL địa phương','dứa':'NVL địa phương',
+  'chanh':'NVL địa phương','cam':'NVL địa phương','dâu':'NVL địa phương',
+  'xoài':'NVL địa phương','siro':'NVL địa phương','topping':'NVL địa phương',
+  'đá bào':'NVL địa phương','mang cầu':'NVL địa phương','ổi':'NVL địa phương',
+  'sữa':'NVL địa phương','bột':'NVL địa phương','đường':'NVL địa phương',
+  'trà':'NVL địa phương','cà phê':'NVL địa phương','cafe':'NVL địa phương',
+  // Vận chuyển
+  'vận chuyển':'Chi phí vận chuyển','van chuyen':'Chi phí vận chuyển',
+  'chi phí vận chuyển':'Chi phí vận chuyển',
+  'ship':'Chi phí vận chuyển','giao hàng':'Chi phí vận chuyển',
+  'freeship':'Chi phí vận chuyển','cước':'Chi phí vận chuyển',
+  // Vật phẩm
+  'vật phẩm':'Vật phẩm','vat pham':'Vật phẩm',
+  'cốc':'Vật phẩm','ly':'Vật phẩm','ống hút':'Vật phẩm',
+  'túi':'Vật phẩm','hộp':'Vật phẩm','nhãn':'Vật phẩm',
+  'màng bọc':'Vật phẩm','sticker':'Vật phẩm','băng keo':'Vật phẩm',
+  'muỗng':'Vật phẩm','nắp':'Vật phẩm','khay':'Vật phẩm',
+  // Công nợ
   'công nợ':'Công nợ','cong no':'Công nợ',
-  // OPEX
-  'lương':'Lương NV pha chế','luong':'Lương NV pha chế','quản lý':'Lương quản lý',
-  'mặt bằng':'Mặt bằng','mat bang':'Mặt bằng','thuê':'Mặt bằng',
-  'điện':'Tiền điện','dien':'Tiền điện','nước':'Tiền nước',
-  'internet':'Internet','wifi':'Internet','gas':'Gas',
+  // Lương
+  'lương nv':'Lương NV pha chế','luong nv':'Lương NV pha chế',
+  'lương nhân viên':'Lương NV pha chế','luong nhan vien':'Lương NV pha chế',
+  'lương pha chế':'Lương NV pha chế',
+  'lương quản lý':'Lương quản lý','luong quan ly':'Lương quản lý',
+  'lương ql':'Lương quản lý',
+  // Mặt bằng
+  'mặt bằng':'Mặt bằng','mat bang':'Mặt bằng',
+  'thuê mặt bằng':'Mặt bằng','tiền thuê':'Mặt bằng',
+  // Điện/nước
+  'tiền điện':'Tiền điện','tien dien':'Tiền điện','điện':'Tiền điện',
+  'tiền nước':'Tiền nước','tien nuoc':'Tiền nước',
+  // Internet/wifi
+  'internet':'Internet','wifi':'Internet','mạng':'Internet',
+  'thanh toán tiền internet':'Internet','phi internet':'Internet',
+  // Gas
+  'gas':'Gas',
+  // Royalty
   'royalty':'Royalty Fee','phí nhượng quyền':'Royalty Fee',
-  'chiết khấu':'Chiết khấu food app','ck food':'Chiết khấu food app',
-  'marketing':'Marketing','quảng cáo':'Marketing','sửa chữa':'Sửa chữa',
-  'thuế':'Thuế','hao phí':'Hao phí','nước đá':'Nước đá',
+  'phi nhuong quyen':'Royalty Fee','nhuong quyen':'Royalty Fee',
+  // Chiết khấu
+  'chiết khấu food app':'Chiết khấu food app',
+  'chiết khấu ctkm':'Chiết khấu CTKM','chiet khau ctkm':'Chiết khấu CTKM',
+  'khuyến mãi':'Chiết khấu CTKM','khuyen mai':'Chiết khấu CTKM',
+  // Marketing
+  'marketing':'Marketing','quảng cáo':'Marketing','quang cao':'Marketing',
+  'facebook ads':'Marketing','google ads':'Marketing',
+  // Sửa chữa
+  'sửa chữa':'Sửa chữa','sua chua':'Sửa chữa','bảo trì':'Sửa chữa',
+  'sửa máy':'Sửa chữa','thay linh kiện':'Sửa chữa',
+  // Thuế
+  'thuế':'Thuế','thue':'Thuế','nộp thuế':'Thuế',
+  // Hao phí
+  'hao phí':'Hao phí','hao phi':'Hao phí',
+  // Nước đá
+  'nước đá':'Nước đá','nuoc da':'Nước đá','đá viên':'Nước đá',
+  // Nước lọc
+  'nước lọc':'Nước lọc','nuoc loc':'Nước lọc','bình nước':'Nước lọc',
+  // Phí duy trì
+  'phí duy trì':'Phí duy trì','phi duy tri':'Phí duy trì',
+  'phần mềm':'Phí duy trì','subscription':'Phí duy trì',
+  // Mua hoa
+  'mua hoa':'Mua hoa','hoa tươi':'Mua hoa','hoa':'Mua hoa',
+  // Xăng
+  'xăng':'Xăng','xang':'Xăng','nhiên liệu':'Xăng',
+  // Công cụ dụng cụ
+  'công cụ dụng cụ':'Công cụ dụng cụ','cong cu dung cu':'Công cụ dụng cụ',
+  'chi phí công cụ dụng cụ':'Công cụ dụng cụ',
+  'dụng cụ':'Công cụ dụng cụ','thiết bị':'Công cụ dụng cụ',
+  'bọc rác':'Công cụ dụng cụ','dầu':'Công cụ dụng cụ',
+  'chổi':'Công cụ dụng cụ','khăn':'Công cụ dụng cụ','lau':'Công cụ dụng cụ',
+  // Tài sản cố định
+  'tài sản cố định':'Chi phí tài sản cố định','tai san co dinh':'Chi phí tài sản cố định',
+  'mua máy':'Chi phí tài sản cố định','mua thiết bị':'Chi phí tài sản cố định',
+  // In ấn
+  'in ấn':'Chi phí in ấn tài liệu','in an':'Chi phí in ấn tài liệu',
+  'in tài liệu':'Chi phí in ấn tài liệu','chi phí in ấn tài liệu':'Chi phí in ấn tài liệu',
+  // Tâm linh
+  'tâm linh':'Chi phí tâm linh','tam linh':'Chi phí tâm linh',
+  'thắp hương':'Chi phí tâm linh','thap huong':'Chi phí tâm linh',
+  'chi mua đồ thắp hương':'Chi phí tâm linh','cúng':'Chi phí tâm linh',
+  // Nhập đồ ăn vặt
+  'đồ ăn vặt':'Nhập đồ ăn vặt','an vat':'Nhập đồ ăn vặt',
+  'snack':'Nhập đồ ăn vặt','bánh':'Nhập đồ ăn vặt',
+  // Nhập đồ ăn vặt phân biệt
+  'nhập đồ ăn vặt':'Nhập đồ ăn vặt',
 };
+
+// Danh sách danh mục chi đầy đủ cho dropdown
+const CHI_CATEGORIES = [
+  'NVL hệ thống','NVL địa phương','Chi phí vận chuyển','Vật phẩm','Công nợ',
+  'Nhập đồ ăn vặt','Lương NV pha chế','Lương quản lý','Mặt bằng','Tiền điện',
+  'Tiền nước','Internet','Gas','Royalty Fee','Phí duy trì','Chiết khấu food app',
+  'Marketing','Sửa chữa','Thuế','Hao phí','Nước đá','Nước lọc','Mua hoa',
+  'Chiết khấu CTKM','Xăng','Công cụ dụng cụ','Chi phí tài sản cố định',
+  'Chi phí in ấn tài liệu','Chi phí tâm linh','Chi phí khác'
+];
+function mapChiCategory(colE, colG){
+  const e = (colE||'').toLowerCase().trim();
+  const g = (colG||'').toLowerCase().trim();
+  const combined = g + ' ' + e;
+  // Ưu tiên tìm trong combined text (ghi chú + nghiệp vụ)
+  for(const [k,v] of Object.entries(AI_CATEGORY_HINTS)){
+    if(combined.includes(k)) return v;
+  }
+  // Map trực tiếp cột E iPos
+  const directMap = {
+    'chi phí nguyên liệu phụ':'NVL địa phương',
+    'chi phí công cụ dụng cụ':'Công cụ dụng cụ',
+    'chi phí vận chuyển':'Chi phí vận chuyển',
+    'chi phí in ấn tài liệu':'Chi phí in ấn tài liệu',
+    'chi mua đồ thắp hương':'Chi phí tâm linh',
+    'thanh toán tiền internet':'Internet',
+    'chi phí nguyên vật liệu hệ thống':'NVL hệ thống',
+    'chi phí nguyên vật liệu địa phương':'NVL địa phương',
+  };
+  if(directMap[e]) return directMap[e];
+  return 'Chi phí khác';
+}
 
 function guessCategory(text){
   if(!text) return 'Chi phí khác';
@@ -2239,7 +2491,9 @@ function clearAiResults(){
 async function saveAiTxAll(){
   const valid = aiPendingTx.filter(t=>!t._error&&t.amount>0);
   if(!valid.length){toast('Không có giao dịch hợp lệ','terr');return;}
-  
+  const saveBtn = document.querySelector('#ai-confirm-bar button.btn.bp');
+  if(saveBtn){saveBtn.disabled=true;saveBtn.textContent='⏳ Đang lưu...';}
+  load(`Đang lưu ${valid.length} giao dịch từ ảnh...`);
   let saved=0, failed=0;
   for(const tx of valid){
     const txData={date:tx.date,month:tx.month,year:tx.year,store:tx.store,type:tx.type,category:tx.category,amount:tx.amount,note:tx.note||''};
@@ -2252,7 +2506,8 @@ async function saveAiTxAll(){
       }catch(e){failed++;}
     } else { saved++; }
   }
-  
+  unload();
+  if(saveBtn){saveBtn.disabled=false;}
   rRec();
   toast(`✅ Đã lưu ${saved} giao dịch từ ảnh${failed?' ('+failed+' lỗi Sheets)':''}`, failed?'twarn':'tok');
   clearAiResults();
@@ -2268,18 +2523,27 @@ async function callClaudeText(prompt){
     messages:[{role:'user',content:prompt}]
   };
 
-  // Try Apps Script proxy first (no CORS issue)
+  // Try Apps Script proxy via GET (tránh CORS)
   if(C.apiUrl){
     try{
-      const resp = await fetch(C.apiUrl,{
-        method:'POST',headers:{'Content-Type':'text/plain'},
+      const encodedPrompt = encodeURIComponent(prompt);
+      const encodedKey = encodeURIComponent(apiKey||'');
+      const getUrl = C.apiUrl+'?action=claudeText&prompt='+encodedPrompt+'&apiKey='+encodedKey;
+      const resp = await fetch(getUrl, {method:'GET', mode:'no-cors'});
+      // no-cors GET không trả body — fallback sang POST với mode cors
+    }catch(e){}
+    // POST với cors (Apps Script web app cho phép nếu deploy đúng)
+    try{
+      const resp2 = await fetch(C.apiUrl,{
+        method:'POST', mode:'cors',
+        headers:{'Content-Type':'text/plain'},
         body:JSON.stringify({action:'claudeText',prompt,apiKey})
       });
-      if(resp.ok){
-        const d = await resp.json().catch(()=>null);
+      if(resp2.ok){
+        const d = await resp2.json().catch(()=>null);
         if(d&&d.result) return d.result;
       }
-    }catch(e){console.warn('proxy text failed',e.message);}
+    }catch(e){console.warn('proxy text POST failed',e.message);}
   }
 
   // Direct call with CORS bypass header
@@ -2598,42 +2862,294 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ===== STORE SAVE — auto sync owner+phone to Sheet =====
-const _origSaveStore=saveStore;
-// Monkey-patch saveStore to also push individual store update to Sheets
-async function saveStore(){
-  const id=(document.getElementById('sf-id').value||'').trim().toUpperCase();
-  const name=document.getElementById('sf-name').value.trim();
-  const area=document.getElementById('sf-area').value.trim();
-  const addr=document.getElementById('sf-addr').value.trim();
-  const email=document.getElementById('sf-email').value.trim();
-  const owner=document.getElementById('sf-owner').value.trim();
-  const phone=document.getElementById('sf-phone').value.trim();
-  const openDate=document.getElementById('sf-date').value;
-  const status=document.getElementById('sf-status').value;
-  if(!id){toast('Vui lòng nhập ID cửa hàng','terr');return;}
-  if(!name){toast('Vui lòng nhập tên cửa hàng','terr');return;}
-  if(editingStoreId){
-    const idx=ST.findIndex(s=>s.id===editingStoreId);
-    if(idx>=0)ST[idx]={id:editingStoreId,name,area,addr,email,owner,phone,openDate,status};
-  }else{
-    if(ST.find(s=>s.id===id)){toast('ID đã tồn tại!','terr');return;}
-    ST.push({id,name,area,addr,email,owner,phone,openDate,status});
-  }
-  closeStoreModal();fillSels();rStores();rDash();rBulk();
-  toast(editingStoreId?'✓ Đã cập nhật cửa hàng':'✓ Đã thêm cửa hàng','tok');
-  // Auto-push all stores to sheet
-  if(C.apiUrl){
-    try{
-      await callOpsGet({action:'saveStores',stores:ST});
-      toast('✓ Đã đồng bộ lên Sheets (bao gồm tên & SĐT chủ)','tok');
-    }catch(e){toast('Lưu local OK, Sheets: '+e.message,'twarn');}
-  }
-}
-
 
 let xlsxData = null;
 let xlsxPendingTx = [];
-let xlsxFile = null; // stored file reference (input gets cleared after selection)
+let xlsxFile = null;
+let chiXlsxFile = null;
+let chiXlsxPendingTx = [];
+
+// ── Handlers cho Excel CHI (block riêng) ─────────────────────
+function handleChiXlsxDrop(e){
+  e.preventDefault();
+  document.getElementById('chi-xlsx-drop').classList.remove('over');
+  const f=Array.from(e.dataTransfer.files).find(f=>f.name.match(/\.(xlsx|xls|csv)$/i));
+  if(f){ chiXlsxFile=f; processChiXlsxFile(f); }
+}
+function handleChiXlsxSelect(e){
+  const f=e.target.files[0];
+  e.target.value=''; // reset để onchange fire kể cả khi chọn lại cùng file
+  if(f){ chiXlsxFile=f; processChiXlsxFile(f); }
+}
+function processChiXlsxFile(file){
+  chiXlsxPendingTx=[];
+  document.getElementById('chi-xlsx-results').innerHTML='';
+  document.getElementById('chi-xlsx-confirm-bar').style.display='none';
+  const info=document.getElementById('chi-xlsx-file-info');
+  info.style.display='block';
+  info.innerHTML=`📄 <strong>${file.name}</strong> (${(file.size/1024).toFixed(1)} KB)
+    <button onclick="triggerChiFileInput()" style="margin-left:10px;font-family:inherit;font-size:11px;padding:3px 10px;border:1px solid var(--border);border-radius:6px;background:var(--white);cursor:pointer;color:var(--brown)">📂 Đổi file</button>`;
+  document.getElementById('btn-chi-xlsx-analyze').style.display='flex';
+}
+function triggerChiFileInput(){
+  const inp = document.getElementById('chi-xlsx-file-input');
+  inp.value='';
+  inp.click();
+}
+async function analyzeChiXlsx(){
+  if(!chiXlsxFile){toast('Chọn file Excel chi trước','terr');return;}
+  document.getElementById('btn-chi-xlsx-analyze').style.display='none';
+  document.getElementById('chi-xlsx-thinking').style.display='flex';
+  document.getElementById('chi-xlsx-results').innerHTML='';
+  document.getElementById('chi-xlsx-confirm-bar').style.display='none';
+  try{
+    const buf=await chiXlsxFile.arrayBuffer();
+    const wb=XLSX.read(buf,{type:'array',cellDates:false});
+    const parsed=parseChiExcel(wb);
+    document.getElementById('chi-xlsx-thinking').style.display='none';
+    renderChiResults(parsed);
+  }catch(err){
+    document.getElementById('chi-xlsx-thinking').style.display='none';
+    document.getElementById('btn-chi-xlsx-analyze').style.display='flex';
+    toast('Lỗi đọc file chi: '+err.message,'terr');
+  }
+}
+function clearChiXlsx(){
+  chiXlsxFile=null; chiXlsxPendingTx=[]; window._chiParsed=null;
+  const _ab=document.getElementById('chi-apply-bar-fixed'); if(_ab) _ab.style.display='none';
+  document.getElementById('chi-xlsx-results').innerHTML='';
+  document.getElementById('chi-xlsx-confirm-bar').style.display='none';
+  document.getElementById('chi-xlsx-file-info').style.display='none';
+  document.getElementById('btn-chi-xlsx-analyze').style.display='none';
+}
+async function saveChiXlsxAll(){
+  rebuildChiTx();
+  if(!chiXlsxPendingTx.length){toast('Không có dữ liệu hợp lệ (chọn cửa hàng)','terr');return;}
+  const validTx=chiXlsxPendingTx.filter(t=>t.store&&t.amount>0);
+  load(`Đang lưu ${validTx.length} khoản chi...`);
+  try{
+    TX.push(...validTx);
+    validTx.forEach(tx=>REC.unshift(tx));
+    if(C.apiUrl){
+      for(const tx of validTx){
+        await callOpsGet({action:'addTransaction',...tx});
+      }
+      toast(`✓ Đã lưu ${validTx.length} khoản chi lên Sheets`,'tok');
+    }else{toast(`✓ Đã lưu ${validTx.length} khoản chi (local)`,'twarn');}
+    rRec();
+    renderAll();
+    clearChiXlsx();
+  }catch(e){toast('Lỗi: '+e.message,'terr');}
+  finally{unload();}
+}
+
+// ── Parse file Chi từ iPos (không cần AI — map trực tiếp) ─────
+function parseChiExcel(wb){
+  const results = [];
+  wb.SheetNames.forEach(sheetName => {
+    const ws = wb.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:true});
+    if(!rows.length) return;
+    const txList = [];
+    rows.forEach((row, i) => {
+      if(i === 0) return; // bỏ header
+      const typeCol = String(row[3]||'').trim(); // cột D = Loại
+      if(!typeCol.includes('CASH_OUT') && typeCol !== '-') return; // chỉ lấy chi
+      if(typeCol === '-') return; // bỏ dòng tổng/trống
+      const dateRaw = String(row[2]||'').trim();   // cột C = Thời gian
+      const catColE  = String(row[4]||'').trim();   // cột E = Nghiệp vụ
+      const noteColG = String(row[6]||'').trim();   // cột G = Ghi chú
+      const amtRaw   = row[7];                       // cột H = Số tiền
+      const amt = Math.abs(Number(amtRaw)||0);
+      if(!amt) return;
+      // Parse ngày: "30/04/2026 21:47" → "2026-04-30"
+      let dateStr = '', month = '', year = '';
+      const dm = dateRaw.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+      if(dm){ dateStr=`${dm[3]}-${dm[2]}-${dm[1]}`; month=dm[2]; year=dm[3]; }
+      else { dateStr=new Date().toISOString().split('T')[0]; month=String(new Date().getMonth()+1).padStart(2,'0'); year=String(new Date().getFullYear()); }
+      const cat = mapChiCategory(catColE, noteColG);
+      txList.push({ date:dateStr, month, year, type:'chi', category:cat,
+        amount:amt, note:noteColG||catColE, _colE:catColE, _colG:noteColG });
+    });
+    if(txList.length) results.push({ sheetName, txList });
+  });
+  return results;
+}
+
+// ── Render kết quả Chi Excel ──────────────────────────────────
+function renderChiResults(parsed){
+  const container = document.getElementById('chi-xlsx-results');
+  chiXlsxPendingTx = [];
+  if(!parsed.length){
+    container.innerHTML='<div style="color:var(--gray);padding:16px;text-align:center">Không tìm thấy dữ liệu chi trong file này</div>';
+    return;
+  }
+  let html = ''; let totalCats = 0;
+  parsed.forEach((sheet, si) => {
+    const matchedStore = ST.find(s=>
+      sheet.sheetName.toLowerCase().includes(s.id.toLowerCase()) ||
+      (s.name&&sheet.sheetName.toLowerCase().includes(s.name.toLowerCase().split(' ')[0]))
+    );
+    const storeOpts = '<option value="">-- Chọn cửa hàng --</option>'+ST.map(s=>`<option value="${s.id}"${matchedStore&&matchedStore.id===s.id?' selected':''}>${s.name||s.id}</option>`).join('');
+    const byMonth = {};
+    sheet.txList.forEach(tx => {
+      const mk = tx.year+'-'+tx.month;
+      if(!byMonth[mk]) byMonth[mk]=[];
+      byMonth[mk].push(tx);
+    });
+    html += `<div style="border:1.5px solid var(--gold);border-radius:var(--r);padding:14px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <strong style="font-size:13px">📋 ${sheet.sheetName}</strong>
+        <span style="font-size:11px;color:var(--gray)">${sheet.txList.length} khoản chi</span>
+      </div>
+      <div style="margin-bottom:10px">
+        <label class="fl" style="font-size:10px">Cửa hàng tương ứng</label>
+        <select style="width:100%;font-family:inherit;font-size:13px;padding:7px 10px;border:1.5px solid var(--border);border-radius:8px" id="chi-store-${si}" onchange="rebuildChiTx()">
+          ${storeOpts}
+        </select>
+      </div>`;
+    Object.entries(byMonth).sort().forEach(([mk, txs]) => {
+      const [yr, mo] = mk.split('-');
+      const total = txs.reduce((a,b)=>a+b.amount,0);
+      // Group by category
+      const byCat = {};
+      txs.forEach((tx,tIdx) => {
+        const k = tx.category;
+        if(!byCat[k]) byCat[k]={total:0,items:[]};
+        byCat[k].total+=tx.amount;
+        // Gán _itemId lên object GỐC (không spread) để updateChiItem tìm được
+        const itemId = `chiitem-${si}-${mk}-${k.replace(/[^a-z0-9]/gi,'_')}-${tIdx}`;
+        tx._itemId = itemId;
+        byCat[k].items.push(tx); // giữ reference gốc
+      });
+      html += `<div style="background:var(--gold-l);border-radius:var(--rs);padding:10px;margin-bottom:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--brown);margin-bottom:8px">
+          📅 Tháng ${mo}/${yr} — Tổng: <span style="color:var(--brown-m)">${fvnd(total)}</span>
+          <span style="font-size:11px;font-weight:400;color:var(--gray);margin-left:6px">(${txs.length} giao dịch)</span>
+        </div>`;
+      Object.entries(byCat).forEach(([cat, g]) => {
+        const catId = `chi-${si}-${mk}-${cat.replace(/[^a-z0-9]/gi,'_')}`;
+        const expandId = `chi-exp-${catId}`;
+        const catSelectOpts = CHI_CATEGORIES.map(c=>`<option value="${c}"${c===cat?' selected':''}>${c}</option>`).join('');
+        totalCats++;
+        html += `<div style="margin-bottom:6px;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+          <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:center;padding:7px 10px;background:var(--white)">
+            <select style="font-family:inherit;font-size:12px;font-weight:600;color:var(--brown);border:none;background:transparent;cursor:pointer;padding:0;max-width:100%"
+              onclick="event.stopPropagation()"
+              onchange="renameChiCatGroup(this,'${si}','${mk}','${cat.replace(/'/g,"\\'")}','${expandId}',this.value)">
+              ${catSelectOpts}
+            </select>
+            <input type="number" id="${catId}-amt" value="${g.total}" style="width:110px;text-align:right;font-family:inherit;font-size:12px;padding:4px 6px;border:1px solid var(--border);border-radius:4px" onchange="rebuildChiTx()">
+            <span style="font-size:11px;color:var(--gray)">₫</span>
+            <span style="font-size:11px;color:var(--gold);white-space:nowrap;cursor:pointer" onclick="toggleChiExpand('${expandId}',this)">▼ Chi tiết</span>
+          </div>
+          <div id="${expandId}" style="display:none;padding:6px 10px 8px;background:var(--gray-l)">`;
+        g.items.forEach((tx, iIdx) => {
+          const itemId = tx._itemId; // đã được gán ở trên, dùng trực tiếp
+          const catOpts = CHI_CATEGORIES
+            .map(c=>`<option value="${c}"${c===tx.category?' selected':''}>${c}</option>`).join('');
+          html += `<div style="padding:7px 0;border-bottom:1px solid var(--border);display:grid;gap:4px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+              <input type="date" value="${tx.date||''}" style="font-family:inherit;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:4px" onchange="updateChiItem('${itemId}','date',this.value)">
+              <input type="number" value="${tx.amount}" style="font-family:inherit;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;text-align:right" onchange="updateChiItem('${itemId}','amount',this.value)">
+            </div>
+            <select style="width:100%;font-family:inherit;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:4px" onchange="updateChiItem('${itemId}','category',this.value)">
+              ${catOpts}
+            </select>
+            <input type="text" value="${(tx.note||tx._colG||'').replace(/"/g,'&quot;')}" placeholder="Ghi chú..." style="width:100%;font-family:inherit;font-size:11px;padding:4px 6px;border:1px solid var(--border);border-radius:4px" onchange="updateChiItem('${itemId}','note',this.value)">
+          </div>`;
+        });
+        html += `</div></div>`;
+      });
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  window._chiParsed = parsed;
+  rebuildChiTx();
+  const applyBar = document.getElementById('chi-apply-bar-fixed');
+  if(applyBar) applyBar.style.display='flex';
+
+  document.getElementById('chi-xlsx-confirm-summary').textContent = `Tìm thấy ${totalCats} danh mục chi. Kiểm tra cửa hàng và số liệu trước khi lưu.`;
+  document.getElementById('chi-xlsx-confirm-bar').style.display = totalCats ? 'block' : 'none';
+}
+
+function renameChiCatGroup(selectEl, si, mk, oldCat, expandId, newCat){
+  if(!window._chiParsed || !newCat || newCat === oldCat) return;
+  const sheet = window._chiParsed[parseInt(si)];
+  if(!sheet) return;
+  sheet.txList.forEach(tx => {
+    if(tx.category === oldCat && (tx.year+'-'+tx.month) === mk){
+      tx.category = newCat;
+    }
+  });
+  renderChiResults(window._chiParsed);
+}
+
+function toggleChiExpand(id, headerEl){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const isOpen = el.style.display !== 'none';
+  el.style.display = isOpen ? 'none' : 'block';
+  const arrow = headerEl.querySelector('span:last-child');
+  if(arrow) arrow.textContent = isOpen ? '▼ Chi tiết' : '▲ Thu gọn';
+}
+
+function updateChiItem(itemId, field, value){
+  if(!window._chiParsed) return;
+  window._chiParsed.forEach(sheet => {
+    sheet.txList.forEach(tx => {
+      if(tx._itemId !== itemId) return;
+      if(field === 'amount')  tx.amount = parseFloat(value)||0;
+      else if(field === 'date'){
+        tx.date = value;
+        const d = value.split('-');
+        if(d.length===3){ tx.month=d[1].padStart(2,'0'); tx.year=d[0]; }
+      }
+      else if(field === 'note') tx.note = value;
+      else if(field === 'category'){
+        tx.category = value;
+        // Hiện nút cập nhật cố định ở đầu results
+
+      }
+    });
+  });
+  rebuildChiTx();
+}
+
+function rebuildChiTx(){
+  if(!window._chiParsed) return;
+  chiXlsxPendingTx = [];
+  window._chiParsed.forEach((sheet, si) => {
+    const storeId = document.getElementById('chi-store-'+si)?.value;
+    if(!storeId) return;
+    const byMonth = {};
+    sheet.txList.forEach(tx => {
+      const mk = tx.year+'-'+tx.month;
+      if(!byMonth[mk]) byMonth[mk]=[];
+      byMonth[mk].push(tx);
+    });
+    Object.entries(byMonth).forEach(([mk, txs]) => {
+      const [yr, mo] = mk.split('-');
+      const byCat = {};
+      txs.forEach(tx => {
+        if(!byCat[tx.category]) byCat[tx.category]={total:0,date:tx.date,month:mo,year:yr,note:tx.note};
+        byCat[tx.category].total+=tx.amount;
+      });
+      Object.entries(byCat).forEach(([cat,g]) => {
+        const txId = `chi-${si}-${mk}-${cat.replace(/[^a-z0-9]/gi,'_')}`;
+        const amt = parseFloat(document.getElementById(txId+'-amt')?.value||g.total)||g.total;
+        if(amt>0){
+          chiXlsxPendingTx.push({
+            date:`${yr}-${mo}-01`, month:mo, year:yr, store:storeId,
+            type:'chi', category:cat, amount:amt, note:g.note||'Import Excel Chi'
+          });
+        }
+      });
+    });
+  });
+}
 
 const FOOD_APP_SOURCES = ['grab','grabfood','shopee','shopeefood','baemin','gofood','goviet','loship','ahamove','momo','zalopay','vnpay','food app','foodapp','delivery','app','now'];
 
@@ -2670,6 +3186,7 @@ function processXlsxFile(file){
 
 async function analyzeXlsx(){
   if(!xlsxFile){toast('Chon file Excel truoc','terr');return;}
+  // THU mode: AI phân tích file doanh thu
   const apiKey = window._aiKey || C.apiKey || '';
   if(!apiKey && !C.apiUrl){
     toast('Can API Key Anthropic hoac Apps Script URL. Vao Cai dat.','terr');
@@ -2700,7 +3217,7 @@ async function analyzeXlsx(){
       const csvText = usedRows.map(row=>
         Array.from({length:maxCols},(_,ci)=>String(row[ci]??'').replace(/\n/g,' ')).join('\t')
       ).join('\n');
-      const prompt = `Ban la chuyen gia phan tich du lieu ban hang iPos/Fabi. Day la du lieu raw tu sheet "${sheetName}" (tab-separated, moi sheet = 1 cua hang):\n\`\`\`\n${csvText}\n\`\`\`\n\nNhiem vu - Trich xuat du lieu theo quy tac:\n1. DOANH THU (Thu): Tong Gross tung nguon don hang (GrabFood, ShopeeFood, Mang ve, Tai cho...) theo tung THANG. Lay so Gross truoc chiet khau. Giu nguyen ten nguon.\n2. CHIET KHAU (Chi): Tong chiet khau tung nguon theo thang. GrabFood/ShopeeFood/food app -> "Chiet khau food app". Nguon khac -> "Chiet khau CTKM".\n3. Bo qua cac cot khac.\n\nTra ve JSON array THUAN TUY (KHONG markdown), vi du:\n[{"month":"2026-01","sources":[{"name":"GrabFood","gross":12500000,"discount":1250000},{"name":"Mang ve","gross":8000000,"discount":0}]}]\n\nNeu khong co du lieu hop le, tra ve [].`;
+      const prompt = 'Ban la chuyen gia phan tich du lieu ban hang iPos/Fabi. Day la du lieu raw tu sheet "'+sheetName+'" (tab-separated):\n```\n'+csvText+'\n```\n\nNhiem vu - Trich xuat DOANH THU theo quy tac:\n1. Row 2 la ten nguon (MANG VE, GRAB, ShopeeFood, TAI CHO, CALL CENTER, WEB ORDER, ZALO...)\n2. Row 3: Ngay|So hoa don|Giam gia|Doanh thu (gross) [lap lai moi nguon]\n3. Tong Gross tung nguon theo THANG. KHONG tru giam gia.\n4. CHIET KHAU: Tong cot Giam gia tung nguon. food app -> \"Chiet khau food app\". Khac -> \"Chiet khau CTKM\".\n5. Map ten: MANG VE->\"Mang ve\", TAI CHO->\"Tai cho\", GRAB->\"GrabFood\", ShopeeFood->\"ShopeeFood\", CALL CENTER->\"Call Center\", WEB ORDER->\"Web Order\", ZALO->\"Zalo\".\n\nTra ve JSON array THUAN TUY (KHONG markdown):\n[{\"month\":\"2026-04\",\"sources\":[{\"name\":\"GrabFood\",\"gross\":26628000,\"discount\":5433250},{\"name\":\"Mang ve\",\"gross\":48356000,\"discount\":1810500}]}]\n\nNeu khong co du lieu, tra ve [].';
       try{
         const raw = await callClaudeText(prompt);
         let txt = raw.trim().replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
