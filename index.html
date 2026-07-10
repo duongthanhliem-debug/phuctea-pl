@@ -931,7 +931,7 @@ async function doLogin() {
 
     // Kiểm tra phân quyền
     const roleLower = rowRole.toLowerCase();
-    if (roleLower !== 'admin' && roleLower !== 'system') {
+    if (roleLower !== 'admin' && roleLower !== 'system' && roleLower !== 'owner') {
       errEl.textContent = 'Tài khoản không có quyền truy cập P&L Hub'; return;
     }
 
@@ -960,7 +960,7 @@ function afterLogin(user) {
   if (btnLogout) btnLogout.style.display = 'inline-block';
   // Chỉ System mới thấy nút Cài đặt
   const btnCfg = document.getElementById('btn-cfg');
-  if (btnCfg) btnCfg.style.display = (user.role === 'System') ? 'inline-block' : 'none';
+  if (btnCfg) btnCfg.style.display = (user.role === 'System' || user.role === 'Owner') ? 'inline-block' : 'none';
   // Load data
   loadConfigAndData(user);
 }
@@ -984,7 +984,7 @@ function doLogout() {
 
 // ── Lọc cửa hàng theo phân quyền ─────────────────────────────
 function applyStoreFilter(user) {
-  if (!user || user.role === 'System') return; // System xem tất cả
+  if (!user || user.role === 'System' || user.role === 'Owner') return;
   if (user.role === 'Admin' && user.stores && user.stores.length > 0) {
     // Admin chỉ thấy cửa hàng của mình (đối chiếu cột I sheet NhanSu vs cột A sheet Cửa hàng)
     const allowed = user.stores.map(s => s.trim().toUpperCase());
