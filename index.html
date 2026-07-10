@@ -1270,7 +1270,7 @@ async function loadSheets(id){
 
 function openSetup(){
   const user = getUser();
-  if (user && user.role !== 'System') { toast('Chỉ System Admin mới được vào Cài đặt','terr'); return; }
+  if (user && user.role !== 'System' && user.role !== 'Owner') { toast('Chỉ System/Owner mới được vào Cài đặt','terr'); return; }
   document.getElementById('cfg-sid').value=C.sheetId||'';
   document.getElementById('cfg-api').value=C.apiUrl||'';
   if(document.getElementById('cfg-apikey'))document.getElementById('cfg-apikey').value=C.apiKey||'';
